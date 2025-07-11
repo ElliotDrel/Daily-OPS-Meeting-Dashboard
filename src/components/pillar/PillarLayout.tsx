@@ -106,9 +106,11 @@ const generateFourMonthRollingSquares = () => {
 
 // Generate data for 4 mini calendars
 const generateMiniCalendarData = () => {
+  // Order: top left (2 months ago), top right (3 months ago), bottom left (4 months ago), bottom right (5 months ago)
+  const monthOffsets = [2, 3, 4, 5];
   const miniCalendarData: Array<{targetDate: Date; squaresData: Array<{status: string; date: string; value: number; label?: string}>}> = [];
   
-  for (let monthOffset = 3; monthOffset >= 0; monthOffset--) {
+  for (const monthOffset of monthOffsets) {
     const targetMonth = subMonths(new Date(), monthOffset);
     const daysInMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
     
