@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { format, addDays, subDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isBefore, subMonths } from "date-fns";
+import { MiniCalendar } from "@/components/dashboard/MiniCalendar";
 
 interface PillarLayoutProps {
   letter: string;
@@ -103,6 +104,37 @@ const generateFourMonthRollingSquares = () => {
   return monthsData;
 };
 
+// Generate data for 4 mini calendars
+const generateMiniCalendarData = () => {
+  const miniCalendarData: Array<{targetDate: Date; squaresData: Array<{status: string; date: string; value: number; label?: string}>}> = [];
+  
+  for (let monthOffset = 3; monthOffset >= 0; monthOffset--) {
+    const targetMonth = subMonths(new Date(), monthOffset);
+    const daysInMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
+    
+    const squaresData: Array<{status: string; date: string; value: number; label?: string}> = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      const rand = Math.random();
+      let status: string;
+      
+      if (rand < 0.65) status = 'good';
+      else if (rand < 0.85) status = 'caution';
+      else status = 'issue';
+      
+      squaresData.push({
+        status,
+        date: `${targetMonth.getMonth() + 1}/${i}`,
+        value: Math.floor(Math.random() * 100),
+        label: '%'
+      });
+    }
+    
+    miniCalendarData.push({ targetDate: targetMonth, squaresData });
+  }
+  
+  return miniCalendarData;
+};
+
 export const PillarLayout = ({
   letter,
   pillarName,
@@ -134,6 +166,7 @@ export const PillarLayout = ({
   // Generate data for additional calendars
   const previousMonthSquares = generatePreviousMonthSquares();
   const fourMonthData = generateFourMonthRollingSquares();
+  const miniCalendarData = generateMiniCalendarData();
   const previousMonth = subMonths(today, 1);
 
   // Helper function to render a calendar grid
@@ -276,24 +309,15 @@ export const PillarLayout = ({
                 {renderCalendarGrid(previousMonth, previousMonthSquares)}
               </Card>
 
-              {/* Four Month Rolling View */}
-              
-                <div className="space-y-4">
-                  {fourMonthData.map((monthData, index) => (
-                    <div key={index} className="space-y-2">
-                      <h4 className="text-sm font-medium text-center">{monthData.month}</h4>
-                      <div className="grid grid-cols-7 gap-0.5">
-                        {monthData.squares.slice(0, 28).map((square, squareIndex) => (
-                          <div
-                            key={squareIndex}
-                            className={cn(
-                              "h-4 w-4 rounded-sm",
-                              getStatusColor(square.status)
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </div>
+              {/* Four Month Rolling View - Mini Calendars */}
+              <Card className="p-4 shadow-xl">
+                <div className="grid grid-cols-2 gap-3">
+                  {miniCalendarData.map((calendarData, index) => (
+                    <MiniCalendar
+                      key={index}
+                      targetDate={calendarData.targetDate}
+                      squaresData={calendarData.squaresData}
+                    />
                   ))}
                 </div>
               </Card>
