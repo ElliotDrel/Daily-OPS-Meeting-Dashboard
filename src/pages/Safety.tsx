@@ -1,7 +1,9 @@
-import { PillarLayout } from "@/components/pillar/PillarLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
+import { Shield, AlertTriangle, Users, HardHat, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { dashboardData, safetyData } from "@/data/mockData";
 import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
 import { SimpleDonutChart } from "@/components/charts/SimpleDonutChart";
@@ -66,14 +68,29 @@ const safetyActions = [
 
 export const Safety = () => {
   return (
-    <PillarLayout
-      letter="S"
-      pillarName="Safety"
-      pillarColor="safety"
-      squares={dashboardData.pillars.safety.squares}
-      actionItems={actionItems}
-    >
-      <div className="space-y-6">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-6 py-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          className="space-y-6"
+        >
+          {/* Header with large S and Safety title */}
+          <div className="flex items-center space-x-4">
+            <Link to="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Dashboard
+              </Button>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <div className="text-6xl font-bold text-safety">S</div>
+              <h1 className="text-3xl font-bold">Safety</h1>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="space-y-6">
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-safety">Unsafe Conditions - 5 Month Trend</h3>
@@ -178,7 +195,9 @@ export const Safety = () => {
             </table>
           </div>
         </Card>
+          </div>
+        </motion.div>
       </div>
-    </PillarLayout>
+    </div>
   );
 };
