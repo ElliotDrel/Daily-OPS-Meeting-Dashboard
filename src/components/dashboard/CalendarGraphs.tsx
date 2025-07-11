@@ -164,6 +164,55 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
     );
   };
 
+  // Helper function to render a smaller calendar grid for 4-month view
+  const renderSmallCalendarGrid = (targetDate: Date, squaresData?: Array<{status: string; date: string; value: number; label?: string}>) => {
+    const monthStart = startOfMonth(targetDate);
+    const monthEnd = endOfMonth(targetDate);
+    const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+    const firstDayOfWeek = monthStart.getDay();
+    const emptyDays = Array(firstDayOfWeek).fill(null);
+    
+    return (
+      <>
+        {/* Days of week header (smaller) */}
+        <div className="grid grid-cols-7 gap-0.5 mb-1">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
+            <div key={day} className="text-xs font-medium text-muted-foreground text-center">
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        {/* Calendar grid (smaller) */}
+        <div className="grid grid-cols-7 gap-0.5">
+          {/* Empty cells for days before month starts */}
+          {emptyDays.map((_, index) => (
+            <div key={`empty-${index}`} className="h-6"></div>
+          ))}
+          
+          {/* Days of the month */}
+          {daysInMonth.map((day) => {
+            const dayNumber = parseInt(format(day, 'd'));
+            const squareData = squaresData?.[dayNumber - 1];
+            const status = squareData?.status || 'good';
+            
+            return (
+              <div
+                key={day.toISOString()}
+                className={cn(
+                  "h-6 w-6 rounded-sm flex items-center justify-center text-xs transition-colors",
+                  getStatusColor(status)
+                )}
+              >
+                {format(day, 'd')}
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Current Month Calendar */}
@@ -182,28 +231,21 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
         {renderCalendarGrid(previousMonth, previousMonthSquares)}
       </Card>
 
-      {/* Four Month Rolling View */}
+      {/* Four Month Rolling View - Redesigned as Calendar Tiles */}
       <Card className="p-6 shadow-xl">
         <div className="text-center mb-4">
           <h3 className="text-lg font-semibold">4-Month Rolling View</h3>
         </div>
-        <div className="space-y-4">
-          {fourMonthData.map((monthData, index) => (
-            <div key={index} className="space-y-2">
-              <h4 className="text-sm font-medium text-center">{monthData.month}</h4>
-              <div className="grid grid-cols-7 gap-0.5">
-                {monthData.squares.slice(0, 28).map((square, squareIndex) => (
-                  <div
-                    key={squareIndex}
-                    className={cn(
-                      "h-4 w-4 rounded-sm",
-                      getStatusColor(square.status)
-                    )}
-                  />
-                ))}
+        <div className="grid grid-cols-2 gap-4">
+          {fourMonthData.map((monthData, index) => {
+            const targetDate = subMonths(new Date(), 5 - index);
+            return (
+              <div key={index} className="space-y-2">
+                <h4 className="text-sm font-semibold text-center">{format(targetDate, 'MMMM yyyy')}</h4>
+                {renderSmallCalendarGrid(targetDate, monthData.squares)}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
     </div>
