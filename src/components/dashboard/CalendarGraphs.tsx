@@ -233,9 +233,6 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
 
       {/* Four Month Rolling View - Redesigned as Calendar Tiles */}
       <Card className="p-6 shadow-xl">
-        <div className="text-center mb-4">
-          <h3 className="text-lg font-semibold">4-Month Rolling View</h3>
-        </div>
         <div className="grid grid-cols-2 gap-4">
           {fourMonthData.map((monthData, index) => {
             const targetDate = subMonths(new Date(), 5 - index);
