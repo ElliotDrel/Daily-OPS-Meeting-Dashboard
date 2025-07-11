@@ -136,7 +136,6 @@ export const PillarLayout = ({
 
   // Generate data for additional calendars
   const previousMonthSquares = generatePreviousMonthSquares();
-  const fourMonthData = generateFourMonthRollingSquares();
   const miniCalendarData = generateMiniCalendarData();
   const previousMonth = subMonths(today, 1);
 
