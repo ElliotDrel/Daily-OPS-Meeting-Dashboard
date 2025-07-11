@@ -179,7 +179,7 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
     return (
       <>
         {/* Days of week header (smaller) */}
-        <div className="grid grid-cols-7 gap-1 mb-1">
+        <div className="grid grid-cols-7 gap-2 mb-1">
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
             <div key={day} className="text-xs font-medium text-muted-foreground text-center">
               {day}
@@ -188,7 +188,7 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
         </div>
         
         {/* Calendar grid (smaller) */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-2">
           {/* Empty cells for days before month starts */}
           {emptyDays.map((_, index) => (
             <div key={`empty-${index}`} className="h-6"></div>
@@ -237,12 +237,13 @@ export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
 
       {/* Four Month Rolling View - Mini Calendars */}
       <Card className="p-4 shadow-xl">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-wrap gap-4 justify-center">
           {miniCalendarData.map((calendarData, index) => (
             <MiniCalendar
               key={index}
               targetDate={calendarData.targetDate}
               squaresData={calendarData.squaresData}
+              className="flex-shrink-0"
             />
           ))}
         </div>
