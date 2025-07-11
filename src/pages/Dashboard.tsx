@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { LetterGrid } from "@/components/dashboard/LetterGrid";
 import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { IncidentTable } from "@/components/dashboard/IncidentTable";
+import { CalendarGraphs } from "@/components/dashboard/CalendarGraphs";
 import { dashboardData } from "@/data/mockData";
 const pillarRoutes = {
   S: '/safety',
@@ -44,24 +45,35 @@ export const Dashboard = () => {
             
           </div>
 
-          {/* Letter Grids Row */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-            {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map((pillar, index) => {
-            const letter = pillar.charAt(0).toUpperCase() as keyof typeof pillarRoutes;
-            return <LetterGrid key={pillar} letter={letter} squares={dashboardData.pillars[pillar].squares} pillarColor={pillarColors[letter]} onClick={() => handlePillarClick(letter)} onCellClick={day => handleCellClick(letter, day)} />;
-          })}
-          </div>
+          {/* Main Layout with Calendar Sidebar */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Left Column - Calendar Graphs (25%) */}
+            <div className="lg:col-span-1">
+              <CalendarGraphs squares={dashboardData.pillars.safety.squares} />
+            </div>
 
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-            {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map(pillar => <SimpleBarChart key={`chart-${pillar}`} data={dashboardData.pillars[pillar].chartData} title={`${pillar.charAt(0).toUpperCase() + pillar.slice(1)} Trend`} pillar={pillar} />)}
-          </div>
+            {/* Right Column - Main Dashboard Content (75%) */}
+            <div className="lg:col-span-3 space-y-8">
+              {/* Letter Grids Row */}
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+                {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map((pillar, index) => {
+                const letter = pillar.charAt(0).toUpperCase() as keyof typeof pillarRoutes;
+                return <LetterGrid key={pillar} letter={letter} squares={dashboardData.pillars[pillar].squares} pillarColor={pillarColors[letter]} onClick={() => handlePillarClick(letter)} onCellClick={day => handleCellClick(letter, day)} />;
+              })}
+              </div>
 
-          {/* Incidents Row */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-            {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map(pillar => <IncidentTable key={`incidents-${pillar}`} incidents={dashboardData.pillars[pillar].incidents} pillar={pillar} onIncidentClick={incident => {
-            console.log('Incident clicked:', incident);
-          }} />)}
+              {/* Charts Row */}
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+                {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map(pillar => <SimpleBarChart key={`chart-${pillar}`} data={dashboardData.pillars[pillar].chartData} title={`${pillar.charAt(0).toUpperCase() + pillar.slice(1)} Trend`} pillar={pillar} />)}
+              </div>
+
+              {/* Incidents Row */}
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+                {(Object.keys(dashboardData.pillars) as Array<keyof typeof dashboardData.pillars>).map(pillar => <IncidentTable key={`incidents-${pillar}`} incidents={dashboardData.pillars[pillar].incidents} pillar={pillar} onIncidentClick={incident => {
+                console.log('Incident clicked:', incident);
+              }} />)}
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
