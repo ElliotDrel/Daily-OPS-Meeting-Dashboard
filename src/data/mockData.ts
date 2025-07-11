@@ -53,14 +53,14 @@ export interface MeetingNote {
   nextMeeting?: string;
 }
 
-// Generate 31 squares for each pillar (current month)
+// Generate squares for current month (only actual days)
 const generateSquares = (baseGoodRate = 0.7): GridSquare[] => {
   const squares: GridSquare[] = [];
   const currentDate = new Date();
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   
-  for (let i = 1; i <= 31; i++) {
-    if (i <= daysInMonth && i <= currentDate.getDate()) {
+  for (let i = 1; i <= daysInMonth; i++) {
+    if (i <= currentDate.getDate()) {
       const rand = Math.random();
       let status: GridSquare['status'];
       
