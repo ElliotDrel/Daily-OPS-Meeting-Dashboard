@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, generateMiniCalendarData } from "@/lib/utils";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isBefore, subMonths } from "date-fns";
 import { MiniCalendar } from "@/components/dashboard/MiniCalendar";
 
@@ -89,38 +89,7 @@ const generateFourMonthRollingSquares = () => {
   return monthsData;
 };
 
-// Generate data for 4 mini calendars
-const generateMiniCalendarData = () => {
-  // Order: top left (2 months ago), top right (3 months ago), bottom left (4 months ago), bottom right (5 months ago)
-  const monthOffsets = [2, 3, 4, 5];
-  const miniCalendarData: Array<{targetDate: Date; squaresData: Array<{status: string; date: string; value: number; label?: string}>}> = [];
-  
-  for (const monthOffset of monthOffsets) {
-    const targetMonth = subMonths(new Date(), monthOffset);
-    const daysInMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
-    
-    const squaresData: Array<{status: string; date: string; value: number; label?: string}> = [];
-    for (let i = 1; i <= daysInMonth; i++) {
-      const rand = Math.random();
-      let status: string;
-      
-      if (rand < 0.65) status = 'good';
-      else if (rand < 0.85) status = 'caution';
-      else status = 'issue';
-      
-      squaresData.push({
-        status,
-        date: `${targetMonth.getMonth() + 1}/${i}`,
-        value: Math.floor(Math.random() * 100),
-        label: '%'
-      });
-    }
-    
-    miniCalendarData.push({ targetDate: targetMonth, squaresData });
-  }
-  
-  return miniCalendarData;
-};
+
 
 export const CalendarGraphs = ({ squares }: CalendarGraphsProps) => {
   const today = new Date();
