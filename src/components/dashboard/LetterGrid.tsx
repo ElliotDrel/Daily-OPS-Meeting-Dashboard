@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Rect, generateShapes, getCurrentMonthDays } from "@/data/letterShapes";
+import { DayRect, generateBubbleShapes, getCurrentMonthDays } from "@/data/letterShapes";
 import { statusColors, statusHoverColors, Status } from "@/data/colorMap";
 
 interface GridSquare {
@@ -36,9 +36,9 @@ export const LetterGrid: React.FC<LetterGridProps> = ({
 }) => {
   const [hoveredDay, setHoveredDay] = useState<number | null>(null);
   
-  // Generate dynamic shapes based on current month's day count
+  // Generate dynamic bubble shapes based on current month's day count
   const daysInCurrentMonth = getCurrentMonthDays();
-  const dynamicShapes = useMemo(() => generateShapes(daysInCurrentMonth), [daysInCurrentMonth]);
+  const dynamicShapes = useMemo(() => generateBubbleShapes(daysInCurrentMonth), [daysInCurrentMonth]);
   const rects = dynamicShapes[letter];
   
   const statusByDay: Record<number, Status> = {};
@@ -80,7 +80,7 @@ export const LetterGrid: React.FC<LetterGridProps> = ({
           {pillarNames[letter]}
         </h3>
         <div className="text-xs text-blue-400 mb-2">
-          {daysInCurrentMonth} days this month
+          {daysInCurrentMonth} days • Bubble Letter
         </div>
         <div className="flex justify-center">
           <svg 
@@ -104,11 +104,13 @@ export const LetterGrid: React.FC<LetterGridProps> = ({
                     width={rect.width} 
                     height={rect.height} 
                     fill={fillColor} 
-                    stroke="rgba(255,255,255,0.3)" 
-                    strokeWidth={0.5} 
+                    stroke="rgba(255,255,255,0.4)" 
+                    strokeWidth={1} 
+                    rx={3}
+                    ry={3}
                     tabIndex={0} 
                     aria-label={`${pillarNames[letter]} day ${rect.day} ${status}`} 
-                    className="cursor-pointer transition-all duration-200" 
+                    className="cursor-pointer transition-all duration-200 hover:stroke-white" 
                     onMouseEnter={() => setHoveredDay(rect.day)} 
                     onMouseLeave={() => setHoveredDay(null)} 
                     onClick={(e) => {
@@ -128,9 +130,9 @@ export const LetterGrid: React.FC<LetterGridProps> = ({
                     y={rect.y + rect.height / 2} 
                     textAnchor="middle" 
                     dominantBaseline="central" 
-                    fontSize={8} 
+                    fontSize={9} 
                     fill="white" 
-                    fontWeight="600" 
+                    fontWeight="700" 
                     className="pointer-events-none select-none"
                   >
                     {rect.day}
