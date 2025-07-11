@@ -20,7 +20,7 @@ export const Header = () => {
     { value: "/cost", label: "Cost" },
     { value: "/inventory", label: "Inventory" },
     { value: "/delivery", label: "Delivery" },
-    { value: "/people", label: "People" },
+    { value: "/production", label: "Production" },
     { value: "/graph-view", label: "Graph View" }
   ];
 

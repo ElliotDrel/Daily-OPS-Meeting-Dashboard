@@ -35,9 +35,9 @@
     --delivery: 25 95% 62%;
     --delivery-secondary: 35 100% 55%;
     --delivery-light: 25 95% 88%;
-    --people: 270 85% 58%;
-    --people-secondary: 285 90% 50%;
-    --people-light: 270 85% 90%;
+    --production: 210 85% 45%;
+    --production-secondary: 220 90% 35%;
+    --production-light: 210 85% 88%;
 
     /* Enhanced Status Colors */
     --status-good: 145 85% 48%;
@@ -64,7 +64,7 @@
     --gradient-quality: linear-gradient(135deg, hsl(var(--quality)), hsl(var(--quality-secondary)));
     --gradient-cost: linear-gradient(135deg, hsl(var(--cost)), hsl(var(--cost-secondary)));
     --gradient-delivery: linear-gradient(135deg, hsl(var(--delivery)), hsl(var(--delivery-secondary)));
-    --gradient-people: linear-gradient(135deg, hsl(var(--people)), hsl(var(--people-secondary)));
+    --gradient-production: linear-gradient(135deg, hsl(var(--production)), hsl(var(--production-secondary)));
 
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;

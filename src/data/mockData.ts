@@ -151,14 +151,14 @@ const generateIncidents = (count = 5, type = 'safety'): Incident[] => {
       'Logistics optimization needed for West Coast routes',
       'Inventory shortage causing production delays'
     ],
-    people: [
-      'Training compliance review needed for Q1 certifications',
-      'Performance review cycle due for Manufacturing team',
-      'Employee suggestion: Improve break room facilities',
-      'Skills assessment required for CNC operators',
-      'Team building event scheduled for next month',
-      'New hire orientation for 5 production associates',
-      'Employee engagement survey results below target'
+    production: [
+      'Shift staffing below target: 24/28 people on shift',
+      'Actual output 95% of planned due to staffing shortage',
+      'No-show rate at 14% affecting line efficiency',
+      'Machine downtime due to operator shortage on Line 2',
+      'Overtime required to meet production targets',
+      'Shift handover delays affecting start-up time',
+      'Production efficiency down to 92% from staffing gaps'
     ],
     inventory: [
       'Internal process optimization review scheduled',
@@ -229,14 +229,13 @@ export const deliveryData = {
   ]
 };
 
-// People specific data
-export const peopleData = {
-  lineChart: generateLineChartData(94, 96),
+// Production specific data
+export const productionData = {
+  lineChart: generateLineChartData(1420, 1500), // Actual vs Planned Output
   donutData: [
-    { name: 'Highly Engaged', value: 45, color: '#22c55e' },
-    { name: 'Engaged', value: 35, color: '#84cc16' },
-    { name: 'Neutral', value: 15, color: '#eab308' },
-    { name: 'Disengaged', value: 5, color: '#ef4444' }
+    { name: 'Full Staffed', value: 70, color: '#22c55e' },
+    { name: 'Short Staffed', value: 25, color: '#eab308' },
+    { name: 'Critical Staffed', value: 5, color: '#ef4444' }
   ]
 };
 
@@ -271,12 +270,12 @@ const generateActionItems = (pillarType: string): ActionItem[] => {
       { description: "Review customer delivery requirements", assignee: "Customer Service", priority: "Medium" as const, category: "Customer" },
       { description: "Optimize warehouse picking process", assignee: "Warehouse Mgr", priority: "High" as const, category: "Process" }
     ],
-    people: [
-      { description: "Complete performance reviews for Q1", assignee: "HR Team", priority: "High" as const, category: "Performance" },
-      { description: "Plan team building activities for Production", assignee: "Team Lead", priority: "Low" as const, category: "Engagement" },
-      { description: "Update training matrix for CNC operators", assignee: "Training Dept", priority: "Medium" as const, category: "Skills" },
-      { description: "Address employee feedback from survey", assignee: "HR Manager", priority: "High" as const, category: "Feedback" },
-      { description: "Schedule skills assessment for new hires", assignee: "Department Mgr", priority: "Medium" as const, category: "Assessment" }
+    production: [
+      { description: "Address shift staffing shortage - recruit 4 operators", assignee: "Production Mgr", priority: "High" as const, category: "Staffing" },
+      { description: "Implement backup staffing plan for high absenteeism", assignee: "Shift Supervisor", priority: "High" as const, category: "Planning" },
+      { description: "Optimize production schedule to maximize output", assignee: "Planning Team", priority: "Medium" as const, category: "Efficiency" },
+      { description: "Reduce no-show rate through attendance incentives", assignee: "HR Manager", priority: "Medium" as const, category: "Attendance" },
+      { description: "Cross-train operators for line flexibility", assignee: "Training Lead", priority: "Low" as const, category: "Skills" }
     ],
     inventory: [
       { description: "Optimize internal workflow processes", assignee: "Process Team", priority: "High" as const, category: "Process" },
@@ -364,17 +363,17 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
         nextMeeting: "Tomorrow's logistics standup at 9:00 AM"
       }
     ],
-    people: [
+    production: [
       {
-        meetingType: "Weekly Review",
-        attendees: ["HR Manager", "Department Heads", "Training Coordinator"],
-        notes: "Employee engagement survey results show 80% satisfaction rate, down from 85% last quarter. Exit interviews indicate concerns about career advancement opportunities. Discussed new mentorship program proposal and additional training pathways for production staff.",
+        meetingType: "Daily Production Review",
+        attendees: ["Production Manager", "Shift Supervisors", "Planning Team"],
+        notes: "Current shift running with 24/28 planned operators due to 4 no-shows. Actual output at 1,420 units vs planned 1,500 (95% efficiency). Line 2 experiencing delays due to operator shortage. Overtime authorization approved for evening shift to catch up on targets.",
         keyPoints: [
-          "Employee satisfaction down to 80% from 85%",
-          "Career advancement concerns in exit interviews",
-          "Mentorship program proposal under review"
+          "86% shift staffing (24/28 operators present)",
+          "Output efficiency at 95% due to staffing gaps",
+          "Evening shift overtime approved to meet targets"
         ],
-        nextMeeting: "People development meeting next Thursday at 3:00 PM"
+        nextMeeting: "Tomorrow's production standup at 6:00 AM"
       }
     ],
     inventory: [
@@ -438,12 +437,12 @@ export const dashboardData = {
       actionItems: generateActionItems('delivery'),
       meetingNotes: generateMeetingNotes('delivery')
     },
-    people: {
-      squares: generateSquares(0.9),
-      chartData: generateChartData(94, 96),
-      incidents: generateIncidents(6, 'people'),
-      actionItems: generateActionItems('people'),
-      meetingNotes: generateMeetingNotes('people')
+    production: {
+      squares: generateSquares(0.85),
+      chartData: generateChartData(1420, 1500),
+      incidents: generateIncidents(6, 'production'),
+      actionItems: generateActionItems('production'),
+      meetingNotes: generateMeetingNotes('production')
     }
   }
 };

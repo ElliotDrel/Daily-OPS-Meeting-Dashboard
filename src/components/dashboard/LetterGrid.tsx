@@ -21,7 +21,7 @@ const pillarNames = {
   C: 'Cost',
   I: 'Inventory',
   D: 'Delivery',
-  P: 'People'
+  P: 'Production'
 };
 export const LetterGrid: React.FC<LetterGridProps> = ({
   letter,

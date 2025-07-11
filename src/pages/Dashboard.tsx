@@ -10,7 +10,7 @@ const pillarRoutes = {
   C: '/cost',
   I: '/inventory',
   D: '/delivery',
-  P: '/people'
+  P: '/production'
 };
 const pillarColors = {
   S: 'safety',
@@ -18,7 +18,7 @@ const pillarColors = {
   C: 'cost',
   I: 'inventory',
   D: 'delivery',
-  P: 'people'
+  P: 'production'
 };
 export const Dashboard = () => {
   const navigate = useNavigate();
