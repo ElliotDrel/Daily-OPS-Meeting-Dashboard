@@ -10,6 +10,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run lint` - Run ESLint for code quality checks
 - `npm run preview` - Preview production build locally
 
+## Deployment
+
+This application is hosted on **Vercel** with automatic deployments from the main branch. 
+
+**Vercel Configuration**:
+- Build Command: `npm run build`
+- Output Directory: `dist` (Vite default)
+- Node Version: 18.x or higher
+- Automatic deployments on push to main branch
+- Preview deployments for pull requests
+
+**Vercel-Specific Considerations**:
+- SPA routing handled by Vercel's automatic SPA detection
+- Environment variables can be set in Vercel dashboard
+- Build cache optimization enabled by default
+- Edge network deployment for global performance
+
 ## Project Architecture
 
 This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Delivery, People) metrics tracking, built with:
