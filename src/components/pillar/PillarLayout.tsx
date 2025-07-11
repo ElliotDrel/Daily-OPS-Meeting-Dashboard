@@ -277,10 +277,7 @@ export const PillarLayout = ({
               </Card>
 
               {/* Four Month Rolling View */}
-              <Card className="p-6 shadow-xl">
-                <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold">4-Month Rolling View</h3>
-                </div>
+              
                 <div className="space-y-4">
                   {fourMonthData.map((monthData, index) => (
                     <div key={index} className="space-y-2">
