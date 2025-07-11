@@ -44,7 +44,7 @@ export const MiniCalendar = ({ targetDate, squaresData, className }: MiniCalenda
       </div>
 
       {/* Days of week header (abbreviated for mini view) */}
-      <div className="grid grid-cols-7 gap-1 mb-1">
+      <div className="grid grid-cols-7 gap-2 mb-1">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
           <div key={day} className="text-xs font-medium text-muted-foreground text-center">
             {day}
@@ -53,7 +53,7 @@ export const MiniCalendar = ({ targetDate, squaresData, className }: MiniCalenda
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-2">
         {/* Empty cells for days before month starts */}
         {emptyDays.map((_, index) => (
           <div key={`empty-${index}`} className="h-5"></div>
@@ -69,7 +69,7 @@ export const MiniCalendar = ({ targetDate, squaresData, className }: MiniCalenda
             <div
               key={day.toISOString()}
               className={cn(
-                "h-5 w-5 rounded-sm flex items-center justify-center text-xs transition-colors",
+                "h-6 w-6 rounded-sm flex items-center justify-center text-xs transition-colors",
                 getStatusColor(status)
               )}
             >
