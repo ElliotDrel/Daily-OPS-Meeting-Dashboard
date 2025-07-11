@@ -16,12 +16,15 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS with shadcn/ui components
+- **Styling**: Tailwind CSS with shadcn/ui components (built on Radix UI primitives)
 - **Routing**: React Router DOM
-- **State Management**: React hooks and context
+- **State Management**: React hooks and TanStack Query
 - **Charts**: Recharts for data visualization
 - **Animation**: Framer Motion
-- **Data Fetching**: TanStack Query
+- **Form Handling**: React Hook Form with Zod validation
+- **Icons**: Lucide React
+- **Date Handling**: date-fns
+- **Notifications**: Sonner (toast notifications)
 
 ### Key Architecture Patterns
 
@@ -38,7 +41,8 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 **Routing Structure**:
 - `/` - Dashboard overview with all pillars
-- `/safety`, `/quality`, `/cost`, `/internvort`, `/delivery`, `/people` - Individual pillar pages
+- `/safety`, `/quality`, `/cost`, `/inventory`, `/delivery`, `/people` - Individual pillar pages
+- `/graph-view` - Alternative visualization view
 - Each pillar page uses the same PillarLayout with pillar-specific data
 
 **Color System**: Status-based color coding throughout:
@@ -55,7 +59,7 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 ### Data Flow
 
-The dashboard uses a pillar-based architecture where each pillar (Safety, Quality, Cost, Delivery, People, Internvort) has:
+The dashboard uses a pillar-based architecture where each pillar (Safety, Quality, Cost, Delivery, People, Inventory) has:
 - Status grid showing daily performance
 - Chart data for trend analysis
 - Incident tracking
@@ -63,3 +67,47 @@ The dashboard uses a pillar-based architecture where each pillar (Safety, Qualit
 - Meeting notes storage
 
 All data is currently mock data generated programmatically in `/src/data/mockData.ts` but is structured to easily integrate with real APIs.
+
+### Development Configuration
+
+**Path Aliases**: The project uses `@/` as an alias for `./src/` directory for cleaner imports.
+
+**Key TypeScript Interfaces**:
+```typescript
+interface GridSquare {
+  status: 'good' | 'caution' | 'issue' | 'future';
+  date: string;
+  value: number;
+  label?: string;
+}
+
+interface ActionItem {
+  id: string;
+  description: string;
+  assignee: string;
+  priority: 'High' | 'Medium' | 'Low';
+  dueDate: string;
+  status: 'Open' | 'In Progress' | 'Completed';
+}
+```
+
+**Component Patterns**:
+- Functional components with TypeScript interfaces
+- Props destructuring with default values
+- Consistent use of shadcn/ui components for UI consistency
+- Framer Motion for animations and transitions
+
+### Development Workflow
+
+When working with this codebase:
+1. Always run `npm run lint` before committing changes
+2. Use the existing component patterns and color system
+3. Follow the established file naming conventions (PascalCase for components)
+4. Maintain the pillar-based architecture when adding new features
+5. Keep mock data structure in sync when adding new data types
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
