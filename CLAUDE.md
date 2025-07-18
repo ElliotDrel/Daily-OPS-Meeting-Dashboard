@@ -117,11 +117,21 @@ interface ActionItem {
 ### Development Workflow
 
 When working with this codebase:
-1. Always run `npm run lint` before committing changes
-2. Use the existing component patterns and color system
-3. Follow the established file naming conventions (PascalCase for components)
-4. Maintain the pillar-based architecture when adding new features
-5. Keep mock data structure in sync when adding new data types
+1. Always run local tests and verify functionality before considering any task complete
+2. Run `npm run tests` to ensure all tests pass locally
+3. Run `npm run build` to verify the project builds successfully
+4. Run `npm run lint` before committing changes
+5. Test the application locally with `npm run dev` to ensure features work as expected
+6. Use the existing component patterns and color system
+7. Follow the established file naming conventions (PascalCase for components)
+8. Maintain the pillar-based architecture when adding new features
+9. Keep mock data structure in sync when adding new data types
+
+**Critical**: Never consider a task complete until you have verified that:
+- All tests pass locally (`npm run tests`)
+- The project builds without errors (`npm run build`)
+- The application runs correctly in development mode (`npm run dev`)
+- All linting checks pass (`npm run lint`)
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
