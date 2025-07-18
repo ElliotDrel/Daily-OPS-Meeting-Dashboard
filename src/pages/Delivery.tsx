@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Truck, Clock, TrendingUp } from "lucide-react";
 import { dashboardData, deliveryData } from "@/data/mockData";
 import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
-import { SimpleDonutChart } from "@/components/charts/SimpleDonutChart";
+import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
 
@@ -59,15 +59,14 @@ export const Delivery = () => {
         </Card>
 
         {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Doughnut Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-delivery">Delivery Performance Breakdown</h3>
-            <SimpleDonutChart 
+            <h3 className="text-lg font-semibold mb-4 text-delivery">Delivery Metrics Overview</h3>
+            <PieChartComponent 
               data={deliveryData.donutData}
-              title="Delivery Status"
-              centerValue="92.5%"
-              centerText="On Time"
+              title="Delivery Analysis"
+              showLegend={true}
             />
           </Card>
 
