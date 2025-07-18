@@ -75,23 +75,6 @@ export const Dashboard = () => {
 
           {/* Main Dashboard Content */}
           <div className="space-y-8">
-            {/* Letter Grids Row */}
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-              {(Object.keys(dashboardData.pillars) as PillarName[]).map((pillar) => {
-                const letter = pillar.charAt(0).toUpperCase() as PillarLetter;
-                return (
-                  <LetterGrid 
-                    key={pillar} 
-                    letter={letter} 
-                    squares={dashboardData.pillars[pillar].squares} 
-                    pillarColor={pillarColors[letter]} 
-                    onClick={() => handlePillarClick(letter)} 
-                    onCellClick={(day) => handleCellClick(letter, day)} 
-                  />
-                );
-              })}
-            </div>
-
             {/* Charts Row */}
             <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
               {(Object.keys(dashboardData.pillars) as PillarName[]).map((pillar) => (
