@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
 import { dashboardData, safetyData } from "@/data/mockData";
 import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
-import { SimpleDonutChart } from "@/components/charts/SimpleDonutChart";
+import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
 
@@ -86,15 +86,14 @@ export const Safety = () => {
         </Card>
 
         {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Doughnut Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-safety">Safety Issues Root Causes</h3>
-            <SimpleDonutChart 
+            <h3 className="text-lg font-semibold mb-4 text-safety">Safety Incident Types</h3>
+            <PieChartComponent 
               data={safetyData.donutData}
-              title="Root Causes"
-              centerValue="42"
-              centerText="Total Issues"
+              title="Incident Types"
+              showLegend={true}
             />
           </Card>
 
