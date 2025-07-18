@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
-import { DonutChart } from "@/components/charts/DonutChart";
-import { CalendarGraphs } from "@/components/dashboard/CalendarGraphs";
+import { PieChartComponent } from "@/components/charts/PieChart";
 
 // Fake data for charts
 const lineChartData = [
@@ -41,15 +40,8 @@ export const GraphView = () => {
           <p className="text-muted-foreground">Visual analytics and chart dashboard</p>
         </div>
 
-        {/* Main Layout with Calendar Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Column - Calendar Graphs (25%) */}
-          <div className="lg:col-span-1">
-            <CalendarGraphs />
-          </div>
-
-          {/* Right Column - Charts Content (75%) */}
-          <div className="lg:col-span-3 space-y-6">
+        {/* Charts Content */}
+        <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Line Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
@@ -83,21 +75,23 @@ export const GraphView = () => {
               </Card>
             </div>
 
-            {/* Pie Chart - Full Width */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-foreground">Department Workload Distribution</CardTitle>
-                <p className="text-sm text-muted-foreground">Percentage of total production capacity by department</p>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80 flex justify-center">
-                  <DonutChart
+            {/* Chart Comparison Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Pie Chart */}
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-foreground">Department Workload (Pie)</CardTitle>
+                  <p className="text-sm text-muted-foreground">Production capacity by department</p>
+                </CardHeader>
+                <CardContent>
+                  <PieChartComponent
                     data={pieChartData}
                     title="Department Distribution"
+                    showLegend={true}
                   />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -129,7 +123,6 @@ export const GraphView = () => {
                 </CardContent>
               </Card>
             </div>
-          </div>
         </div>
       </div>
     </div>
