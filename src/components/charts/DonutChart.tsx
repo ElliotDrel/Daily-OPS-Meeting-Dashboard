@@ -11,7 +11,7 @@ interface DonutChartProps {
 export const DonutChart = ({ data, title, centerText, centerValue }: DonutChartProps) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
-  const renderCustomLabel = (entry: any) => {
+  const renderCustomLabel = (entry: { value: number }) => {
     const percent = ((entry.value / total) * 100).toFixed(1);
     return `${percent}%`;
   };
