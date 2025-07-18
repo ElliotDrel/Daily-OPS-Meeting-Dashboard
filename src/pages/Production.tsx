@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Target, AlertTriangle, Activity, TrendingUp, Clock } from "lucide-react";
 import { dashboardData, productionData } from "@/data/mockData";
 import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
-import { SimpleDonutChart } from "@/components/charts/SimpleDonutChart";
+import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
 
@@ -72,15 +72,14 @@ export const Production = () => {
         </Card>
 
         {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Doughnut Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-production">Shift Coverage Status</h3>
-            <SimpleDonutChart 
+            <h3 className="text-lg font-semibold mb-4 text-production">Production Analysis</h3>
+            <PieChartComponent 
               data={productionData.donutData}
-              title="Staffing Levels"
-              centerValue="86%"
-              centerText="Staffed"
+              title="Production Breakdown"
+              showLegend={true}
             />
           </Card>
 
