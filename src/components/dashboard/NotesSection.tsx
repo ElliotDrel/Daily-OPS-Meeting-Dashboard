@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FileText, Calendar, Users, Pencil, Plus } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { EditNoteDialog } from "./EditNoteDialog";
 
 export interface MeetingNote {
@@ -54,7 +53,14 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
   const formatRelativeDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return formatDistanceToNow(date, { addSuffix: true });
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 1) return "1 day ago";
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      return `${Math.floor(diffDays / 30)} months ago`;
     } catch {
       return dateString;
     }
