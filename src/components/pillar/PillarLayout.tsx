@@ -3,7 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface PillarLayoutProps {
   letter: string;
@@ -55,6 +57,8 @@ export const PillarLayout = ({
   squares,
   actionItems = []
 }: PillarLayoutProps) => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [month, setMonth] = useState(new Date());
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-6 py-8">
@@ -79,8 +83,18 @@ export const PillarLayout = ({
           {/* Two column layout */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Left Column - 25% */}
-            <div className="lg:col-span-1 space-y-6">
-
+            <div className="lg:col-span-1 space-y-3">
+              {/* Calendar */}
+              <Calendar
+                size="mini"
+                scale={1.2}
+                selectedDate={selectedDate}
+                onDateSelect={setSelectedDate}
+                month={month}
+                onMonthChange={setMonth}
+                showHeader={true}
+                className="w-full min-h-[280px]"
+              />
 
               {/* Action Items */}
               
