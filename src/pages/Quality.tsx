@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mail, X, Wrench, AlertCircle, CheckCircle } from "lucide-react";
 import { dashboardData, qualityData } from "@/data/mockData";
-import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
@@ -70,7 +70,7 @@ export const Quality = () => {
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-quality">Quality Performance - 5 Month Trend</h3>
-          <SimpleLineChart 
+          <TrendLineChart 
             data={qualityData.lineChart}
             title="Quality Score"
             color="#3b82f6"
