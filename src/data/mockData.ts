@@ -46,11 +46,12 @@ export interface ActionItem {
 export interface MeetingNote {
   id: string;
   date: string;
-  meetingType: string;
-  attendees: string[];
-  notes: string;
   keyPoints: string[];
-  nextMeeting?: string;
+}
+
+export interface SectionLead {
+  pillar: string;
+  name: string;
 }
 
 // Generate squares for current month (only actual days)
@@ -302,9 +303,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
   const meetingNotesData = {
     safety: [
       {
-        meetingType: "Daily Standup",
-        attendees: ["Safety Manager", "Production Lead", "HR Rep"],
-        notes: "Discussed recent near-miss incident in Assembly Line 2. Root cause analysis reveals need for better visibility around corners. Team agreed to install convex mirrors at key intersections. Also reviewed upcoming safety training schedule - 12 employees need refresher training by month end.",
         keyPoints: [
           "Install convex mirrors at Assembly Line 2 intersections",
           "Schedule refresher training for 12 employees",
@@ -313,9 +311,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
         nextMeeting: "Tomorrow's daily standup at 8:00 AM"
       },
       {
-        meetingType: "Weekly Review",
-        attendees: ["Safety Manager", "Operations Director", "Maintenance Lead", "Union Rep"],
-        notes: "Weekly safety metrics review shows improvement in PPE compliance (up to 94%). Emergency shower testing completed in Buildings A and C, but Building B still pending due to parts delay. Discussed new OSHA requirements for confined space entry procedures.",
         keyPoints: [
           "PPE compliance improved to 94% (target: 95%)",
           "Building B emergency shower parts delayed until next week",
@@ -326,9 +321,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
     ],
     quality: [
       {
-        meetingType: "Daily Standup",
-        attendees: ["Quality Manager", "QC Inspector", "Production Supervisor"],
-        notes: "Reviewed overnight production quality metrics. First-pass yield improved to 88.2%, approaching our 90% target. Customer complaint from Order #45789 regarding packaging defects has been investigated - root cause identified as worn tooling on Line 5. Replacement scheduled for tonight's maintenance window.",
         keyPoints: [
           "First-pass yield: 88.2% (trending toward 90% target)",
           "Line 5 tooling replacement scheduled for tonight",
@@ -339,9 +331,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
     ],
     cost: [
       {
-        meetingType: "Weekly Review",
-        attendees: ["Finance Manager", "Operations Director", "Procurement Lead"],
-        notes: "Q1 cost analysis reveals material costs exceeded budget by 12% due to steel price increases. Discussed renegotiation strategy with suppliers and potential design changes to reduce material usage. Overtime costs also above target - recommend additional shift to reduce dependency on overtime hours.",
         keyPoints: [
           "Material costs 12% over budget due to steel prices",
           "Negotiate with steel suppliers for better rates",
@@ -352,9 +341,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
     ],
     delivery: [
       {
-        meetingType: "Daily Standup",
-        attendees: ["Logistics Manager", "Customer Service", "Warehouse Lead"],
-        notes: "Current on-time delivery at 92.5%, just below our 95% target. Three expedite requests came in overnight for West Coast customers. Transportation delays with Carrier A continue - backup carrier arrangements being finalized. Inventory levels adequate for next week's schedule.",
         keyPoints: [
           "On-time delivery: 92.5% (target: 95%)",
           "Three new expedite requests for West Coast",
@@ -365,9 +351,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
     ],
     production: [
       {
-        meetingType: "Daily Production Review",
-        attendees: ["Production Manager", "Shift Supervisors", "Planning Team"],
-        notes: "Current shift running with 24/28 planned operators due to 4 no-shows. Actual output at 1,420 units vs planned 1,500 (95% efficiency). Line 2 experiencing delays due to operator shortage. Overtime authorization approved for evening shift to catch up on targets.",
         keyPoints: [
           "86% shift staffing (24/28 operators present)",
           "Output efficiency at 95% due to staffing gaps",
@@ -378,9 +361,6 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
     ],
     inventory: [
       {
-        meetingType: "Daily Standup",
-        attendees: ["Process Manager", "Operations Lead", "IT Coordinator"],
-        notes: "Internal process optimization showing 15% efficiency gains in Assembly. Cross-departmental communication improvements implemented last week are reducing response times. Resource allocation analysis reveals potential for better utilization in afternoon shifts.",
         keyPoints: [
           "Assembly process efficiency up 15%",
           "Communication response times improved",
@@ -400,7 +380,20 @@ const generateMeetingNotes = (pillarType: string): MeetingNote[] => {
   }));
 };
 
+// Generate section leads
+const generateSectionLeads = (): SectionLead[] => {
+  return [
+    { pillar: 'safety', name: '' },
+    { pillar: 'quality', name: '' },
+    { pillar: 'cost', name: '' },
+    { pillar: 'delivery', name: '' },
+    { pillar: 'inventory', name: '' },
+    { pillar: 'production', name: '' }
+  ];
+};
+
 export const dashboardData = {
+  sectionLeads: generateSectionLeads(),
   pillars: {
     safety: {
       squares: generateSquares(0.8),

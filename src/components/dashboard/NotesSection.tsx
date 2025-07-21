@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, Users, Pencil, Plus } from "lucide-react";
+import { FileText, Calendar, Users, Plus, Info, Check, X } from "lucide-react";
 import { EditNoteDialog } from "./EditNoteDialog";
 
 export interface MeetingNote {
   id: string;
   date: string;
-  meetingType: string;
-  attendees: string[];
-  notes: string;
   keyPoints: string[];
-  nextMeeting?: string;
+}
+
+export interface SectionLead {
+  pillar: string;
+  name: string;
 }
 
 interface NotesSectionProps {
@@ -26,6 +28,7 @@ interface NotesSectionProps {
 export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes, showCard = true }: NotesSectionProps) => {
   const [editingNote, setEditingNote] = useState<MeetingNote | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const handleEditNote = (note: MeetingNote) => {
     setEditingNote(note);
@@ -51,6 +54,20 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
       onUpdateMeetingNotes([...meetingNotes, updatedNote]);
     }
   };
+
+  // Show tooltip for first-time users
+  useEffect(() => {
+    const hasSeenTooltip = localStorage.getItem('hasSeenNotesTooltip');
+    if (!hasSeenTooltip && meetingNotes.length > 0) {
+      setShowTooltip(true);
+      const timer = setTimeout(() => {
+        setShowTooltip(false);
+        localStorage.setItem('hasSeenNotesTooltip', 'true');
+      }, 5000); // Show for 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [meetingNotes.length]);
+
   const formatRelativeDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -88,47 +105,38 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
         {meetingNotes.slice(0, 1).map((note, index) => (
           <div key={note.id}>
             <div className="space-y-4">
-              {/* Meeting Header */}
-              <div className="flex items-start justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Users className="w-4 h-4" />
-                    <span>Lead: {note.attendees[0]}</span>
-                  </div>
-                </div>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleEditNote(note)}
-                  className="h-8 w-8 p-0 shrink-0"
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-              </div>
-
-              {/* Meeting Content */}
-              <div className="space-y-3">
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Meeting Notes</h4>
-                  <p className="text-sm leading-relaxed">{note.notes}</p>
-                </div>
-
-                {note.keyPoints.length > 0 && (
-                  <div>
+              {/* Key Points */}
+              {note.keyPoints.length > 0 && (
+                <div className="relative">
+                  <div 
+                    onClick={() => handleEditNote(note)}
+                    className="p-3 rounded-lg border border-transparent cursor-pointer hover:border-primary/20 hover:bg-primary/5 transition-all duration-200"
+                  >
                     <h4 className="text-sm font-medium text-muted-foreground mb-2">Key Points</h4>
                     <ul className="space-y-1 text-sm">
                       {note.keyPoints.map((point, pointIndex) => (
                         <li key={pointIndex} className="flex items-start space-x-2">
                           <span className="text-primary mt-1">•</span>
-                          <span>{point}</span>
+                          <span className="flex-1 p-2 rounded">
+                            {point}
+                          </span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                )}
-
-              </div>
+                  {showTooltip && (
+                    <div className="absolute -top-2 -right-2 z-10">
+                      <div className="relative">
+                        <div className="bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium shadow-lg">
+                          <Info className="w-3 h-3 inline mr-1" />
+                          Click anywhere to edit
+                        </div>
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-primary"></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}

@@ -1,11 +1,13 @@
+import { useState, useEffect } from "react";
 import { PillarLayout } from "@/components/pillar/PillarLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
-import { dashboardData, safetyData } from "@/data/mockData";
+import { dashboardData, safetyData, MeetingNote } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
 
 const safetyMetrics = [
   { label: "No Accidents", value: "12", icon: Shield, color: "bg-status-good" },
@@ -64,6 +66,30 @@ const safetyActions = [
 ];
 
 export const Safety = () => {
+  const [meetingNotes, setMeetingNotes] = useState<MeetingNote[]>(dashboardData.pillars.safety.meetingNotes);
+
+  // Load meeting notes from file on component mount
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const loadedNotes = await loadMeetingNotesFromFile('safety');
+        if (loadedNotes.length > 0) {
+          setMeetingNotes(loadedNotes);
+        }
+      } catch (error) {
+        console.error('Error loading meeting notes:', error);
+        // Keep using the default mock data
+      }
+    };
+    loadNotes();
+  }, []);
+
+  // Handle updating meeting notes
+  const handleUpdateMeetingNotes = async (updatedNotes: MeetingNote[]) => {
+    setMeetingNotes(updatedNotes);
+    await saveMeetingNotesToFile(updatedNotes, 'safety');
+  };
+
   return (
     <PillarLayout
       letter="S"
@@ -120,7 +146,8 @@ export const Safety = () => {
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.safety.actionItems}
-          meetingNotes={dashboardData.pillars.safety.meetingNotes}
+          meetingNotes={meetingNotes}
+          onUpdateMeetingNotes={handleUpdateMeetingNotes}
           actionItemsTitle="Safety Action Items"
           notesTitle="Safety Meeting Notes & Discoveries"
         />

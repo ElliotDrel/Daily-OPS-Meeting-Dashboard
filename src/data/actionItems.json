@@ -1,0 +1,194 @@
+{
+  "actionItems": [
+    {
+      "id": "1",
+      "description": "Complete PPE compliance audit for all departments",
+      "assignee": "Safety Team",
+      "priority": "High",
+      "dueDate": "Jan 25, 2025",
+      "status": "Open",
+      "category": "Compliance",
+      "pillar": "safety"
+    },
+    {
+      "id": "2",
+      "description": "Update emergency evacuation procedures",
+      "assignee": "John Smith",
+      "priority": "Medium",
+      "dueDate": "Feb 2, 2025",
+      "status": "In Progress",
+      "category": "Emergency Prep",
+      "pillar": "safety"
+    },
+    {
+      "id": "3",
+      "description": "Install additional safety signage in warehouse",
+      "assignee": "Maintenance",
+      "priority": "Low",
+      "dueDate": "Feb 10, 2025",
+      "status": "Open",
+      "category": "Infrastructure",
+      "pillar": "safety"
+    },
+    {
+      "id": "4", 
+      "description": "Implement corrective action for supplier non-conformance",
+      "assignee": "Quality Team",
+      "priority": "High",
+      "dueDate": "Jan 28, 2025",
+      "status": "In Progress",
+      "category": "Supplier",
+      "pillar": "quality"
+    },
+    {
+      "id": "5",
+      "description": "Calibrate measurement equipment in Lab B",
+      "assignee": "QC Lab",
+      "priority": "Medium",
+      "dueDate": "Jan 31, 2025",
+      "status": "Open",
+      "category": "Equipment",
+      "pillar": "quality"
+    },
+    {
+      "id": "6",
+      "description": "Investigate customer complaint #QC-2024-15",
+      "assignee": "Quality Manager",
+      "priority": "High",
+      "dueDate": "Jan 26, 2025",
+      "status": "Completed",
+      "category": "Customer",
+      "pillar": "quality"
+    },
+    {
+      "id": "7",
+      "description": "Analyze material cost variance for Q1",
+      "assignee": "Finance Team", 
+      "priority": "High",
+      "dueDate": "Feb 1, 2025",
+      "status": "Open",
+      "category": "Analysis",
+      "pillar": "cost"
+    },
+    {
+      "id": "8",
+      "description": "Negotiate better rates with steel suppliers",
+      "assignee": "Procurement",
+      "priority": "Medium",
+      "dueDate": "Feb 15, 2025",
+      "status": "In Progress",
+      "category": "Procurement",
+      "pillar": "cost"
+    },
+    {
+      "id": "9",
+      "description": "Review overtime authorization process",
+      "assignee": "HR Manager",
+      "priority": "Medium",
+      "dueDate": "Feb 8, 2025",
+      "status": "Open",
+      "category": "Labor",
+      "pillar": "cost"
+    },
+    {
+      "id": "10",
+      "description": "Resolve transportation delays with Carrier A",
+      "assignee": "Logistics Team",
+      "priority": "High", 
+      "dueDate": "Jan 24, 2025",
+      "status": "In Progress",
+      "category": "Transportation",
+      "pillar": "delivery"
+    },
+    {
+      "id": "11",
+      "description": "Update delivery schedule for expedited orders",
+      "assignee": "Planning",
+      "priority": "Medium",
+      "dueDate": "Jan 29, 2025",
+      "status": "Open",
+      "category": "Scheduling",
+      "pillar": "delivery"
+    },
+    {
+      "id": "12",
+      "description": "Optimize warehouse picking process",
+      "assignee": "Warehouse Mgr",
+      "priority": "High",
+      "dueDate": "Feb 3, 2025",
+      "status": "Open",
+      "category": "Process",
+      "pillar": "delivery"
+    },
+    {
+      "id": "13",
+      "description": "Address shift staffing shortage - recruit 4 operators",
+      "assignee": "Production Mgr",
+      "priority": "High",
+      "dueDate": "Feb 5, 2025", 
+      "status": "Open",
+      "category": "Staffing",
+      "pillar": "production"
+    },
+    {
+      "id": "14",
+      "description": "Implement backup staffing plan for high absenteeism",
+      "assignee": "Shift Supervisor",
+      "priority": "High",
+      "dueDate": "Jan 27, 2025",
+      "status": "In Progress",
+      "category": "Planning",
+      "pillar": "production"
+    },
+    {
+      "id": "15",
+      "description": "Cross-train operators for line flexibility",
+      "assignee": "Training Lead",
+      "priority": "Low",
+      "dueDate": "Feb 20, 2025",
+      "status": "Open",
+      "category": "Skills",
+      "pillar": "production"
+    },
+    {
+      "id": "16",
+      "description": "Optimize internal workflow processes", 
+      "assignee": "Process Team",
+      "priority": "High",
+      "dueDate": "Jan 30, 2025",
+      "status": "In Progress",
+      "category": "Process",
+      "pillar": "inventory"
+    },
+    {
+      "id": "17",
+      "description": "Complete internal audit recommendations",
+      "assignee": "Audit Team",
+      "priority": "High",
+      "dueDate": "Feb 7, 2025",
+      "status": "Open",
+      "category": "Compliance",
+      "pillar": "inventory"
+    },
+    {
+      "id": "18",
+      "description": "Implement cross-departmental communication tools",
+      "assignee": "IT Department",
+      "priority": "Low",
+      "dueDate": "Feb 28, 2025",
+      "status": "Open",
+      "category": "Communication",
+      "pillar": "inventory"
+    }
+  ],
+  "schema": {
+    "id": "string - unique identifier (sequential numbers)",
+    "description": "string - detailed description of the action item",
+    "assignee": "string - person or team responsible", 
+    "priority": "string - High | Medium | Low",
+    "dueDate": "string - formatted date",
+    "status": "string - Open | In Progress | Completed",
+    "category": "string - optional category for grouping",
+    "pillar": "string - safety | quality | cost | delivery | inventory | production"
+  }
+}
