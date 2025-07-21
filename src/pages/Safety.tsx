@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
 import { dashboardData, safetyData } from "@/data/mockData";
-import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
@@ -77,10 +77,10 @@ export const Safety = () => {
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-safety">Unsafe Conditions - 5 Month Trend</h3>
-          <SimpleLineChart 
+          <TrendLineChart 
             data={safetyData.lineChart}
             title="Safety Incidents"
-            color="#2dd4bf"
+            color="hsl(var(--chart-1))"
             formatValue={(value) => value.toString()}
           />
         </Card>
