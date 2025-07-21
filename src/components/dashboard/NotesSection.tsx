@@ -20,9 +20,10 @@ interface NotesSectionProps {
   meetingNotes: MeetingNote[];
   title?: string;
   onUpdateMeetingNotes?: (meetingNotes: MeetingNote[]) => void;
+  showCard?: boolean;
 }
 
-export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes }: NotesSectionProps) => {
+export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes, showCard = true }: NotesSectionProps) => {
   const [editingNote, setEditingNote] = useState<MeetingNote | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -76,8 +77,8 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
     }
   };
 
-  return (
-    <Card className="p-6 shadow-lg">
+  const content = (
+    <>
       <div className="flex items-center space-x-2 mb-4">
         <FileText className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold">{title}</h3>
@@ -179,6 +180,16 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
         onClose={() => setIsDialogOpen(false)}
         onSave={handleSave}
       />
-    </Card>
+    </>
   );
+
+  if (showCard) {
+    return (
+      <Card className="p-6 shadow-lg">
+        {content}
+      </Card>
+    );
+  }
+
+  return <div className="p-6">{content}</div>;
 };

@@ -5,8 +5,7 @@ import { Truck, Clock, TrendingUp } from "lucide-react";
 import { dashboardData, deliveryData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const deliveryMetrics = [
   { label: "On Time %", value: "92.5%", icon: Truck, color: "bg-status-good" },
@@ -91,16 +90,12 @@ export const Delivery = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.delivery.actionItems}
-          title="Delivery Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.delivery.meetingNotes}
-          title="Delivery Meeting Notes & Discoveries"
+          actionItemsTitle="Delivery Action Items"
+          notesTitle="Delivery Meeting Notes & Discoveries"
         />
 
         {/* Bottom Row - Corrective Actions Table */}

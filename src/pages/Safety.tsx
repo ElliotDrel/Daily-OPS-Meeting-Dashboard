@@ -5,8 +5,7 @@ import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
 import { dashboardData, safetyData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const safetyMetrics = [
   { label: "No Accidents", value: "12", icon: Shield, color: "bg-status-good" },
@@ -118,16 +117,12 @@ export const Safety = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.safety.actionItems}
-          title="Safety Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.safety.meetingNotes}
-          title="Safety Meeting Notes & Discoveries"
+          actionItemsTitle="Safety Action Items"
+          notesTitle="Safety Meeting Notes & Discoveries"
         />
 
         {/* Bottom Row - Legacy Action Table */}

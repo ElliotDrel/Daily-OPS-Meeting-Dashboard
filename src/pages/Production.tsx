@@ -5,8 +5,7 @@ import { Users, Target, AlertTriangle, Activity, TrendingUp, Clock } from "lucid
 import { dashboardData, productionData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const productionMetrics = [
   { label: "People on Shift", value: "24/28", icon: Users, color: "bg-status-caution" },
@@ -104,16 +103,12 @@ export const Production = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.production.actionItems}
-          title="Production Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.production.meetingNotes}
-          title="Production Meeting Notes & Updates"
+          actionItemsTitle="Production Action Items"
+          notesTitle="Production Meeting Notes & Updates"
         />
 
         {/* Bottom Row - Open Processes */}

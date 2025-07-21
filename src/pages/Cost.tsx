@@ -5,8 +5,7 @@ import { DollarSign, TrendingDown, Package, Clock } from "lucide-react";
 import { dashboardData, costData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const costMetrics = [
   { label: "Scrap Cost", value: "$12.5K", icon: DollarSign, color: "bg-status-issue" },
@@ -96,16 +95,12 @@ export const Cost = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.cost.actionItems}
-          title="Cost Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.cost.meetingNotes}
-          title="Cost Meeting Notes & Discoveries"
+          actionItemsTitle="Cost Action Items"
+          notesTitle="Cost Meeting Notes & Discoveries"
         />
 
         {/* Bottom Row - Low Yield Events Table */}

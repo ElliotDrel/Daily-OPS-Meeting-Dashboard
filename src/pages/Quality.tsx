@@ -5,8 +5,7 @@ import { Mail, X, Wrench, AlertCircle, CheckCircle } from "lucide-react";
 import { dashboardData, qualityData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const qualityMetrics = [
   { label: "Customer Complaints", value: "14", icon: Mail, color: "bg-status-issue" },
@@ -111,16 +110,12 @@ export const Quality = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.quality.actionItems}
-          title="Quality Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.quality.meetingNotes}
-          title="Quality Meeting Notes & Discoveries"
+          actionItemsTitle="Quality Action Items"
+          notesTitle="Quality Meeting Notes & Discoveries"
         />
 
         {/* Bottom Row - Corrective Actions Table */}

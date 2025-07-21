@@ -20,6 +20,7 @@ interface ActionItemsSectionProps {
   actionItems: ActionItem[];
   title?: string;
   onUpdateActionItems?: (actionItems: ActionItem[]) => void;
+  showCard?: boolean;
 }
 
 const getPriorityColor = (priority: string) => {
@@ -46,7 +47,7 @@ const isOverdue = (dueDate: string) => {
   return due < today;
 };
 
-export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpdateActionItems }: ActionItemsSectionProps) => {
+export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpdateActionItems, showCard = true }: ActionItemsSectionProps) => {
   const [editingItem, setEditingItem] = useState<ActionItem | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -74,8 +75,8 @@ export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpda
       onUpdateActionItems([...actionItems, updatedItem]);
     }
   };
-  return (
-    <Card className="p-6 shadow-lg">
+  const content = (
+    <>
       <div className="flex items-center space-x-2 mb-4">
         <AlertTriangle className="w-5 h-5 text-primary" />
         <h3 className="text-lg font-semibold">{title}</h3>
@@ -172,6 +173,16 @@ export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpda
         onClose={() => setIsDialogOpen(false)}
         onSave={handleSave}
       />
-    </Card>
+    </>
   );
+
+  if (showCard) {
+    return (
+      <Card className="p-6 shadow-lg">
+        {content}
+      </Card>
+    );
+  }
+
+  return <div className="p-6">{content}</div>;
 };

@@ -3,8 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Settings, BarChart3, Users, Workflow } from "lucide-react";
 import { dashboardData } from "@/data/mockData";
-import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
-import { NotesSection } from "@/components/dashboard/NotesSection";
+import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 
 const inventoryMetrics = [
   { label: "Process Efficiency", value: "85%", icon: Settings, color: "bg-status-good" },
@@ -46,16 +45,12 @@ export const Inventory = () => {
           ))}
         </div>
 
-        {/* Action Items Section */}
-        <ActionItemsSection 
+        {/* Action Items and Notes Section */}
+        <ActionItemsAndNotesSection 
           actionItems={dashboardData.pillars.inventory.actionItems}
-          title="Internal Process Action Items"
-        />
-
-        {/* Meeting Notes Section */}
-        <NotesSection 
           meetingNotes={dashboardData.pillars.inventory.meetingNotes}
-          title="Internal Process Meeting Notes"
+          actionItemsTitle="Internal Process Action Items"
+          notesTitle="Internal Process Meeting Notes"
         />
       </div>
     </PillarLayout>
