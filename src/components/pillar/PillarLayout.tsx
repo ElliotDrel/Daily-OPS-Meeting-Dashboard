@@ -88,7 +88,7 @@ export const PillarLayout = ({
           </div>
 
           {/* Two column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
             {/* Left Column - 25% */}
             <div className="lg:col-span-1 space-y-3">
               {/* Calendar */}
