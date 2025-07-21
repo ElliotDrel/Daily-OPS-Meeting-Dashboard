@@ -101,7 +101,10 @@ const Calendar: React.FC<CalendarProps> = ({
           style={size === "mini" ? { 
             fontSize: st.cellFS, 
             paddingTop: st.cellPY, 
-            paddingBottom: st.cellPY 
+            paddingBottom: st.cellPY,
+            minHeight: px(32, scale),
+            minWidth: px(32, scale),
+            aspectRatio: '1'
           } : {}}
         />
       );
@@ -133,7 +136,9 @@ const Calendar: React.FC<CalendarProps> = ({
             fontSize: st.cellFS, 
             paddingTop: st.cellPY, 
             paddingBottom: st.cellPY,
-            minHeight: 0
+            minHeight: px(32, scale),
+            minWidth: px(32, scale),
+            aspectRatio: '1'
           } : {}}
         >
           {day}
