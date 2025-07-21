@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Clock, TrendingUp } from "lucide-react";
 import { dashboardData, deliveryData } from "@/data/mockData";
-import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
@@ -50,7 +50,7 @@ export const Delivery = () => {
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-delivery">On-Time Delivery - 5 Month Trend</h3>
-          <SimpleLineChart 
+          <TrendLineChart 
             data={deliveryData.lineChart}
             title="Delivery Performance"
             color="#10b981"
