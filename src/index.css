@@ -152,3 +152,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Calendar Component Styles */
+@layer components {
+  .calendar-container {
+    container-type: inline-size;
+  }
+
+  .calendar-day {
+    font-size: 0.875rem;
+    /* aspect-ratio: 1; */ /* Removed to allow flexible height */
+  }
+
+  .calendar-days {
+    grid-auto-rows: 1fr;
+  }
+
+  /* Responsive sizing based on container width */
+  @container (max-width: 210px) {
+    .calendar-header { padding: 0.25rem; }
+    .calendar-header h2 { font-size: 0.75rem; }
+    .calendar-day { font-size: 0.625rem; }
+    .calendar-days-header div { font-size: 0.625rem; padding: 0.25rem; }
+  }
+
+  @container (min-width: 201px) and (max-width: 300px) {
+    .calendar-day {
+      font-size: 0.875rem;
+    }
+  }
+
+  @container (min-width: 301px) {
+    .calendar-day {
+      font-size: 1rem;
+    }
+  }
+}
