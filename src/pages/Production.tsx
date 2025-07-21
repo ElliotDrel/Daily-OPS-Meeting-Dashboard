@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Target, AlertTriangle, Activity, TrendingUp, Clock } from "lucide-react";
 import { dashboardData, productionData } from "@/data/mockData";
-import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
@@ -63,7 +63,7 @@ export const Production = () => {
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-production">Production Output vs Target - 5 Month Trend</h3>
-          <SimpleLineChart 
+          <TrendLineChart 
             data={productionData.lineChart}
             title="Output Units"
             color="#4b6cb7"
