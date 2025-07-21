@@ -85,29 +85,15 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
       </div>
 
       <div className="space-y-6">
-        {meetingNotes.map((note, index) => (
+        {meetingNotes.slice(0, 1).map((note, index) => (
           <div key={note.id}>
             <div className="space-y-4">
               {/* Meeting Header */}
               <div className="flex items-start justify-between">
                 <div className="space-y-2 flex-1">
-                  <div className="flex items-center space-x-3">
-                    <Badge 
-                      variant="outline" 
-                      className={`text-xs ${getMeetingTypeColor(note.meetingType)}`}
-                    >
-                      {note.meetingType}
-                    </Badge>
-                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>{note.date}</span>
-                      <span className="text-xs">({formatRelativeDate(note.date)})</span>
-                    </div>
-                  </div>
-                  
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
-                    <span>Attendees: {note.attendees.join(', ')}</span>
+                    <span>Lead: {note.attendees[0]}</span>
                   </div>
                 </div>
                 
@@ -142,20 +128,8 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
                   </div>
                 )}
 
-                {note.nextMeeting && (
-                  <div className="bg-muted/30 p-3 rounded-lg">
-                    <p className="text-sm">
-                      <span className="font-medium text-muted-foreground">Next Meeting:</span>{' '}
-                      <span>{note.nextMeeting}</span>
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
-
-            {index < meetingNotes.length - 1 && (
-              <Separator className="mt-6" />
-            )}
           </div>
         ))}
       </div>
