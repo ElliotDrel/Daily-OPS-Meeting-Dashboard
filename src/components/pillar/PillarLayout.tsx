@@ -59,6 +59,13 @@ export const PillarLayout = ({
 }: PillarLayoutProps) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [month, setMonth] = useState(new Date());
+  
+  // Calculate previous month for the second calendar
+  const getPreviousMonth = (date: Date) => {
+    const prevMonth = new Date(date);
+    prevMonth.setMonth(prevMonth.getMonth() - 1);
+    return prevMonth;
+  };
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-6 py-8">
@@ -93,6 +100,19 @@ export const PillarLayout = ({
                 month={month}
                 onMonthChange={setMonth}
                 showHeader={true}
+                className="w-full min-h-[280px]"
+              />
+
+              {/* Previous Month Calendar */}
+              <Calendar
+                size="mini"
+                scale={1.2}
+                selectedDate={selectedDate}
+                onDateSelect={setSelectedDate}
+                month={getPreviousMonth(month)}
+                onMonthChange={() => {}} // No-op to prevent navigation
+                showHeader={true}
+                showNavigation={false}
                 className="w-full min-h-[280px]"
               />
 

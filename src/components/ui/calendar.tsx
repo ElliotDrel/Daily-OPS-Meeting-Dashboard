@@ -11,6 +11,7 @@ interface CalendarProps {
   month?: Date;
   onMonthChange?: (month: Date) => void;
   showHeader?: boolean;
+  showNavigation?: boolean;
   className?: string;
 }
 
@@ -46,6 +47,7 @@ const Calendar: React.FC<CalendarProps> = ({
   month = new Date(),
   onMonthChange,
   showHeader = true,
+  showNavigation = true,
   className = ''
 }) => {
   const st = styleFor(size, scale);
@@ -153,23 +155,35 @@ const Calendar: React.FC<CalendarProps> = ({
       <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${st.root} ${className}`}>
         {showHeader && (
           <div className={`flex items-center justify-between border-b ${st.header.pad}`}>
-            <button
-              onClick={() => navigateMonth('prev')}
-              className={`p-2 hover:bg-gray-100 rounded-lg transition-colors`}
-              aria-label="Previous month"
-            >
-              <ChevronLeft className={st.header.icon + " text-gray-600"} />
-            </button>
+            {showNavigation ? (
+              <button
+                onClick={() => navigateMonth('prev')}
+                className={`p-2 hover:bg-gray-100 rounded-lg transition-colors`}
+                aria-label="Previous month"
+              >
+                <ChevronLeft className={st.header.icon + " text-gray-600"} />
+              </button>
+            ) : (
+              <div className={`p-2`} style={{ width: `calc(${st.header.icon.split(' ')[0]} + 1rem)` }}>
+                {/* Spacer for alignment */}
+              </div>
+            )}
             <h2 className={`${st.header.text} font-semibold text-gray-900 text-center flex-1`}>
               {monthNames[currentMonth]} {currentYear}
             </h2>
-            <button
-              onClick={() => navigateMonth('next')}
-              className={`p-2 hover:bg-gray-100 rounded-lg transition-colors`}
-              aria-label="Next month"
-            >
-              <ChevronRight className={st.header.icon + " text-gray-600"} />
-            </button>
+            {showNavigation ? (
+              <button
+                onClick={() => navigateMonth('next')}
+                className={`p-2 hover:bg-gray-100 rounded-lg transition-colors`}
+                aria-label="Next month"
+              >
+                <ChevronRight className={st.header.icon + " text-gray-600"} />
+              </button>
+            ) : (
+              <div className={`p-2`} style={{ width: `calc(${st.header.icon.split(' ')[0]} + 1rem)` }}>
+                {/* Spacer for alignment */}
+              </div>
+            )}
           </div>
         )}
 
@@ -201,23 +215,35 @@ const Calendar: React.FC<CalendarProps> = ({
           className="flex items-center justify-between border-b"
           style={{ padding: st.headerPad }}
         >
-          <button
-            onClick={() => navigateMonth('prev')}
-            className="hover:bg-gray-100 rounded transition-colors"
-            aria-label="Previous month"
-          >
-            <ChevronLeft style={{ width: st.iconHW, height: st.iconHW }} className="text-gray-600" />
-          </button>
+          {showNavigation ? (
+            <button
+              onClick={() => navigateMonth('prev')}
+              className="hover:bg-gray-100 rounded transition-colors"
+              aria-label="Previous month"
+            >
+              <ChevronLeft style={{ width: st.iconHW, height: st.iconHW }} className="text-gray-600" />
+            </button>
+          ) : (
+            <div style={{ width: st.iconHW, height: st.iconHW }}>
+              {/* Spacer for alignment */}
+            </div>
+          )}
           <h2 className="font-semibold text-gray-900 text-center flex-1" style={{ fontSize: st.headerFS }}>
             {monthNames[currentMonth]} {currentYear}
           </h2>
-          <button
-            onClick={() => navigateMonth('next')}
-            className="hover:bg-gray-100 rounded transition-colors"
-            aria-label="Next month"
-          >
-            <ChevronRight style={{ width: st.iconHW, height: st.iconHW }} className="text-gray-600" />
-          </button>
+          {showNavigation ? (
+            <button
+              onClick={() => navigateMonth('next')}
+              className="hover:bg-gray-100 rounded transition-colors"
+              aria-label="Next month"
+            >
+              <ChevronRight style={{ width: st.iconHW, height: st.iconHW }} className="text-gray-600" />
+            </button>
+          ) : (
+            <div style={{ width: st.iconHW, height: st.iconHW }}>
+              {/* Spacer for alignment */}
+            </div>
+          )}
         </div>
       )}
 
