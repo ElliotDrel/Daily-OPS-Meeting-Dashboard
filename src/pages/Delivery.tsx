@@ -47,45 +47,48 @@ export const Delivery = () => {
       actionItems={actionItems}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart */}
-        <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-delivery">On-Time Delivery - 5 Month Trend</h3>
-          <TrendLineChart 
-            data={deliveryData.lineChart}
-            title="Delivery Performance"
-            color="#10b981"
-            formatValue={(value) => `${value.toFixed(1)}%`}
-          />
-        </Card>
+        {/* Top Row - Line Chart and Pie Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {/* Line Chart */}
+          <div className="lg:col-span-2">
+            <Card className="p-6 shadow-lg">
+              <h3 className="text-lg font-semibold text-delivery">On-Time Delivery - 5 Month Trend</h3>
+              <TrendLineChart 
+                data={deliveryData.lineChart}
+                title="Delivery Performance"
+                color="#10b981"
+                formatValue={(value) => `${value.toFixed(1)}%`}
+              />
+            </Card>
+          </div>
 
-        {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-delivery">Delivery Metrics Overview</h3>
+            <h3 className="text-lg font-semibold text-delivery">Delivery Metrics Overview</h3>
             <PieChartComponent 
               data={deliveryData.donutData}
               title="Delivery Analysis"
               showLegend={true}
+              height="h-48"
             />
           </Card>
+        </div>
 
-          {/* Metric Tiles */}
-          <div className="space-y-4">
-            {deliveryMetrics.map((metric, index) => (
-              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center space-x-4">
-                  <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                    <metric.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-foreground">{metric.value}</p>
-                    <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                  </div>
+        {/* Second Row - Metrics */}
+        <div className="space-y-4">
+          {deliveryMetrics.map((metric, index) => (
+            <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center space-x-4">
+                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
+                  <metric.icon className="w-6 h-6 text-white" />
                 </div>
-              </Card>
-            ))}
-          </div>
+                <div>
+                  <p className="text-3xl font-bold text-foreground">{metric.value}</p>
+                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
 
         {/* Action Items Section */}
@@ -102,11 +105,11 @@ export const Delivery = () => {
 
         {/* Bottom Row - Corrective Actions Table */}
         <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-delivery">Delivery Improvement Actions</h3>
+          <h3 className="text-lg font-semibold text-delivery">Delivery Improvement Actions</h3>
           <div className="space-y-4">
             {correctiveActions.map((action) => (
               <div key={action.id} className="border rounded-lg p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <h4 className="font-medium text-sm text-muted-foreground">Identified Problem</h4>
                     <p className="mt-1">{action.problem}</p>

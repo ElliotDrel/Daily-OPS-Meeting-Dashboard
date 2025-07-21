@@ -76,7 +76,7 @@ export const Dashboard = () => {
           {/* Main Dashboard Content */}
           <div className="space-y-8">
             {/* Charts Row */}
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
               {(Object.keys(dashboardData.pillars) as PillarName[]).map((pillar) => (
                 <SimpleBarChart 
                   key={`chart-${pillar}`} 
@@ -88,7 +88,7 @@ export const Dashboard = () => {
             </div>
 
             {/* Incidents Row */}
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
               {(Object.keys(dashboardData.pillars) as PillarName[]).map((pillar) => (
                 <IncidentTable 
                   key={`incidents-${pillar}`} 

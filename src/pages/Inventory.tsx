@@ -30,7 +30,7 @@ export const Inventory = () => {
     >
       <div className="space-y-6">
         {/* Metric Tiles */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           {inventoryMetrics.map((metric, index) => (
             <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center space-x-3">

@@ -74,45 +74,48 @@ export const Safety = () => {
       actionItems={actionItems}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart */}
-        <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-safety">Unsafe Conditions - 5 Month Trend</h3>
-          <TrendLineChart 
-            data={safetyData.lineChart}
-            title="Safety Incidents"
-            color="hsl(var(--chart-1))"
-            formatValue={(value) => value.toString()}
-          />
-        </Card>
+        {/* Top Row - Line Chart and Pie Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {/* Line Chart */}
+          <div className="lg:col-span-2">
+            <Card className="p-6 shadow-lg">
+              <h3 className="text-lg font-semibold text-safety">Unsafe Conditions - 5 Month Trend</h3>
+              <TrendLineChart 
+                data={safetyData.lineChart}
+                title="Safety Incidents"
+                color="hsl(var(--chart-1))"
+                formatValue={(value) => value.toString()}
+              />
+            </Card>
+          </div>
 
-        {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-safety">Safety Incident Types</h3>
+            <h3 className="text-lg font-semibold text-safety">Safety Incident Types</h3>
             <PieChartComponent 
               data={safetyData.donutData}
               title="Incident Types"
               showLegend={true}
+              height="h-48"
             />
           </Card>
+        </div>
 
-          {/* Metric Tiles */}
-          <div className="grid grid-cols-2 gap-4">
-            {safetyMetrics.map((metric, index) => (
-              <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center space-x-3">
-                  <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                    <metric.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                    <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                  </div>
+        {/* Second Row - Metrics */}
+        <div className="grid grid-cols-2 gap-2">
+          {safetyMetrics.map((metric, index) => (
+            <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center space-x-3">
+                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
+                  <metric.icon className="w-5 h-5 text-white" />
                 </div>
-              </Card>
-            ))}
-          </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{metric.value}</p>
+                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
 
         {/* Action Items Section */}
@@ -129,7 +132,7 @@ export const Safety = () => {
 
         {/* Bottom Row - Legacy Action Table */}
         <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-safety">Safety Corrective Actions</h3>
+          <h3 className="text-lg font-semibold text-safety">Safety Corrective Actions</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

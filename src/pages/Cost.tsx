@@ -52,45 +52,48 @@ export const Cost = () => {
       actionItems={actionItems}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart */}
-        <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-cost">Cost Variance - 5 Month Trend</h3>
-          <TrendLineChart 
-            data={costData.lineChart}
-            title="Cost Metrics"
-            color="#f59e0b"
-            formatValue={(value) => `$${(value / 1000).toFixed(0)}K`}
-          />
-        </Card>
+        {/* Top Row - Line Chart and Pie Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          {/* Line Chart */}
+          <div className="lg:col-span-2">
+            <Card className="p-6 shadow-lg">
+              <h3 className="text-lg font-semibold text-cost">Cost Variance - 5 Month Trend</h3>
+              <TrendLineChart 
+                data={costData.lineChart}
+                title="Cost Metrics"
+                color="#f59e0b"
+                formatValue={(value) => `$${(value / 1000).toFixed(0)}K`}
+              />
+            </Card>
+          </div>
 
-        {/* Second Row - Charts and Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Pie Chart */}
           <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4 text-cost">Cost Analysis Overview</h3>
+            <h3 className="text-lg font-semibold text-cost">Cost Analysis Overview</h3>
             <PieChartComponent 
               data={costData.donutData}
               title="Cost Breakdown"
               showLegend={true}
+              height="h-48"
             />
           </Card>
+        </div>
 
-          {/* Metric Tiles */}
-          <div className="grid grid-cols-2 gap-4">
-            {costMetrics.map((metric, index) => (
-              <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center space-x-3">
-                  <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                    <metric.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                    <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                  </div>
+        {/* Second Row - Metrics */}
+        <div className="grid grid-cols-2 gap-2">
+          {costMetrics.map((metric, index) => (
+            <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center space-x-3">
+                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
+                  <metric.icon className="w-5 h-5 text-white" />
                 </div>
-              </Card>
-            ))}
-          </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{metric.value}</p>
+                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
 
         {/* Action Items Section */}
@@ -107,11 +110,11 @@ export const Cost = () => {
 
         {/* Bottom Row - Low Yield Events Table */}
         <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-cost">Low Yield Events & Actions</h3>
+          <h3 className="text-lg font-semibold text-cost">Low Yield Events & Actions</h3>
           <div className="space-y-4">
             {lowYieldEvents.map((event) => (
               <div key={event.id} className="border rounded-lg p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
                     <h4 className="font-medium text-sm text-muted-foreground">Event</h4>
                     <p className="mt-1">{event.event}</p>

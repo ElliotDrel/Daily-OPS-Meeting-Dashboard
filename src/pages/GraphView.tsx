@@ -44,7 +44,7 @@ export const GraphView = () => {
 
         {/* Charts Content */}
         <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               {/* Line Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
@@ -78,7 +78,7 @@ export const GraphView = () => {
             </div>
 
             {/* Chart Comparison Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               {/* Pie Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
@@ -96,7 +96,7 @@ export const GraphView = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatCard
                 value="92.4%"
                 label="Overall Efficiency"

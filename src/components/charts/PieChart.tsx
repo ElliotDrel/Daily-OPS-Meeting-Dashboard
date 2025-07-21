@@ -7,6 +7,7 @@ interface PieChartProps {
   showLegend?: boolean;
   innerRadius?: number;
   outerRadius?: number;
+  height?: string;
 }
 
 export const PieChartComponent = ({ 
@@ -14,10 +15,11 @@ export const PieChartComponent = ({
   title, 
   showLegend = true, 
   innerRadius = 0, 
-  outerRadius = 80 
+  outerRadius = 80,
+  height = "h-64"
 }: PieChartProps) => {
   return (
-    <div className="w-full h-64">
+    <div className={`w-full ${height}`}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
