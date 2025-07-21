@@ -29,7 +29,7 @@ This application is hosted on **Vercel** with automatic deployments from the mai
 
 ## Project Architecture
 
-This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Delivery, People) metrics tracking, built with:
+This is a React-based Operations Dashboard for SQCDIP (Safety, Quality, Cost, Delivery, Inventory, Production) metrics tracking, built with:
 
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
@@ -45,7 +45,7 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 ### Key Architecture Patterns
 
-**Page Structure**: Each SQCDP pillar has its own dedicated page (`/pages/Safety.tsx`, `/pages/Quality.tsx`, etc.) that follows the same layout pattern using `PillarLayout` component.
+**Page Structure**: Each SQCDIP pillar has its own dedicated page (`/pages/Safety.tsx`, `/pages/Quality.tsx`, etc.) that follows the same layout pattern using `PillarLayout` component.
 
 **Component Organization**:
 - `/components/ui/` - Reusable UI components from shadcn/ui
@@ -58,7 +58,7 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 **Routing Structure**:
 - `/` - Dashboard overview with all pillars
-- `/safety`, `/quality`, `/cost`, `/inventory`, `/delivery`, `/people` - Individual pillar pages
+- `/safety`, `/quality`, `/cost`, `/inventory`, `/delivery`, `/production` - Individual pillar pages
 - `/graph-view` - Alternative visualization view
 - Each pillar page uses the same PillarLayout with pillar-specific data
 
@@ -76,7 +76,7 @@ This is a React-based Operations Dashboard for SQCDP (Safety, Quality, Cost, Del
 
 ### Data Flow
 
-The dashboard uses a pillar-based architecture where each pillar (Safety, Quality, Cost, Delivery, People, Inventory) has:
+The dashboard uses a pillar-based architecture where each pillar (Safety, Quality, Cost, Delivery, Inventory, Production) has:
 - Status grid showing daily performance
 - Chart data for trend analysis
 - Incident tracking
