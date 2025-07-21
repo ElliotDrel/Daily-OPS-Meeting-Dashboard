@@ -67,6 +67,13 @@ export const PillarLayout = ({
     return prevMonth;
   };
 
+  // Helper for multiple months back
+  const getMonthsBack = (date: Date, monthsBack: number) => {
+    const prevMonth = new Date(date);
+    prevMonth.setMonth(prevMonth.getMonth() - monthsBack);
+    return prevMonth;
+  };
+
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-6 py-8">
         <motion.div initial={{
@@ -115,6 +122,63 @@ export const PillarLayout = ({
                 showNavigation={false}
                 className="w-full min-h-[280px]"
               />
+
+              {/* Multi-Calendar Card */}
+              <Card className="p-4">
+                <div className="grid grid-cols-2 gap-2">
+                  {/* 2 Months Ago - Top Left */}
+                  <Calendar
+                    size="mini"
+                    scale={0.7}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    month={getMonthsBack(month, 2)}
+                    onMonthChange={() => {}}
+                    showHeader={true}
+                    showNavigation={false}
+                    className="w-full"
+                  />
+
+                  {/* 3 Months Ago - Top Right */}
+                  <Calendar
+                    size="mini"
+                    scale={0.7}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    month={getMonthsBack(month, 3)}
+                    onMonthChange={() => {}}
+                    showHeader={true}
+                    showNavigation={false}
+                    className="w-full"
+                  />
+
+                  {/* 4 Months Ago - Bottom Left */}
+                  <Calendar
+                    size="mini"
+                    scale={0.7}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    month={getMonthsBack(month, 4)}
+                    onMonthChange={() => {}}
+                    showHeader={true}
+                    showNavigation={false}
+                    className="w-full"
+                  />
+
+                  {/* 5 Months Ago - Bottom Right */}
+                  <Calendar
+                    size="mini"
+                    scale={0.7}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    month={getMonthsBack(month, 5)}
+                    onMonthChange={() => {}}
+                    showHeader={true}
+                    showNavigation={false}
+                    className="w-full"
+                  />
+                </div>
+              </Card>
 
               {/* Action Items */}
               
