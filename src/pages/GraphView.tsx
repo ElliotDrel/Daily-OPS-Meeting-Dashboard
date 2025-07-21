@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { CheckCircle, BarChart3, DollarSign, Activity } from "lucide-react";
 
 // Fake data for charts
 const lineChartData = [
@@ -95,33 +97,30 @@ export const GraphView = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-primary">92.4%</div>
-                  <p className="text-sm text-muted-foreground">Overall Efficiency</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-chart-2">$4.7M</div>
-                  <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-chart-3">1,247</div>
-                  <p className="text-sm text-muted-foreground">Units Produced</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card/30 backdrop-blur-sm border-border/50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold text-chart-4">98.2%</div>
-                  <p className="text-sm text-muted-foreground">Quality Score</p>
-                </CardContent>
-              </Card>
+              <StatCard
+                value="92.4%"
+                label="Overall Efficiency"
+                icon={<Activity className="w-5 h-5 text-white" />}
+                iconBg="bg-primary"
+              />
+              <StatCard
+                value="$4.7M"
+                label="Monthly Revenue"
+                icon={<DollarSign className="w-5 h-5 text-white" />}
+                iconBg="bg-chart-orange"
+              />
+              <StatCard
+                value="1,247"
+                label="Units Produced"
+                icon={<BarChart3 className="w-5 h-5 text-white" />}
+                iconBg="bg-chart-green"
+              />
+              <StatCard
+                value="98.2%"
+                label="Quality Score"
+                icon={<CheckCircle className="w-5 h-5 text-white" />}
+                iconBg="bg-chart-blue"
+              />
             </div>
         </div>
       </div>
