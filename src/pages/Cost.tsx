@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingDown, Package, Clock } from "lucide-react";
 import { dashboardData, costData } from "@/data/mockData";
-import { SimpleLineChart } from "@/components/charts/SimpleLineChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsSection } from "@/components/dashboard/ActionItemsSection";
 import { NotesSection } from "@/components/dashboard/NotesSection";
@@ -55,7 +55,7 @@ export const Cost = () => {
         {/* Top Row - Line Chart */}
         <Card className="p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4 text-cost">Cost Variance - 5 Month Trend</h3>
-          <SimpleLineChart 
+          <TrendLineChart 
             data={costData.lineChart}
             title="Cost Metrics"
             color="#f59e0b"
