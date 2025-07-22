@@ -89,7 +89,7 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
             <div>
               <Label htmlFor="priority">Priority</Label>
               <Select value={formData.priority} onValueChange={(value) => setFormData({...formData, priority: value as ActionItem['priority']})}>
-                <SelectTrigger>
+                <SelectTrigger id="priority">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,7 +103,7 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
             <div>
               <Label htmlFor="status">Status</Label>
               <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value as ActionItem['status']})}>
-                <SelectTrigger>
+                <SelectTrigger id="status">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

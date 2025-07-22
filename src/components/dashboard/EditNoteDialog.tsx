@@ -95,9 +95,10 @@ export const EditNoteDialog = ({ meetingNote, isOpen, onClose, onSave }: EditNot
           </div>
 
           <div>
-            <Label>Key Points</Label>
+            <Label htmlFor="keyPoints">Key Points</Label>
             <div className="flex gap-2 mb-2">
               <Textarea
+                id="keyPoints"
                 value={newKeyPoint}
                 onChange={(e) => setNewKeyPoint(e.target.value)}
                 placeholder="Add new key point... (Ctrl+Enter to add)"
