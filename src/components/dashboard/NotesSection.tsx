@@ -22,10 +22,11 @@ interface NotesSectionProps {
   meetingNotes: MeetingNote[];
   title?: string;
   onUpdateMeetingNotes?: (meetingNotes: MeetingNote[]) => void;
+  onAddNote?: (keyPoints: string) => Promise<void>;
   showCard?: boolean;
 }
 
-export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes, showCard = true }: NotesSectionProps) => {
+export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes, onAddNote, showCard = true }: NotesSectionProps) => {
   const [editingNote, setEditingNote] = useState<MeetingNote | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -40,18 +41,29 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
     setIsDialogOpen(true);
   };
 
-  const handleSave = (updatedNote: MeetingNote) => {
-    if (!onUpdateMeetingNotes) return;
-    
+  const handleSave = async (updatedNote: MeetingNote) => {
     if (editingNote) {
-      // Edit existing note
-      const updatedNotes = meetingNotes.map(note => 
-        note.id === updatedNote.id ? updatedNote : note
-      );
-      onUpdateMeetingNotes(updatedNotes);
+      // Edit existing note - use the legacy function if available
+      if (onUpdateMeetingNotes) {
+        const updatedNotes = meetingNotes.map(note => 
+          note.id === updatedNote.id ? updatedNote : note
+        );
+        onUpdateMeetingNotes(updatedNotes);
+      }
     } else {
-      // Add new note
-      onUpdateMeetingNotes([...meetingNotes, updatedNote]);
+      // Add new note - use Supabase function
+      if (onAddNote && updatedNote.keyPoints.length > 0) {
+        try {
+          // Convert key points array to string for Supabase
+          const keyPointsString = updatedNote.keyPoints.join('\n');
+          await onAddNote(keyPointsString);
+        } catch (error) {
+          console.error('Error creating note:', error);
+        }
+      } else if (onUpdateMeetingNotes) {
+        // Fallback to legacy function
+        onUpdateMeetingNotes([...meetingNotes, updatedNote]);
+      }
     }
   };
 

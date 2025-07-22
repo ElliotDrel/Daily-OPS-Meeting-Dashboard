@@ -7,6 +7,7 @@ interface MeetingNote {
   pillar: string
   note_date: string
   key_points: string
+  keyPoints?: string[] // Transformed for UI
   created_at: string
   updated_at: string
 }
@@ -39,7 +40,12 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         .order('created_at', { ascending: true })
       
       if (error) throw error
-      return data as MeetingNote[]
+      
+      // Transform Supabase data to UI format
+      return (data as MeetingNote[]).map(note => ({
+        ...note,
+        keyPoints: note.key_points ? note.key_points.split('\n').filter(p => p.trim()) : []
+      }))
     }
   })
 

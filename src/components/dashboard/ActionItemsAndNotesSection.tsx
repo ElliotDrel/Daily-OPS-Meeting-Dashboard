@@ -53,6 +53,7 @@ export const ActionItemsAndNotesSection = ({
             title={notesTitle}
             onUpdateMeetingNotes={onUpdateMeetingNotes}
             showCard={false}
+            onAddNote={onAddNote}
           />
         </div>
       </div>
