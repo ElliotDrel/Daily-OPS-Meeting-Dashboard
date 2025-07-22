@@ -1,15 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ActionItemsSection, ActionItem } from "./ActionItemsSection";
-import { NotesSection, MeetingNote } from "./NotesSection";
+import type { MeetingNote, ActionItem } from "@/hooks/usePillarData";
+import { format } from "date-fns";
+import { ActionItemsSection } from "./ActionItemsSection";
+import { NotesSection } from "./NotesSection";
 
 interface ActionItemsAndNotesSectionProps {
+  notes: MeetingNote[];
   actionItems: ActionItem[];
-  meetingNotes: MeetingNote[];
-  onUpdateActionItems?: (actionItems: ActionItem[]) => void;
-  onUpdateMeetingNotes?: (meetingNotes: MeetingNote[]) => void;
-  actionItemsTitle?: string;
-  notesTitle?: string;
+  onAddNote: (keyPoints: string) => Promise<void>;
+  onAddActionItem: (item: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
+  onUpdateActionItem: (id: string, updates: Partial<ActionItem>) => Promise<void>;
+  pillar: string;
 }
 
 export const ActionItemsAndNotesSection = ({

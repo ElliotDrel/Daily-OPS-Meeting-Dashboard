@@ -8,6 +8,8 @@ import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const safetyMetrics = [
   { label: "No Accidents", value: "12", icon: Shield, color: "bg-status-good" },
@@ -66,29 +68,8 @@ const safetyActions = [
 ];
 
 export const Safety = () => {
-  const [meetingNotes, setMeetingNotes] = useState<MeetingNote[]>(dashboardData.pillars.safety.meetingNotes);
-
-  // Load meeting notes from file on component mount
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const loadedNotes = await loadMeetingNotesFromFile('safety');
-        if (loadedNotes.length > 0) {
-          setMeetingNotes(loadedNotes);
-        }
-      } catch (error) {
-        console.error('Error loading meeting notes:', error);
-        // Keep using the default mock data
-      }
-    };
-    loadNotes();
-  }, []);
-
-  // Handle updating meeting notes
-  const handleUpdateMeetingNotes = async (updatedNotes: MeetingNote[]) => {
-    setMeetingNotes(updatedNotes);
-    await saveMeetingNotesToFile(updatedNotes, 'safety');
-  };
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
   return (
     <PillarLayout
@@ -144,12 +125,13 @@ export const Safety = () => {
         </div>
 
         {/* Action Items and Notes Section */}
-        <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.safety.actionItems}
-          meetingNotes={meetingNotes}
-          onUpdateMeetingNotes={handleUpdateMeetingNotes}
-          actionItemsTitle="Safety Action Items"
-          notesTitle="Safety Meeting Notes & Discoveries"
+        <ActionItemsAndNotesSection
+          notes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="safety"
         />
 
         {/* Bottom Row - Legacy Action Table */}

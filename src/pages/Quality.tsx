@@ -6,6 +6,8 @@ import { dashboardData, qualityData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const qualityMetrics = [
   { label: "Customer Complaints", value: "14", icon: Mail, color: "bg-status-issue" },
@@ -57,6 +59,8 @@ const correctiveActions = [
 ];
 
 export const Quality = () => {
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
   return (
     <PillarLayout
       letter="Q"
@@ -111,11 +115,13 @@ export const Quality = () => {
         </div>
 
         {/* Action Items and Notes Section */}
-        <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.quality.actionItems}
-          meetingNotes={dashboardData.pillars.quality.meetingNotes}
-          actionItemsTitle="Quality Action Items"
-          notesTitle="Quality Meeting Notes & Discoveries"
+        <ActionItemsAndNotesSection
+          notes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="quality"
         />
 
         {/* Bottom Row - Corrective Actions Table */}

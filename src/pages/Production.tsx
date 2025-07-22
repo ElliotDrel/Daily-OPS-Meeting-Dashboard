@@ -6,6 +6,8 @@ import { dashboardData, productionData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const productionMetrics = [
   { label: "People on Shift", value: "24/28", icon: Users, color: "bg-status-caution" },
@@ -50,6 +52,8 @@ const openProcesses = [
 ];
 
 export const Production = () => {
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
   return (
     <PillarLayout
       letter="P"
@@ -104,11 +108,13 @@ export const Production = () => {
         </div>
 
         {/* Action Items and Notes Section */}
-        <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.production.actionItems}
-          meetingNotes={dashboardData.pillars.production.meetingNotes}
-          actionItemsTitle="Production Action Items"
-          notesTitle="Production Meeting Notes & Updates"
+        <ActionItemsAndNotesSection
+          notes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="production"
         />
 
         {/* Bottom Row - Open Processes */}

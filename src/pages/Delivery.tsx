@@ -6,6 +6,8 @@ import { dashboardData, deliveryData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const deliveryMetrics = [
   { label: "On Time %", value: "92.5%", icon: Truck, color: "bg-status-good" },
@@ -37,6 +39,8 @@ const correctiveActions = [
 ];
 
 export const Delivery = () => {
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
   return (
     <PillarLayout
       letter="D"
@@ -91,11 +95,13 @@ export const Delivery = () => {
         </div>
 
         {/* Action Items and Notes Section */}
-        <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.delivery.actionItems}
-          meetingNotes={dashboardData.pillars.delivery.meetingNotes}
-          actionItemsTitle="Delivery Action Items"
-          notesTitle="Delivery Meeting Notes & Discoveries"
+        <ActionItemsAndNotesSection
+          notes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="delivery"
         />
 
         {/* Bottom Row - Corrective Actions Table */}

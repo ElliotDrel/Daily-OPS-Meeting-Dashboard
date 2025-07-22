@@ -6,6 +6,8 @@ import { dashboardData, costData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const costMetrics = [
   { label: "Scrap Cost", value: "$12.5K", icon: DollarSign, color: "bg-status-issue" },
@@ -42,6 +44,8 @@ const lowYieldEvents = [
 ];
 
 export const Cost = () => {
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
   return (
     <PillarLayout
       letter="C"
@@ -96,11 +100,13 @@ export const Cost = () => {
         </div>
 
         {/* Action Items and Notes Section */}
-        <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.cost.actionItems}
-          meetingNotes={dashboardData.pillars.cost.meetingNotes}
-          actionItemsTitle="Cost Action Items"
-          notesTitle="Cost Meeting Notes & Discoveries"
+        <ActionItemsAndNotesSection
+          notes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="cost"
         />
 
         {/* Bottom Row - Low Yield Events Table */}
