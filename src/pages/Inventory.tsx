@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Settings, BarChart3, Users, Workflow } from "lucide-react";
 import { dashboardData } from "@/data/mockData";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { usePillarData } from "@/hooks/usePillarData";
+import { useDate } from "@/contexts/DateContext";
 
 const inventoryMetrics = [
   { label: "Process Efficiency", value: "85%", icon: Settings, color: "bg-status-good" },
@@ -12,20 +14,34 @@ const inventoryMetrics = [
   { label: "Workflow Optimization", value: "68%", icon: Workflow, color: "bg-chart-blue" }
 ];
 
-const actionItems = [
-  { id: "1", text: "Process Review", status: "good", count: 3 },
-  { id: "2", text: "Resource Allocation", status: "caution", count: 4 },
-  { id: "3", text: "Workflow Issues", status: "issue", count: 2 }
-];
 
 export const Inventory = () => {
+  const { selectedDate } = useDate();
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('inventory', selectedDate.toISOString().slice(0, 10));
+
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="I"
+        pillarName="Inventory"
+        pillarColor="inventory"
+        squares={dashboardData.pillars.inventory.squares}
+        actionItems={actionItems || []}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading inventory data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
+
   return (
     <PillarLayout
       letter="I"
       pillarName="Inventory"
       pillarColor="inventory"
       squares={dashboardData.pillars.inventory.squares}
-      actionItems={actionItems}
+      actionItems={actionItems || []}
     >
       <div className="space-y-6">
         {/* Metric Tiles */}
@@ -47,8 +63,12 @@ export const Inventory = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection 
-          actionItems={dashboardData.pillars.inventory.actionItems}
-          meetingNotes={dashboardData.pillars.inventory.meetingNotes}
+          meetingNotes={meetingNotes}
+          actionItems={actionItems}
+          onAddNote={createNote}
+          onAddActionItem={createItem}
+          onUpdateActionItem={updateItem}
+          pillar="inventory"
           actionItemsTitle="Internal Process Action Items"
           notesTitle="Internal Process Meeting Notes"
         />
