@@ -8,7 +8,9 @@
         "Install convex mirrors at Assembly Line 2 intersections",
         "Schedule refresher training for 12 employees", 
         "Update incident reporting forms to include visibility factors"
-      ]
+      ],
+      "createdDate": "Jan 21, 2025",
+      "updatedDate": "Jan 21, 2025"
     },
     {
       "id": "2",
@@ -18,7 +20,9 @@
         "PPE compliance improved to 94% (target: 95%)",
         "Building B emergency shower parts delayed until next week",
         "New OSHA confined space procedures need implementation by March 1st"
-      ]
+      ],
+      "createdDate": "Jan 20, 2025",
+      "updatedDate": "Jan 20, 2025"
     },
     {
       "id": "3",
@@ -28,7 +32,9 @@
         "First-pass yield: 88.2% (trending toward 90% target)",
         "Line 5 tooling replacement scheduled for tonight",
         "Customer complaint resolution: packaging defect source identified"
-      ]
+      ],
+      "createdDate": "Jan 21, 2025",
+      "updatedDate": "Jan 21, 2025"
     },
     {
       "id": "4",
@@ -38,7 +44,9 @@
         "Two suppliers on corrective action plans",
         "Customer satisfaction improved to 4.2/5.0",
         "New incoming material QC procedures effective"
-      ]
+      ],
+      "createdDate": "Jan 19, 2025",
+      "updatedDate": "Jan 19, 2025"
     },
     {
       "id": "5",
@@ -48,7 +56,9 @@
         "Material costs 12% over budget due to steel prices",
         "Negotiate with steel suppliers for better rates", 
         "Consider adding third shift to reduce overtime costs"
-      ]
+      ],
+      "createdDate": "Jan 20, 2025",
+      "updatedDate": "Jan 20, 2025"
     },
     {
       "id": "6",
@@ -58,7 +68,9 @@
         "December 8% over budget - maintenance and materials",
         "Energy costs 15% higher due to weather",
         "Q1 budget adjustments approved"
-      ]
+      ],
+      "createdDate": "Jan 18, 2025",
+      "updatedDate": "Jan 18, 2025"
     },
     {
       "id": "7",
@@ -68,7 +80,9 @@
         "On-time delivery: 92.5% (target: 95%)",
         "Three new expedite requests for West Coast",
         "Backup carrier contracts nearly finalized" 
-      ]
+      ],
+      "createdDate": "Jan 21, 2025",
+      "updatedDate": "Jan 21, 2025"
     },
     {
       "id": "8",
@@ -79,7 +93,9 @@
         "Fuel costs up 8% this month",
         "Customer complaints reduced to 2/week",
         "New routing software: 12% efficiency gains"
-      ]
+      ],
+      "createdDate": "Jan 19, 2025",
+      "updatedDate": "Jan 19, 2025"
     },
     {
       "id": "9",
@@ -89,7 +105,9 @@
         "86% shift staffing (24/28 operators present)",
         "Output efficiency at 95% due to staffing gaps",
         "Evening shift overtime approved to meet targets"
-      ]
+      ],
+      "createdDate": "Jan 21, 2025",
+      "updatedDate": "Jan 21, 2025"
     },
     {
       "id": "10",
@@ -99,7 +117,9 @@
         "Absenteeism rate: 14% (target: 8%)",
         "Equipment utilization: 88% due to staffing",
         "Approved hiring 6 operators + incentive program"
-      ]
+      ],
+      "createdDate": "Jan 20, 2025",
+      "updatedDate": "Jan 20, 2025"
     },
     {
       "id": "11",
@@ -109,7 +129,9 @@
         "Assembly process efficiency up 15%",
         "Communication response times improved",
         "Afternoon shift resource optimization opportunity identified"
-      ]
+      ],
+      "createdDate": "Jan 21, 2025",
+      "updatedDate": "Jan 21, 2025"
     },
     {
       "id": "12",
@@ -119,7 +141,9 @@
         "New workflow system: 20% faster task completion",
         "Additional training needed on new procedures", 
         "Process automation pilot program approved"
-      ]
+      ],
+      "createdDate": "Jan 18, 2025",
+      "updatedDate": "Jan 18, 2025"
     }
   ],
   "schema": {
@@ -131,7 +155,9 @@
       "id": "string - unique identifier (sequential numbers)",
       "date": "string - formatted date of meeting",
       "pillar": "string - safety | quality | cost | delivery | inventory | production",
-      "keyPoints": "array - list of key discussion points or decisions"
+      "keyPoints": "array - list of key discussion points or decisions",
+      "createdDate": "string - formatted date when the meeting note was created",
+      "updatedDate": "string - formatted date when the meeting note was last updated"
     }
   }
 }
