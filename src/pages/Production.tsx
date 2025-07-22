@@ -53,7 +53,24 @@ const openProcesses = [
 
 export const Production = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
+
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="P"
+        pillarName="Production"
+        pillarColor="production"
+        squares={dashboardData.pillars.production.squares}
+        actionItems={actionItems}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading production data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
+
   return (
     <PillarLayout
       letter="P"

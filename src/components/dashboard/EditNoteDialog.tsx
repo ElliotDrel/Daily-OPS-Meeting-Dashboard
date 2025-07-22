@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,6 +81,9 @@ export const EditNoteDialog = ({ meetingNote, isOpen, onClose, onSave }: EditNot
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Meeting Note' : 'Add New Meeting Note'}</DialogTitle>
+          <DialogDescription>
+            {isEditing ? 'Modify the meeting note details and key points below.' : 'Create a new meeting note by adding key points and discussion items.'}
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">

@@ -40,7 +40,24 @@ const correctiveActions = [
 
 export const Delivery = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
+
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="D"
+        pillarName="Delivery"
+        pillarColor="delivery"
+        squares={dashboardData.pillars.delivery.squares}
+        actionItems={actionItems}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading delivery data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
+
   return (
     <PillarLayout
       letter="D"

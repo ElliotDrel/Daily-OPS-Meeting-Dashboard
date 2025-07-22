@@ -45,7 +45,24 @@ const lowYieldEvents = [
 
 export const Cost = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
+
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="C"
+        pillarName="Cost"
+        pillarColor="cost"
+        squares={dashboardData.pillars.cost.squares}
+        actionItems={actionItems}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading cost data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
+
   return (
     <PillarLayout
       letter="C"

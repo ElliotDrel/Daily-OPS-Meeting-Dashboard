@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +52,9 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Action Item' : 'Add New Action Item'}</DialogTitle>
+          <DialogDescription>
+            {isEditing ? 'Update the action item details and assignment information.' : 'Create a new action item with description, assignee, and due date.'}
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
