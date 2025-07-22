@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, Users, Plus, Info, Check, X } from "lucide-react";
+import { FileText, Calendar, Users, Plus, Info, Check, X, Edit3 } from "lucide-react";
 import { EditNoteDialog } from "./EditNoteDialog";
 
 export interface MeetingNote {
