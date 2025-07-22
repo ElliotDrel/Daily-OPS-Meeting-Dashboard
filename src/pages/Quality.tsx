@@ -60,7 +60,22 @@ const correctiveActions = [
 
 export const Quality = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="Q"
+        pillarName="Quality"
+        pillarColor="quality"
+        squares={dashboardData.pillars.quality.squares}
+        actionItems={actionItems}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading quality data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
   return (
     <PillarLayout
       letter="Q"
@@ -116,7 +131,7 @@ export const Quality = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          notes={meetingNotes}
+          meetingNotes={meetingNotes}
           actionItems={actionItems}
           onAddNote={createNote}
           onAddActionItem={createItem}

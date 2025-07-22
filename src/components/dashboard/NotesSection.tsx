@@ -58,7 +58,7 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
   // Show tooltip for first-time users
   useEffect(() => {
     const hasSeenTooltip = localStorage.getItem('hasSeenNotesTooltip');
-    if (!hasSeenTooltip && meetingNotes.length > 0) {
+    if (!hasSeenTooltip && meetingNotes && meetingNotes.length > 0) {
       setShowTooltip(true);
       const timer = setTimeout(() => {
         setShowTooltip(false);
@@ -66,7 +66,7 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
       }, 5000); // Show for 5 seconds
       return () => clearTimeout(timer);
     }
-  }, [meetingNotes.length]);
+  }, [meetingNotes?.length]);
 
   const formatRelativeDate = (dateString: string) => {
     try {
@@ -142,7 +142,7 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
         ))}
       </div>
 
-      {meetingNotes.length === 0 && (
+      {(!meetingNotes || meetingNotes.length === 0) && (
         <div className="text-center py-8 text-muted-foreground">
           <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
           <p>No meeting notes available</p>

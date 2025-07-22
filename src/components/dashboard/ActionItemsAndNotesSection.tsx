@@ -6,12 +6,16 @@ import { ActionItemsSection } from "./ActionItemsSection";
 import { NotesSection } from "./NotesSection";
 
 interface ActionItemsAndNotesSectionProps {
-  notes: MeetingNote[];
-  actionItems: ActionItem[];
+  meetingNotes?: MeetingNote[];
+  actionItems?: ActionItem[];
   onAddNote: (keyPoints: string) => Promise<void>;
   onAddActionItem: (item: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   onUpdateActionItem: (id: string, updates: Partial<ActionItem>) => Promise<void>;
   pillar: string;
+  actionItemsTitle?: string;
+  notesTitle?: string;
+  onUpdateActionItems?: (items: ActionItem[]) => void;
+  onUpdateMeetingNotes?: (notes: MeetingNote[]) => void;
 }
 
 export const ActionItemsAndNotesSection = ({
@@ -21,14 +25,21 @@ export const ActionItemsAndNotesSection = ({
   onUpdateMeetingNotes,
   actionItemsTitle,
   notesTitle,
+  onAddNote,
+  onAddActionItem,
+  onUpdateActionItem,
+  pillar
 }: ActionItemsAndNotesSectionProps) => {
+  if (!meetingNotes || !actionItems) {
+    return <div className="flex justify-center items-center h-32">Loading...</div>;
+  }
   return (
     <Card className="p-0 shadow-lg overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
         {/* Left Half - Action Items */}
         <div className="border-r border-border">
           <ActionItemsSection
-            actionItems={actionItems}
+            actionItems={actionItems || []}
             title={actionItemsTitle}
             onUpdateActionItems={onUpdateActionItems}
             showCard={false}
@@ -38,7 +49,7 @@ export const ActionItemsAndNotesSection = ({
         {/* Right Half - Notes */}
         <div>
           <NotesSection
-            meetingNotes={meetingNotes}
+            meetingNotes={meetingNotes || []}
             title={notesTitle}
             onUpdateMeetingNotes={onUpdateMeetingNotes}
             showCard={false}

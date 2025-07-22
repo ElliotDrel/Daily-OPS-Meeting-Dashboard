@@ -69,7 +69,23 @@ const safetyActions = [
 
 export const Safety = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
+  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
+
+  if (isLoading) {
+    return (
+      <PillarLayout
+        letter="S"
+        pillarName="Safety"
+        pillarColor="safety"
+        squares={dashboardData.pillars.safety.squares}
+        actionItems={actionItems}
+      >
+        <div className="flex justify-center items-center h-64">
+          <p>Loading safety data...</p>
+        </div>
+      </PillarLayout>
+    );
+  }
 
   return (
     <PillarLayout
@@ -126,7 +142,7 @@ export const Safety = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          notes={meetingNotes}
+          meetingNotes={meetingNotes}
           actionItems={actionItems}
           onAddNote={createNote}
           onAddActionItem={createItem}
