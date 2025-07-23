@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { format } from "date-fns";
+import { useDate } from "@/contexts/DateContext";
 
 interface PillarLayoutProps {
   letter: string;
@@ -57,7 +59,7 @@ export const PillarLayout = ({
   squares,
   actionItems = []
 }: PillarLayoutProps) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { selectedDate, setSelectedDate } = useDate();
   const [month, setMonth] = useState(new Date());
   
   // Calculate previous month for the second calendar
@@ -84,14 +86,22 @@ export const PillarLayout = ({
         y: 0
       }} className="space-y-6">
           {/* Header */}
-          <div className="flex items-center space-x-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Dashboard
-              </Button>
-            </Link>
-            <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link to="/">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+              </Link>
+              <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
+            </div>
+            <div className="flex items-center space-x-2 bg-muted/50 px-4 py-2 rounded-lg">
+              <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
+              <span className="text-lg font-semibold text-foreground">
+                {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+              </span>
+            </div>
           </div>
 
           {/* Two column layout */}
