@@ -4,134 +4,107 @@
       "id": "1",
       "pillar": "safety",
       "keyPoints": [
-        "Install convex mirrors at Assembly Line 2 intersections",
-        "Schedule refresher training for 12 employees", 
-        "Update incident reporting forms to include visibility factors"
+        "Forklift clipped ceiling light, maintenance replaced fixture, driver received immediate coaching",
+        "G4 side door closer repaired, still needs 'Employees Only' sign; Limble ticket submitted",
+        "Insurance walk-through closed with zero findings, new carrier onboarding in progress"
       ],
-      "createdDate": "Jan 21, 2025",
-      "updatedDate": "Jan 21, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
       "id": "2",
-      "pillar": "safety",
+      "pillar": "quality",
       "keyPoints": [
-        "PPE compliance improved to 94% (target: 95%)",
-        "Building B emergency shower parts delayed until next week",
-        "New OSHA confined space procedures need implementation by March 1st"
+        "Wobbly single-speed freewheels persist on 14-inch and 16-inch wheels, balance bikes unaffected; Frank aware",
+        "400 rims with paint-adhesion issues will be air-freighted; supplier inspection required before shipment"
       ],
-      "createdDate": "Jan 20, 2025",
-      "updatedDate": "Jan 20, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
       "id": "3",
-      "pillar": "quality",
+      "pillar": "inventory",
       "keyPoints": [
-        "First-pass yield: 88.2% (trending toward 90% target)",
-        "Line 5 tooling replacement scheduled for tonight",
-        "Customer complaint resolution: packaging defect source identified"
+        "Production missed plan 12 straight days, leaving month-to-date shortfall of 4,652 bikes",
+        "8 production days remain, 20,652 bikes still required to hit plan (1,877 bikes per calendar day)",
+        "Charts highlight daily gap and cumulative divergence from target"
       ],
-      "createdDate": "Jan 21, 2025",
-      "updatedDate": "Jan 21, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
       "id": "4",
-      "pillar": "quality",
+      "pillar": "delivery",
       "keyPoints": [
-        "Two suppliers on corrective action plans",
-        "Customer satisfaction improved to 4.2/5.0",
-        "New incoming material QC procedures effective"
+        "2 containers received this week (both wheels), 24 additional containers arriving tomorrow through next Friday",
+        "July total will reach 56 containers",
+        "Extra labor secured: 3 temps per day this week, 4 per day next week"
       ],
-      "createdDate": "Jan 19, 2025",
-      "updatedDate": "Jan 19, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
       "id": "5",
-      "pillar": "cost", 
+      "pillar": "production",
       "keyPoints": [
-        "Material costs 12% over budget due to steel prices",
-        "Negotiate with steel suppliers for better rates", 
-        "Consider adding third shift to reduce overtime costs"
+        "Yesterday produced 1,518 units. Today's target is 1,540 but will finish about 1,340 after reworking 100 bikes with incorrect wheel colors",
+        "Continuous changeovers and ongoing new-hire training limit line speed",
+        "6 full-time hires onboarded yesterday, 3 remain active; SMX provided additional temps"
       ],
-      "createdDate": "Jan 20, 2025",
-      "updatedDate": "Jan 20, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
       "id": "6",
-      "pillar": "cost",
+      "pillar": "safety",
       "keyPoints": [
-        "December 8% over budget - maintenance and materials",
-        "Energy costs 15% higher due to weather",
-        "Q1 budget adjustments approved"
+        "Weather-area signage audit remains open for buildings other than G10",
+        "Additional signage sourcing in progress"
       ],
-      "createdDate": "Jan 18, 2025",
-      "updatedDate": "Jan 18, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     },
     {
       "id": "7",
-      "pillar": "delivery",
+      "pillar": "quality",
       "keyPoints": [
-        "On-time delivery: 92.5% (target: 95%)",
-        "Three new expedite requests for West Coast",
-        "Backup carrier contracts nearly finalized" 
+        "Supplier requested more detail on bent cranks issue",
+        "Follow-up communication required with supplier"
       ],
-      "createdDate": "Jan 21, 2025",
-      "updatedDate": "Jan 21, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     },
     {
       "id": "8",
-      "pillar": "delivery",
+      "pillar": "inventory",
       "keyPoints": [
-        "West Coast route issues persist",
-        "Fuel costs up 8% this month",
-        "Customer complaints reduced to 2/week",
-        "New routing software: 12% efficiency gains"
+        "Model shipping scenario analysis started",
+        "Ryan Jansen reviewing shipping scenarios"
       ],
-      "createdDate": "Jan 19, 2025",
-      "updatedDate": "Jan 19, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     },
     {
       "id": "9",
-      "pillar": "production",
+      "pillar": "delivery",
       "keyPoints": [
-        "86% shift staffing (24/28 operators present)",
-        "Output efficiency at 95% due to staffing gaps",
-        "Evening shift overtime approved to meet targets"
+        "Bolts from Germany quarantined in G2 location",
+        "Quality team has location details for quarantined items",
+        "Additional trailer needs assessment ongoing for parking lot restripe"
       ],
-      "createdDate": "Jan 21, 2025",
-      "updatedDate": "Jan 21, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     },
     {
       "id": "10",
       "pillar": "production",
       "keyPoints": [
-        "Absenteeism rate: 14% (target: 8%)",
-        "Equipment utilization: 88% due to staffing",
-        "Approved hiring 6 operators + incentive program"
+        "SOP updates in progress to improve onboarding speed",
+        "Water source issues resolved, bottles restocked",
+        "Monitoring water consumption due to heat index alerts"
       ],
-      "createdDate": "Jan 20, 2025",
-      "updatedDate": "Jan 20, 2025"
-    },
-    {
-      "id": "11",
-      "pillar": "inventory",
-      "keyPoints": [
-        "Assembly process efficiency up 15%",
-        "Communication response times improved",
-        "Afternoon shift resource optimization opportunity identified"
-      ],
-      "createdDate": "Jan 21, 2025",
-      "updatedDate": "Jan 21, 2025"
-    },
-    {
-      "id": "12",
-      "pillar": "inventory",
-      "keyPoints": [
-        "New workflow system: 20% faster task completion",
-        "Additional training needed on new procedures", 
-        "Process automation pilot program approved"
-      ],
-      "createdDate": "Jan 18, 2025",
-      "updatedDate": "Jan 18, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     }
   ],
   "schema": {
