@@ -7,6 +7,9 @@ import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAn
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
+// Toggle this to hide/show charts and stats
+const SHOW_CHARTS_AND_STATS = false;
+
 const inventoryMetrics = [
   { label: "Process Efficiency", value: "85%", icon: Settings, color: "bg-status-good" },
   { label: "Resource Utilization", value: "72%", icon: BarChart3, color: "bg-status-caution" },
@@ -45,6 +48,7 @@ export const Inventory = () => {
     >
       <div className="space-y-6">
         {/* Metric Tiles */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           {inventoryMetrics.map((metric, index) => (
             <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -60,6 +64,7 @@ export const Inventory = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection 

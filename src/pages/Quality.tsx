@@ -9,6 +9,9 @@ import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAn
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
+// Toggle this to hide/show charts and stats
+const SHOW_CHARTS_AND_STATS = false;
+
 const qualityMetrics = [
   { label: "Customer Complaints", value: "14", icon: Mail, color: "bg-status-issue" },
   { label: "Test Fails", value: "7", icon: X, color: "bg-status-caution" },
@@ -86,6 +89,7 @@ export const Quality = () => {
     >
       <div className="space-y-6">
         {/* Top Row - Line Chart and Pie Chart */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Line Chart */}
           <div className="lg:col-span-2">
@@ -111,8 +115,10 @@ export const Quality = () => {
             />
           </Card>
         </div>
+        )}
 
         {/* Second Row - Metrics */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
           {qualityMetrics.map((metric, index) => (
             <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -128,6 +134,7 @@ export const Quality = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection

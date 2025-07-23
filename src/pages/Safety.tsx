@@ -11,6 +11,9 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
+// Toggle this to hide/show charts and stats
+const SHOW_CHARTS_AND_STATS = false;
+
 const safetyMetrics = [
   { label: "No Accidents", value: "12", icon: Shield, color: "bg-status-good" },
   { label: "Near Misses", value: "3", icon: AlertTriangle, color: "bg-status-caution" },
@@ -97,6 +100,7 @@ export const Safety = () => {
     >
       <div className="space-y-6">
         {/* Top Row - Line Chart and Pie Chart */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Line Chart */}
           <div className="lg:col-span-2">
@@ -122,8 +126,10 @@ export const Safety = () => {
             />
           </Card>
         </div>
+        )}
 
         {/* Second Row - Metrics */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-2 gap-2">
           {safetyMetrics.map((metric, index) => (
             <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -139,6 +145,7 @@ export const Safety = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection

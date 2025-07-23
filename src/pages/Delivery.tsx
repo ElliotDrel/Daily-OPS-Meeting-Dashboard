@@ -9,6 +9,9 @@ import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAn
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
+// Toggle this to hide/show charts and stats
+const SHOW_CHARTS_AND_STATS = false;
+
 const deliveryMetrics = [
   { label: "On Time %", value: "92.5%", icon: Truck, color: "bg-status-good" },
   { label: "Late Deliveries", value: "15", icon: Clock, color: "bg-delivery" }
@@ -68,6 +71,7 @@ export const Delivery = () => {
     >
       <div className="space-y-6">
         {/* Top Row - Line Chart and Pie Chart */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Line Chart */}
           <div className="lg:col-span-2">
@@ -93,8 +97,10 @@ export const Delivery = () => {
             />
           </Card>
         </div>
+        )}
 
         {/* Second Row - Metrics */}
+        {SHOW_CHARTS_AND_STATS && (
         <div className="space-y-4">
           {deliveryMetrics.map((metric, index) => (
             <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -110,6 +116,7 @@ export const Delivery = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
