@@ -42,25 +42,40 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
     setIsDialogOpen(true);
   };
 
+  const validateNoteInput = (text: string): void => {
+    if (text.length > 1000) {
+      throw new Error('Note must be 1000 characters or less');
+    }
+    if (text.trim().length < 3) {
+      throw new Error('Note must be at least 3 characters');
+    }
+    if (!/^[\w\s\-.,!?()'"]+$/.test(text.trim())) {
+      throw new Error('Note contains invalid characters');
+    }
+  };
+
   const handleQuickAddNote = async () => {
     if (!newNoteText.trim()) return;
 
-    if (onAddNote) {
-      try {
+    try {
+      validateNoteInput(newNoteText);
+
+      if (onAddNote) {
         await onAddNote(newNoteText.trim());
         setNewNoteText("");
-      } catch (error) {
-        console.error('Error creating note:', error);
+      } else if (onUpdateMeetingNotes) {
+        // Fallback to legacy function
+        const newNote: MeetingNote = {
+          id: Date.now().toString(),
+          date: new Date().toISOString().split('T')[0],
+          keyPoints: [newNoteText.trim()]
+        };
+        onUpdateMeetingNotes([...meetingNotes, newNote]);
+        setNewNoteText("");
       }
-    } else if (onUpdateMeetingNotes) {
-      // Fallback to legacy function
-      const newNote: MeetingNote = {
-        id: Date.now().toString(),
-        date: new Date().toISOString().split('T')[0],
-        keyPoints: [newNoteText.trim()]
-      };
-      onUpdateMeetingNotes([...meetingNotes, newNote]);
-      setNewNoteText("");
+    } catch (error) {
+      console.error('Validation error:', error);
+      alert(error instanceof Error ? error.message : 'Invalid input');
     }
   };
 

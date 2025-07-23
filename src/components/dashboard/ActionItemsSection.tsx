@@ -78,22 +78,41 @@ export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpda
     }
   };
 
+  const validateInput = (text: string): void => {
+    if (text.length > 500) {
+      throw new Error('Description must be 500 characters or less');
+    }
+    if (text.trim().length < 3) {
+      throw new Error('Description must be at least 3 characters');
+    }
+    if (!/^[\w\s\-.,!?()]+$/.test(text.trim())) {
+      throw new Error('Description contains invalid characters');
+    }
+  };
+
   const handleQuickAddItem = () => {
     if (!newItemText.trim() || !onUpdateActionItems) return;
 
-    // Create a basic action item with default values
-    const newItem: ActionItem = {
-      id: Date.now().toString(),
-      description: newItemText.trim(),
-      assignee: "TBD", // Default assignee
-      priority: "Medium", // Default priority
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 1 week from now
-      status: "Open", // Default status
-      category: undefined
-    };
+    try {
+      validateInput(newItemText);
+      
+      // Create a basic action item with default values
+      const newItem: ActionItem = {
+        id: Date.now().toString(),
+        description: newItemText.trim(),
+        assignee: "TBD", // Default assignee
+        priority: "Medium", // Default priority
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 1 week from now
+        status: "Open", // Default status
+        category: undefined
+      };
 
-    onUpdateActionItems([...actionItems, newItem]);
-    setNewItemText("");
+      onUpdateActionItems([...actionItems, newItem]);
+      setNewItemText("");
+    } catch (error) {
+      console.error('Validation error:', error);
+      alert(error instanceof Error ? error.message : 'Invalid input');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
