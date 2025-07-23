@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Clock, User, AlertTriangle, Pencil, Plus } from "lucide-react";
+import { Clock, User, AlertTriangle, Pencil, Plus, Send } from "lucide-react";
 import { EditActionItemDialog } from "./EditActionItemDialog";
 
 export interface ActionItem {
@@ -50,6 +51,7 @@ const isOverdue = (dueDate: string) => {
 export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpdateActionItems, showCard = true }: ActionItemsSectionProps) => {
   const [editingItem, setEditingItem] = useState<ActionItem | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newItemText, setNewItemText] = useState("");
 
   const handleEditItem = (item: ActionItem) => {
     setEditingItem(item);
@@ -73,6 +75,31 @@ export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpda
     } else {
       // Add new item
       onUpdateActionItems([...actionItems, updatedItem]);
+    }
+  };
+
+  const handleQuickAddItem = () => {
+    if (!newItemText.trim() || !onUpdateActionItems) return;
+
+    // Create a basic action item with default values
+    const newItem: ActionItem = {
+      id: Date.now().toString(),
+      description: newItemText.trim(),
+      assignee: "TBD", // Default assignee
+      priority: "Medium", // Default priority
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 1 week from now
+      status: "Open", // Default status
+      category: undefined
+    };
+
+    onUpdateActionItems([...actionItems, newItem]);
+    setNewItemText("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleQuickAddItem();
     }
   };
   const content = (
@@ -160,10 +187,27 @@ export const ActionItemsSection = ({ actionItems, title = "Action Items", onUpda
         </div>
       )}
 
-      <div className="border-t pt-4 mt-4">
-        <Button onClick={handleAddNew} variant="outline" className="w-full">
+      <div className="border-t pt-4 mt-4 space-y-3">
+        <div className="flex space-x-2">
+          <Input
+            placeholder="Type an action item and press Enter or click send..."
+            value={newItemText}
+            onChange={(e) => setNewItemText(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1"
+          />
+          <Button 
+            onClick={handleQuickAddItem}
+            disabled={!newItemText.trim()}
+            size="sm"
+            className="px-3"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+        <Button onClick={handleAddNew} variant="ghost" size="sm" className="w-full text-muted-foreground">
           <Plus className="w-4 h-4 mr-2" />
-          Add New Action Item
+          Add Detailed Action Item
         </Button>
       </div>
 
