@@ -10,7 +10,7 @@ export const saveMeetingNotesToFile = async (updatedNotes: MeetingNote[], pillar
     // Update the specific pillar's notes
     const updatedData = {
       ...data,
-      meetingNotes: data.meetingNotes.map((note: any) => {
+      meetingNotes: data.meetingNotes.map((note: MeetingNote) => {
         // If this note belongs to the current pillar, update it
         const updatedNote = updatedNotes.find(updated => updated.id === note.id);
         if (updatedNote && note.pillar === pillar) {
@@ -21,7 +21,7 @@ export const saveMeetingNotesToFile = async (updatedNotes: MeetingNote[], pillar
     };
     
     // Add any new notes for this pillar
-    const existingIds = data.meetingNotes.map((note: any) => note.id);
+    const existingIds = data.meetingNotes.map((note: MeetingNote) => note.id);
     const newNotes = updatedNotes.filter(note => !existingIds.includes(note.id));
     newNotes.forEach(note => {
       updatedData.meetingNotes.push({ ...note, pillar });
@@ -54,8 +54,8 @@ export const loadMeetingNotesFromFile = async (pillar: string): Promise<MeetingN
     if (localData) {
       const data = JSON.parse(localData);
       return data.meetingNotes
-        .filter((note: any) => note.pillar === pillar)
-        .map((note: any) => ({
+        .filter((note: MeetingNote) => note.pillar === pillar)
+        .map((note: MeetingNote) => ({
           id: note.id,
           date: note.date,
           keyPoints: note.keyPoints
@@ -66,8 +66,8 @@ export const loadMeetingNotesFromFile = async (pillar: string): Promise<MeetingN
     const response = await fetch('/src/data/meetingNotes.json');
     const data = await response.json();
     return data.meetingNotes
-      .filter((note: any) => note.pillar === pillar)
-      .map((note: any) => ({
+      .filter((note: MeetingNote) => note.pillar === pillar)
+      .map((note: MeetingNote) => ({
         id: note.id,
         date: note.date,
         keyPoints: note.keyPoints

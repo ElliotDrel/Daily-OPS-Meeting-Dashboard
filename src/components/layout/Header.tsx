@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LastUpdated } from "./LastUpdated";
 
 export const Header = () => {
   const location = useLocation();
@@ -34,6 +35,10 @@ export const Header = () => {
             </div>
             <span className="text-lg font-semibold">Operations Dashboard</span>
           </Link>
+
+          <div className="flex-1 flex justify-center">
+            <LastUpdated />
+          </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Settings, BarChart3, Users, Workflow } from "lucide-react";
 import { dashboardData } from "@/data/mockData";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarData";
+import { usePillarData } from "@/hooks/usePillarDataOptimized";
 import { useDate } from "@/contexts/DateContext";
 
 // Toggle this to hide/show charts and stats

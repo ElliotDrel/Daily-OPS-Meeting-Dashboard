@@ -207,7 +207,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
 
   // Update action item mutation
   const updateItemMutation = useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
+    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: unknown }) => {
       const { data, error } = await supabase
         .from('action_items')
         .update({

@@ -6,7 +6,7 @@ import { dashboardData, costData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarData";
+import { usePillarData } from "@/hooks/usePillarDataOptimized";
 import { useDate } from "@/contexts/DateContext";
 
 // Toggle this to hide/show charts and stats

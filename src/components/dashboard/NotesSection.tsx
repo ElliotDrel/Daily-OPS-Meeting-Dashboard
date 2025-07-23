@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, Users, Plus, Info, Check, X, Edit3 } from "lucide-react";
+import { FileText, Calendar, Users, Plus, Info, Check, X, Edit3, Send } from "lucide-react";
 import { EditNoteDialog } from "./EditNoteDialog";
 
 export interface MeetingNote {
@@ -30,6 +30,7 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
   const [editingNote, setEditingNote] = useState<MeetingNote | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [newNoteText, setNewNoteText] = useState("");
 
   const handleEditNote = (note: MeetingNote) => {
     setEditingNote(note);
@@ -39,6 +40,35 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
   const handleAddNew = () => {
     setEditingNote(undefined);
     setIsDialogOpen(true);
+  };
+
+  const handleQuickAddNote = async () => {
+    if (!newNoteText.trim()) return;
+
+    if (onAddNote) {
+      try {
+        await onAddNote(newNoteText.trim());
+        setNewNoteText("");
+      } catch (error) {
+        console.error('Error creating note:', error);
+      }
+    } else if (onUpdateMeetingNotes) {
+      // Fallback to legacy function
+      const newNote: MeetingNote = {
+        id: Date.now().toString(),
+        date: new Date().toISOString().split('T')[0],
+        keyPoints: [newNoteText.trim()]
+      };
+      onUpdateMeetingNotes([...meetingNotes, newNote]);
+      setNewNoteText("");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleQuickAddNote();
+    }
   };
 
   const handleSave = async (updatedNote: MeetingNote) => {
@@ -78,7 +108,7 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
       }, 5000); // Show for 5 seconds
       return () => clearTimeout(timer);
     }
-  }, [meetingNotes?.length]);
+  }, [meetingNotes]);
 
   const formatRelativeDate = (dateString: string) => {
     try {
@@ -161,10 +191,27 @@ export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoverie
         </div>
       )}
 
-      <div className="border-t pt-4 mt-4">
-        <Button onClick={handleAddNew} variant="outline" className="w-full">
+      <div className="border-t pt-4 mt-4 space-y-3">
+        <div className="flex space-x-2">
+          <Input
+            placeholder="Type a note and press Enter or click send..."
+            value={newNoteText}
+            onChange={(e) => setNewNoteText(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1"
+          />
+          <Button 
+            onClick={handleQuickAddNote}
+            disabled={!newNoteText.trim()}
+            size="sm"
+            className="px-3"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+        <Button onClick={handleAddNew} variant="ghost" size="sm" className="w-full text-muted-foreground">
           <Plus className="w-4 h-4 mr-2" />
-          Add New Meeting Note
+          Add Detailed Note
         </Button>
       </div>
 
