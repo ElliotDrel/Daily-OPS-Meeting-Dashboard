@@ -63,7 +63,16 @@ const correctiveActions = [
 
 export const Quality = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
+  const { 
+    meetingNotes, 
+    actionItems, 
+    yesterdayMeetingNotes, 
+    yesterdayActionItems, 
+    createNote, 
+    createItem, 
+    updateItem, 
+    isLoading 
+  } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
   if (isLoading) {
     return (
       <PillarLayout
@@ -140,6 +149,8 @@ export const Quality = () => {
         <ActionItemsAndNotesSection
           meetingNotes={meetingNotes}
           actionItems={actionItems}
+          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayActionItems={yesterdayActionItems}
           onAddNote={createNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}

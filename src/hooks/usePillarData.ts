@@ -2,7 +2,7 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useEffect } from 'react'
 
-interface MeetingNote {
+export interface MeetingNote {
   id: string
   pillar: string
   note_date: string
@@ -12,7 +12,7 @@ interface MeetingNote {
   updated_at: string
 }
 
-interface ActionItem {
+export interface ActionItem {
   id: string
   pillar: string
   item_date: string
@@ -28,6 +28,11 @@ interface ActionItem {
 export const usePillarData = (pillar: string, selectedDate: string) => {
   const queryClient = useQueryClient()
 
+  // Calculate yesterday's date
+  const yesterdayDate = new Date(selectedDate)
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+  const yesterdayString = yesterdayDate.toISOString().slice(0, 10)
+
   // Load meeting notes
   const { data: meetingNotes = [], isLoading: notesLoading } = useQuery({
     queryKey: ['meeting-notes', pillar, selectedDate],
@@ -37,6 +42,27 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         .select('*')
         .eq('pillar', pillar)
         .eq('note_date', selectedDate)
+        .order('created_at', { ascending: true })
+      
+      if (error) throw error
+      
+      // Transform Supabase data to UI format
+      return (data as MeetingNote[]).map(note => ({
+        ...note,
+        keyPoints: note.key_points ? note.key_points.split('\n').filter(p => p.trim()) : []
+      }))
+    }
+  })
+
+  // Load yesterday's meeting notes
+  const { data: yesterdayMeetingNotes = [], isLoading: yesterdayNotesLoading } = useQuery({
+    queryKey: ['meeting-notes', pillar, yesterdayString],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('meeting_notes')
+        .select('*')
+        .eq('pillar', pillar)
+        .eq('note_date', yesterdayString)
         .order('created_at', { ascending: true })
       
       if (error) throw error
@@ -65,6 +91,22 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
+  // Load yesterday's action items
+  const { data: yesterdayActionItems = [], isLoading: yesterdayItemsLoading } = useQuery({
+    queryKey: ['action-items', pillar, yesterdayString],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('action_items')
+        .select('*')
+        .eq('pillar', pillar)
+        .eq('item_date', yesterdayString)
+        .order('created_at', { ascending: true })
+      
+      if (error) throw error
+      return data as ActionItem[]
+    }
+  })
+
   // Real-time subscriptions
   useEffect(() => {
     const channel = supabase
@@ -77,6 +119,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
       }, (payload) => {
         console.log('Meeting note changed:', payload)
         queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, selectedDate] })
+        queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, yesterdayString] })
       })
       .on('postgres_changes', { 
         event: '*', 
@@ -86,11 +129,12 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
       }, (payload) => {
         console.log('Action item changed:', payload)
         queryClient.invalidateQueries({ queryKey: ['action-items', pillar, selectedDate] })
+        queryClient.invalidateQueries({ queryKey: ['action-items', pillar, yesterdayString] })
       })
       .subscribe()
 
     return () => supabase.removeChannel(channel)
-  }, [pillar, selectedDate, queryClient])
+  }, [pillar, selectedDate, yesterdayString, queryClient])
 
   // Create note mutation
   const createNoteMutation = useMutation({
@@ -185,7 +229,10 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   return {
     meetingNotes,
     actionItems,
+    yesterdayMeetingNotes,
+    yesterdayActionItems,
     isLoading: notesLoading || itemsLoading,
+    isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
     createNote: createNoteMutation.mutate,
     updateNote: updateNoteMutation.mutate,
     createItem: createItemMutation.mutate,

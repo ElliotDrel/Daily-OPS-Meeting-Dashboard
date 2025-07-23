@@ -72,7 +72,16 @@ const safetyActions = [
 
 export const Safety = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
+  const { 
+    meetingNotes, 
+    actionItems, 
+    yesterdayMeetingNotes, 
+    yesterdayActionItems, 
+    createNote, 
+    createItem, 
+    updateItem, 
+    isLoading 
+  } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
     return (
@@ -151,6 +160,8 @@ export const Safety = () => {
         <ActionItemsAndNotesSection
           meetingNotes={meetingNotes}
           actionItems={actionItems}
+          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayActionItems={yesterdayActionItems}
           onAddNote={createNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}

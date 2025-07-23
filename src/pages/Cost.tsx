@@ -48,7 +48,16 @@ const lowYieldEvents = [
 
 export const Cost = () => {
   const { selectedDate } = useDate();
-  const { meetingNotes, actionItems, createNote, createItem, updateItem, isLoading } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
+  const { 
+    meetingNotes, 
+    actionItems, 
+    yesterdayMeetingNotes, 
+    yesterdayActionItems, 
+    createNote, 
+    createItem, 
+    updateItem, 
+    isLoading 
+  } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
     return (
@@ -125,8 +134,10 @@ export const Cost = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          notes={meetingNotes}
+          meetingNotes={meetingNotes}
           actionItems={actionItems}
+          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayActionItems={yesterdayActionItems}
           onAddNote={createNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
