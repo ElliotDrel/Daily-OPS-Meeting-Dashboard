@@ -224,10 +224,8 @@ export const NotesSection = ({
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <h4 className="text-sm font-medium text-muted-foreground">
                 {yesterdayMeetingNote 
-                  ? `${format(new Date(yesterdayMeetingNote.note_date), 'EEEE')}\'s Meeting Notes (${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')})`
-                  : lastRecordedNote
-                    ? `${format(new Date(lastRecordedNote.note_date), 'EEEE')}\'s Meeting Notes (${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})`
-                    : "Previous Meeting Notes"
+                  ? `Yesterday's Meeting Notes (${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')})`
+                  : "Yesterday's Meeting Notes"
                 }
               </h4>
             </div>
@@ -257,12 +255,36 @@ export const NotesSection = ({
                     )}
                   </div>
                 </div>
-              ) : lastRecordedNote ? (
+              ) : (
+                <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
+                  <div className="text-center py-4 text-muted-foreground">
+                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No notes found</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Last Recorded Notes Section */}
+          <div className="mt-6 pt-4 border-t border-muted/50">
+            <div className="flex items-center space-x-2 mb-3">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              <h4 className="text-sm font-medium text-muted-foreground">
+                {lastRecordedNote 
+                  ? `Last Recorded Notes (${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})`
+                  : "Last Recorded Notes"
+                }
+              </h4>
+            </div>
+            
+            <div className="space-y-4 opacity-75">
+              {lastRecordedNote ? (
                 <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
                   <div className="flex items-center mb-3">
                     <div className="flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Last Recorded Notes</span>
+                      <span className="text-sm font-medium text-muted-foreground">Historical Notes</span>
                     </div>
                   </div>
                   
@@ -285,7 +307,7 @@ export const NotesSection = ({
                 <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
                   <div className="text-center py-4 text-muted-foreground">
                     <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No notes recorded yet</p>
+                    <p className="text-sm">No historical notes found</p>
                   </div>
                 </div>
               )}
