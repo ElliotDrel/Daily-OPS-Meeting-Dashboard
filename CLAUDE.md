@@ -10,6 +10,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run lint` - Run ESLint for code quality checks
 - `npm run tests` - Run tests
 
+### Stopping Development Server or Port Issues
+
+If you need to stop a process running on a specific port (e.g., port 8080):
+
+1. **Find the process using the port:**
+   ```bash
+   netstat -ano | findstr :8080
+   ```
+
+2. **Kill the process (Windows):**
+   ```bash
+   taskkill //PID [PID_NUMBER] //F
+   ```
+   
+   **Note:** Use double forward slashes (`//`) when running in Git Bash to avoid path interpretation issues.
+
+3. **Alternative:** Use Ctrl+C in the terminal where the dev server is running to stop it gracefully.
+
 ## Deployment
 
 This application is hosted on **Vercel** with automatic deployments from the main branch. 
