@@ -33,9 +33,9 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   yesterdayDate.setDate(yesterdayDate.getDate() - 1)
   const yesterdayString = yesterdayDate.toISOString().slice(0, 10)
 
-  // Load meeting notes
-  const { data: meetingNotes = [], isLoading: notesLoading } = useQuery({
-    queryKey: ['meeting-notes', pillar, selectedDate],
+  // Load single meeting note for the day
+  const { data: meetingNote = null, isLoading: notesLoading } = useQuery({
+    queryKey: ['meeting-note', pillar, selectedDate],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meeting_notes')
@@ -43,20 +43,23 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         .eq('pillar', pillar)
         .eq('note_date', selectedDate)
         .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
       
       if (error) throw error
       
       // Transform Supabase data to UI format
-      return (data as MeetingNote[]).map(note => ({
-        ...note,
-        keyPoints: note.key_points ? note.key_points.split('\n').filter(p => p.trim()) : []
-      }))
+      if (!data) return null
+      return {
+        ...data,
+        keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
+      } as MeetingNote
     }
   })
 
-  // Load yesterday's meeting notes
-  const { data: yesterdayMeetingNotes = [], isLoading: yesterdayNotesLoading } = useQuery({
-    queryKey: ['meeting-notes', pillar, yesterdayString],
+  // Load yesterday's single meeting note
+  const { data: yesterdayMeetingNote = null, isLoading: yesterdayNotesLoading } = useQuery({
+    queryKey: ['meeting-note', pillar, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meeting_notes')
@@ -64,14 +67,17 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         .eq('pillar', pillar)
         .eq('note_date', yesterdayString)
         .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
       
       if (error) throw error
       
       // Transform Supabase data to UI format
-      return (data as MeetingNote[]).map(note => ({
-        ...note,
-        keyPoints: note.key_points ? note.key_points.split('\n').filter(p => p.trim()) : []
-      }))
+      if (!data) return null
+      return {
+        ...data,
+        keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
+      } as MeetingNote
     }
   })
 
@@ -227,9 +233,9 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   })
 
   return {
-    meetingNotes,
+    meetingNote,
     actionItems,
-    yesterdayMeetingNotes,
+    yesterdayMeetingNote,
     yesterdayActionItems,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
