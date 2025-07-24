@@ -3,6 +3,11 @@ import { FileText, Calendar } from "lucide-react";
 import type { MeetingNote } from "@/hooks/usePillarData";
 import { format } from "date-fns";
 
+// Helper function to strip bullets from text
+const stripBullets = (text: string): string => {
+  return text.replace(/^[•·\-\*]\s*/, '').trim();
+};
+
 interface YesterdayNotesSectionProps {
   meetingNote?: MeetingNote | null;
   title?: string;
@@ -52,11 +57,11 @@ export const YesterdayNotesSection = ({
           
           <div className="space-y-2">
             {meetingNote.keyPoints && meetingNote.keyPoints.length > 0 ? (
-              <ul className="space-y-1">
+              <ul className="space-y-1 list-none">
                 {meetingNote.keyPoints.map((point, index) => (
                   <li key={index} className="flex items-start space-x-2">
-                    <span className="text-muted-foreground mt-1">•</span>
-                    <span className="text-sm text-muted-foreground flex-1">{point}</span>
+                    <span className="text-sm text-muted-foreground">•</span>
+                    <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
                   </li>
                 ))}
               </ul>
