@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 // Helper function to strip bullets from text
 const stripBullets = (text: string): string => {
-  return text.replace(/^[•·\-\*]\s*/, '').trim();
+  return text.replace(/^[•·\-*]\s*/, '').trim();
 };
 
 interface YesterdayNotesSectionProps {
