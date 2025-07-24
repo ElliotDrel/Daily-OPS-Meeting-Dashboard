@@ -145,37 +145,37 @@ export const NotesSection = ({
           <FileText className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold">{title}</h3>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDeleteNote}
-            disabled={!localNoteValue || localNoteValue.trim() === ""}
-            className="h-8 px-2 bg-red-500 hover:bg-red-600 text-white"
-          >
-            <Trash2 className="w-4 h-4 mr-1" />
-            Delete
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleEditMode}
-            disabled={!localNoteValue || localNoteValue.trim() === ""}
-            className={`h-8 px-2 ${isEditing ? 'bg-green-500 hover:bg-green-600 text-white' : ''}`}
-          >
-            {isEditing ? (
-              <>
-                <Save className="w-4 h-4 mr-1" />
-                Save
-              </>
-            ) : (
-              <>
-                <Edit className="w-4 h-4 mr-1" />
-                Edit
-              </>
-            )}
-          </Button>
-        </div>
+        {localNoteValue && localNoteValue.trim() !== "" && (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDeleteNote}
+              className="h-8 px-2 bg-red-500 hover:bg-red-600 text-white"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Delete
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleEditMode}
+              className={`h-8 px-2 ${isEditing ? 'bg-green-500 hover:bg-green-600 text-white' : ''}`}
+            >
+              {isEditing ? (
+                <>
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </>
+              ) : (
+                <>
+                  <Edit className="w-4 h-4 mr-1" />
+                  Edit
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
