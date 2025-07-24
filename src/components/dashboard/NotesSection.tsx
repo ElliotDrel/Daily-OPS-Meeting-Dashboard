@@ -18,7 +18,7 @@ export interface MeetingNote {
 
 // Helper function to strip bullets from text
 const stripBullets = (text: string): string => {
-  return text.replace(/^[•·\-\*]\s*/, '').trim();
+  return text.replace(/^[•·\-*]\s*/, '').trim();
 };
 
 interface NotesSectionProps {
@@ -222,7 +222,14 @@ export const NotesSection = ({
           <div className="mt-6 pt-4 border-t border-muted/50">
             <div className="flex items-center space-x-2 mb-3">
               <Calendar className="w-4 h-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium text-muted-foreground">Yesterday's Meeting Notes</h4>
+              <h4 className="text-sm font-medium text-muted-foreground">
+                {yesterdayMeetingNote 
+                  ? `${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')} Meeting Notes`
+                  : lastRecordedNote
+                    ? `${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')} Meeting Notes`
+                    : "Previous Meeting Notes"
+                }
+              </h4>
             </div>
             
             <div className="space-y-4 opacity-75">
