@@ -1,5 +1,7 @@
-import { forwardRef, KeyboardEvent, ClipboardEvent, ChangeEvent } from 'react'
+import { forwardRef, KeyboardEvent, ClipboardEvent, ChangeEvent, useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface BulletTextAreaProps {
   value: string
@@ -9,12 +11,21 @@ interface BulletTextAreaProps {
   rows?: number
   disabled?: boolean
   onSave?: () => void
+  initialValue?: string
 }
 
 const BULLET = '• '
 
 export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProps>(
-  ({ value, onChange, placeholder, className, rows = 5, disabled, onSave, ...props }, ref) => {
+  ({ value, onChange, placeholder, className, rows = 5, disabled, onSave, initialValue, ...props }, ref) => {
+    
+    const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+    const [lastSavedValue, setLastSavedValue] = useState(initialValue || value)
+    
+    useEffect(() => {
+      setHasUnsavedChanges(value !== lastSavedValue)
+    }, [value, lastSavedValue])
     
     const formatTextWithBullets = (text: string): string => {
       if (!text.trim()) return BULLET
@@ -88,13 +99,32 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
       
       if (e.ctrlKey && e.key === 'Enter' && onSave) {
         e.preventDefault()
-        onSave()
+        handleSave()
       }
     }
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value
       onChange(newValue)
+    }
+    
+    const handleBlur = () => {
+      if (hasUnsavedChanges && !disabled) {
+        setShowUnsavedDialog(true)
+      }
+    }
+    
+    const handleSave = () => {
+      if (onSave) {
+        onSave()
+        setLastSavedValue(value)
+        setHasUnsavedChanges(false)
+      }
+      setShowUnsavedDialog(false)
+    }
+    
+    const handleDiscardChanges = () => {
+      setShowUnsavedDialog(false)
     }
 
     const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
@@ -121,25 +151,48 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
     const displayValue = value || BULLET
 
     return (
-      <textarea
-        ref={ref}
-        value={displayValue}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onPaste={handlePaste}
-        placeholder={placeholder}
-        rows={rows}
-        disabled={disabled}
-        className={cn(
-          'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y',
-          className
-        )}
-        style={{
-          fontFamily: 'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Source Code Pro", monospace',
-          lineHeight: '1.5'
-        }}
-        {...props}
-      />
+      <>
+        <textarea
+          ref={ref}
+          value={displayValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          rows={rows}
+          disabled={disabled}
+          className={cn(
+            'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y',
+            hasUnsavedChanges && 'border-yellow-400',
+            className
+          )}
+          style={{
+            fontFamily: 'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Source Code Pro", monospace',
+            lineHeight: '1.5'
+          }}
+          {...props}
+        />
+        
+        <Dialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Unsaved Changes</DialogTitle>
+              <DialogDescription>
+                Your work will not be saved. Do you want to save your changes before leaving?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={handleDiscardChanges}>
+                Don't Save
+              </Button>
+              <Button onClick={handleSave}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     )
   }
 )

@@ -108,10 +108,12 @@ export const PillarLayout = ({
                 <ArrowLeft className="w-4 h-4" />
                 Previous Day
               </Button>
-              <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
-              <span className="text-lg font-semibold text-foreground">
-                {format(selectedDate, 'EEEE, MMMM d, yyyy')}
-              </span>
+              <div className="flex flex-col items-center min-w-64 px-4">
+                <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                </span>
+              </div>
               {!isToday(selectedDate) && (
                 <Button
                   variant="outline"
