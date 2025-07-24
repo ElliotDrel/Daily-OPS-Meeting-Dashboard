@@ -81,6 +81,30 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
+  // Load last recorded meeting note (when yesterday is empty)
+  const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading } = useQuery({
+    queryKey: ['last-meeting-note', pillar],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('meeting_notes')
+        .select('*')
+        .eq('pillar', pillar)
+        .order('note_date', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      
+      if (error) throw error
+      
+      // Transform Supabase data to UI format
+      if (!data || data.note_date === selectedDate || data.note_date === yesterdayString) return null
+      return {
+        ...data,
+        keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
+      } as MeetingNote
+    },
+    enabled: !yesterdayMeetingNote // Only fetch if yesterday note doesn't exist
+  })
+
   // Load action items  
   const { data: actionItems = [], isLoading: itemsLoading } = useQuery({
     queryKey: ['action-items', pillar, selectedDate],
@@ -274,8 +298,10 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     actionItems,
     yesterdayMeetingNote,
     yesterdayActionItems,
+    lastRecordedNote,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
+    isLastRecordedLoading: lastRecordedNotesLoading,
     upsertNote: upsertNoteMutation.mutate,
     deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
