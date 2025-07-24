@@ -188,3 +188,24 @@
     }
   }
 }
+
+/* Temporarily hide specific dashboard elements */
+@layer utilities {
+  /* Hide specific dashboard sections */
+  .hide-delivery-actions,
+  .hide-safety-actions,
+  .hide-quality-actions,
+  .hide-cost-events,
+  .hide-production-processes {
+    display: none !important;
+  }
+  
+  /* Alternative - use data attributes for more specific targeting */
+  [data-section="delivery-improvement-actions"],
+  [data-section="safety-corrective-actions"],
+  [data-section="quality-corrective-actions"],
+  [data-section="cost-low-yield-events"],
+  [data-section="production-open-processes"] {
+    display: none !important;
+  }
+}

@@ -124,8 +124,8 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         filter: `pillar=eq.${pillar}` 
       }, (payload) => {
         console.log('Meeting note changed:', payload)
-        queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, selectedDate] })
-        queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, yesterdayString] })
+        queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, selectedDate] })
+        queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, yesterdayString] })
       })
       .on('postgres_changes', { 
         event: '*', 
@@ -142,45 +142,66 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     return () => supabase.removeChannel(channel)
   }, [pillar, selectedDate, yesterdayString, queryClient])
 
-  // Create note mutation
-  const createNoteMutation = useMutation({
+  // Upsert note mutation (create or update single entry)
+  const upsertNoteMutation = useMutation({
     mutationFn: async (keyPoints: string) => {
-      const { data, error } = await supabase
+      // Try to update existing note first
+      const { data: existingNote } = await supabase
         .from('meeting_notes')
-        .insert({
-          pillar,
-          note_date: selectedDate,
-          key_points: keyPoints
-        })
-        .select()
-        .single()
+        .select('id')
+        .eq('pillar', pillar)
+        .eq('note_date', selectedDate)
+        .limit(1)
+        .maybeSingle()
       
-      if (error) throw error
-      return data
+      if (existingNote) {
+        // Update existing note
+        const { data, error } = await supabase
+          .from('meeting_notes')
+          .update({ 
+            key_points: keyPoints,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingNote.id)
+          .select()
+          .single()
+        
+        if (error) throw error
+        return data
+      } else {
+        // Create new note
+        const { data, error } = await supabase
+          .from('meeting_notes')
+          .insert({
+            pillar,
+            note_date: selectedDate,
+            key_points: keyPoints
+          })
+          .select()
+          .single()
+        
+        if (error) throw error
+        return data
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, selectedDate] })
+      queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, selectedDate] })
     }
   })
 
-  // Update note mutation
-  const updateNoteMutation = useMutation({
-    mutationFn: async ({ id, keyPoints }: { id: string, keyPoints: string }) => {
-      const { data, error } = await supabase
+  // Delete note mutation
+  const deleteNoteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
         .from('meeting_notes')
-        .update({ 
-          key_points: keyPoints,
-          updated_at: new Date().toISOString()
-        })
+        .delete()
         .eq('id', id)
-        .select()
-        .single()
       
       if (error) throw error
-      return data
+      return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meeting-notes', pillar, selectedDate] })
+      queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, selectedDate] })
     }
   })
 
@@ -232,6 +253,22 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
+  // Delete action item mutation
+  const deleteItemMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('action_items')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return id
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['action-items', pillar, selectedDate] })
+    }
+  })
+
   return {
     meetingNote,
     actionItems,
@@ -239,13 +276,15 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     yesterdayActionItems,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
-    createNote: createNoteMutation.mutate,
-    updateNote: updateNoteMutation.mutate,
+    upsertNote: upsertNoteMutation.mutate,
+    deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
     updateItem: updateItemMutation.mutate,
-    isCreatingNote: createNoteMutation.isPending,
-    isUpdatingNote: updateNoteMutation.isPending,
+    deleteItem: deleteItemMutation.mutate,
+    isUpsertingNote: upsertNoteMutation.isPending,
+    isDeletingNote: deleteNoteMutation.isPending,
     isCreatingItem: createItemMutation.isPending,
-    isUpdatingItem: updateItemMutation.isPending
+    isUpdatingItem: updateItemMutation.isPending,
+    isDeletingItem: deleteItemMutation.isPending
   }
 }

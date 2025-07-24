@@ -1,241 +1,217 @@
-import { useState, useEffect } from "react";
+import { BulletTextArea } from "@/components/ui/BulletTextArea";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, Users, Plus, Info, Check, X, Edit3, Send } from "lucide-react";
-import { EditNoteDialog } from "./EditNoteDialog";
+import { FileText, Send, Edit, Trash2, Save } from "lucide-react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export interface MeetingNote {
   id: string;
-  date: string;
-  keyPoints: string[];
-}
-
-export interface SectionLead {
   pillar: string;
-  name: string;
+  note_date: string;
+  key_points: string;
+  keyPoints?: string[];
+  created_at: string;
+  updated_at: string;
 }
 
 interface NotesSectionProps {
-  meetingNotes: MeetingNote[];
+  meetingNote: MeetingNote | null;
   title?: string;
-  onUpdateMeetingNotes?: (meetingNotes: MeetingNote[]) => void;
-  onAddNote?: (keyPoints: string) => Promise<void>;
+  onUpsertNote?: (keyPoints: string) => Promise<void>;
+  onDeleteNote?: (id: string) => void;
   showCard?: boolean;
+  isLoading?: boolean;
 }
 
-export const NotesSection = ({ meetingNotes, title = "Meeting Notes & Discoveries", onUpdateMeetingNotes, onAddNote, showCard = true }: NotesSectionProps) => {
-  const [editingNote, setEditingNote] = useState<MeetingNote | undefined>();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [newNoteText, setNewNoteText] = useState("");
+export const NotesSection = ({ 
+  meetingNote, 
+  title = "Meeting Notes & Discoveries", 
+  onUpsertNote, 
+  onDeleteNote, 
+  showCard = true, 
+  isLoading = false 
+}: NotesSectionProps) => {
+  const [newNote, setNewNote] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [localNoteValue, setLocalNoteValue] = useState(meetingNote?.key_points || "");
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleEditNote = (note: MeetingNote) => {
-    setEditingNote(note);
-    setIsDialogOpen(true);
-  };
+  // Update local value when meetingNote changes
+  useEffect(() => {
+    setLocalNoteValue(meetingNote?.key_points || "");
+  }, [meetingNote?.key_points]);
 
-  const handleAddNew = () => {
-    setEditingNote(undefined);
-    setIsDialogOpen(true);
-  };
-
-  const validateNoteInput = (text: string): void => {
-    if (text.length > 1000) {
-      throw new Error('Note must be 1000 characters or less');
-    }
-    if (text.trim().length < 3) {
-      throw new Error('Note must be at least 3 characters');
-    }
-    if (!/^[\w\s\-.,!?()'"]+$/.test(text.trim())) {
-      throw new Error('Note contains invalid characters');
-    }
-  };
-
-  const handleQuickAddNote = async () => {
-    if (!newNoteText.trim()) return;
-
-    try {
-      validateNoteInput(newNoteText);
-
-      if (onAddNote) {
-        await onAddNote(newNoteText.trim());
-        setNewNoteText("");
-      } else if (onUpdateMeetingNotes) {
-        // Fallback to legacy function
-        const newNote: MeetingNote = {
-          id: Date.now().toString(),
-          date: new Date().toISOString().split('T')[0],
-          keyPoints: [newNoteText.trim()]
-        };
-        onUpdateMeetingNotes([...meetingNotes, newNote]);
-        setNewNoteText("");
-      }
-    } catch (error) {
-      console.error('Validation error:', error);
-      alert(error instanceof Error ? error.message : 'Invalid input');
-    }
+  const handleSendNote = async () => {
+    if (!newNote.trim() || !onUpsertNote) return;
+    
+    const currentNotes = localNoteValue || "";
+    const updatedNotes = currentNotes 
+      ? `${currentNotes}\n• ${newNote.trim()}`
+      : `• ${newNote.trim()}`;
+    
+    setLocalNoteValue(updatedNotes);
+    await onUpsertNote(updatedNotes);
+    setNewNote("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      handleQuickAddNote();
+      handleSendNote();
     }
   };
 
-  const handleSave = async (updatedNote: MeetingNote) => {
-    if (editingNote) {
-      // Edit existing note - use the legacy function if available
-      if (onUpdateMeetingNotes) {
-        const updatedNotes = meetingNotes.map(note => 
-          note.id === updatedNote.id ? updatedNote : note
-        );
-        onUpdateMeetingNotes(updatedNotes);
-      }
-    } else {
-      // Add new note - use Supabase function
-      if (onAddNote && updatedNote.keyPoints.length > 0) {
-        try {
-          // Convert key points array to string for Supabase
-          const keyPointsString = updatedNote.keyPoints.join('\n');
-          await onAddNote(keyPointsString);
-        } catch (error) {
-          console.error('Error creating note:', error);
-        }
-      } else if (onUpdateMeetingNotes) {
-        // Fallback to legacy function
-        onUpdateMeetingNotes([...meetingNotes, updatedNote]);
-      }
-    }
+  const handleEditMode = () => {
+    setIsEditing(!isEditing);
   };
 
-  // Show tooltip for first-time users
+  const handleDeleteNote = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (meetingNote?.id && onDeleteNote) {
+      onDeleteNote(meetingNote.id);
+    }
+    setShowDeleteConfirm(false);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  // Debounced onChange handler for the BulletTextArea
+  const debouncedOnChange = useCallback((value: string) => {
+    setLocalNoteValue(value);
+    
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    
+    debounceRef.current = setTimeout(() => {
+      if (onUpsertNote) {
+        onUpsertNote(value);
+      }
+    }, 1000); // 1 second debounce
+  }, [onUpsertNote]);
+
+  // Cleanup debounce on unmount
   useEffect(() => {
-    const hasSeenTooltip = localStorage.getItem('hasSeenNotesTooltip');
-    if (!hasSeenTooltip && meetingNotes && meetingNotes.length > 0) {
-      setShowTooltip(true);
-      const timer = setTimeout(() => {
-        setShowTooltip(false);
-        localStorage.setItem('hasSeenNotesTooltip', 'true');
-      }, 5000); // Show for 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [meetingNotes]);
-
-  const formatRelativeDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffTime = Math.abs(now.getTime() - date.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 1) return "1 day ago";
-      if (diffDays < 7) return `${diffDays} days ago`;
-      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-      return `${Math.floor(diffDays / 30)} months ago`;
-    } catch {
-      return dateString;
-    }
-  };
-
-  const getMeetingTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'daily standup': return 'bg-chart-blue/10 text-chart-blue border-chart-blue/20';
-      case 'weekly review': return 'bg-primary/10 text-primary border-primary/20';
-      case 'incident review': return 'bg-status-issue/10 text-status-issue border-status-issue/20';
-      case 'audit': return 'bg-status-caution/10 text-status-caution border-status-caution/20';
-      default: return 'bg-muted text-muted-foreground border-border';
-    }
-  };
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const content = (
     <>
-      <div className="flex items-center space-x-2 mb-4">
-        <FileText className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-semibold">{title}</h3>
-      </div>
-
-      <div className="space-y-6">
-        {meetingNotes.slice(0, 1).map((note, index) => (
-          <div key={note.id}>
-            <div className="space-y-4">
-              {/* Key Points */}
-              {note.keyPoints.length > 0 && (
-                <div className="relative">
-                  <div 
-                    onClick={() => handleEditNote(note)}
-                    className="p-3 rounded-lg border border-transparent cursor-pointer hover:border-primary/20 hover:bg-primary/5 transition-all duration-200"
-                  >
-                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Key Points</h4>
-                    <ul className="space-y-1 text-sm">
-                      {note.keyPoints.map((point, pointIndex) => (
-                        <li key={pointIndex} className="flex items-start space-x-2">
-                          <span className="text-primary mt-1">•</span>
-                          <span className="flex-1 p-2 rounded">
-                            {point}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {showTooltip && (
-                    <div className="absolute -top-2 -right-2 z-10">
-                      <div className="relative">
-                        <div className="bg-primary text-primary-foreground px-3 py-2 rounded-lg text-xs font-medium shadow-lg">
-                          <Info className="w-3 h-3 inline mr-1" />
-                          Click anywhere to edit
-                        </div>
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-primary"></div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {(!meetingNotes || meetingNotes.length === 0) && (
-        <div className="text-center py-8 text-muted-foreground">
-          <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p>No meeting notes available</p>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold">{title}</h3>
         </div>
-      )}
-
-      <div className="border-t pt-4 mt-4 space-y-3">
-        <div className="flex space-x-2">
-          <Input
-            placeholder="Type a note and press Enter or click send..."
-            value={newNoteText}
-            onChange={(e) => setNewNoteText(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="flex-1"
-          />
-          <Button 
-            onClick={handleQuickAddNote}
-            disabled={!newNoteText.trim()}
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
             size="sm"
-            className="px-3"
+            onClick={handleEditMode}
+            disabled={!localNoteValue || localNoteValue.trim() === ""}
+            className="h-8 px-2"
           >
-            <Send className="w-4 h-4" />
+            {isEditing ? (
+              <>
+                <Save className="w-4 h-4 mr-1" />
+                Save
+              </>
+            ) : (
+              <>
+                <Edit className="w-4 h-4 mr-1" />
+                Edit
+              </>
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDeleteNote}
+            disabled={!localNoteValue || localNoteValue.trim() === ""}
+            className="h-8 px-2 text-destructive hover:text-destructive"
+          >
+            <Trash2 className="w-4 h-4 mr-1" />
+            Delete
           </Button>
         </div>
-        <Button onClick={handleAddNew} variant="ghost" size="sm" className="w-full text-muted-foreground">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Detailed Note
-        </Button>
       </div>
 
-      <EditNoteDialog
-        meetingNote={editingNote}
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onSave={handleSave}
-      />
+      {isLoading ? (
+        <div className="text-center py-8 text-muted-foreground">
+          <FileText className="w-8 h-8 mx-auto mb-2 opacity-50 animate-pulse" />
+          <p>Loading meeting notes...</p>
+        </div>
+      ) : (
+        <>
+          {localNoteValue && localNoteValue.trim() !== "" ? (
+            <BulletTextArea
+              value={localNoteValue}
+              onChange={debouncedOnChange}
+              placeholder="Type meeting notes and press Enter..."
+              className="min-h-[2.5rem] mb-4"
+              disabled={!onUpsertNote || !isEditing}
+            />
+          ) : (
+            <div className="text-center py-8 text-muted-foreground text-sm mb-4">
+              <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
+              <p>No meeting notes yet. Use the input below to create your first note.</p>
+            </div>
+          )}
+
+          <div className="flex space-x-2">
+            <Input
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm flex-1"
+              placeholder="Type a note and press Enter or click send..."
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={!onUpsertNote}
+            />
+            <Button
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
+              onClick={handleSendNote}
+              disabled={!newNote.trim() || !onUpsertNote}
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {showDeleteConfirm && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-background border rounded-lg p-6 max-w-md mx-4 shadow-lg">
+                <h4 className="text-lg font-semibold mb-2">Delete Meeting Note</h4>
+                <p className="text-muted-foreground mb-4">
+                  Are you sure you want to delete this entire meeting note? This action cannot be undone and will remove all the content permanently.
+                </p>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={cancelDelete}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 

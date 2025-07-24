@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Settings, BarChart3, Users, Workflow } from "lucide-react";
 import { dashboardData } from "@/data/mockData";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarDataOptimized";
+import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
 // Toggle this to hide/show charts and stats
@@ -21,13 +21,14 @@ const inventoryMetrics = [
 export const Inventory = () => {
   const { selectedDate } = useDate();
   const { 
-    meetingNotes, 
+    meetingNote, 
     actionItems, 
-    yesterdayMeetingNotes, 
+    yesterdayMeetingNote, 
     yesterdayActionItems, 
-    createNote, 
+    upsertNote, 
     createItem, 
     updateItem, 
+    deleteNote,
     isLoading 
   } = usePillarData('inventory', selectedDate.toISOString().slice(0, 10));
 
@@ -77,16 +78,18 @@ export const Inventory = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection 
-          meetingNotes={meetingNotes}
+          meetingNote={meetingNote}
           actionItems={actionItems}
-          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
-          onAddNote={createNote}
+          onUpsertNote={upsertNote}
+          onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="inventory"
           actionItemsTitle="Internal Process Action Items"
           notesTitle="Internal Process Meeting Notes"
+          isLoading={isLoading}
         />
       </div>
     </PillarLayout>

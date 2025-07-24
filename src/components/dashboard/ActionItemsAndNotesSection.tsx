@@ -8,41 +8,45 @@ import { YesterdayActionItemsSection } from "./YesterdayActionItemsSection";
 import { YesterdayNotesSection } from "./YesterdayNotesSection";
 
 interface ActionItemsAndNotesSectionProps {
-  meetingNotes?: MeetingNote[];
+  meetingNote?: MeetingNote | null;
   actionItems?: ActionItem[];
-  yesterdayMeetingNotes?: MeetingNote[];
+  yesterdayMeetingNote?: MeetingNote | null;
   yesterdayActionItems?: ActionItem[];
-  onAddNote: (keyPoints: string) => Promise<void>;
+  onUpsertNote: (keyPoints: string) => Promise<void>;
+  onDeleteNote?: (id: string) => void;
   onAddActionItem: (item: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   onUpdateActionItem: (id: string, updates: Partial<ActionItem>) => Promise<void>;
+  onDeleteActionItem?: (id: string) => void;
   pillar: string;
   actionItemsTitle?: string;
   notesTitle?: string;
   onUpdateActionItems?: (items: ActionItem[]) => void;
-  onUpdateMeetingNotes?: (notes: MeetingNote[]) => void;
+  isLoading?: boolean;
 }
 
 export const ActionItemsAndNotesSection = ({
   actionItems,
-  meetingNotes,
+  meetingNote,
   yesterdayActionItems,
-  yesterdayMeetingNotes,
+  yesterdayMeetingNote,
   onUpdateActionItems,
-  onUpdateMeetingNotes,
   actionItemsTitle,
   notesTitle,
-  onAddNote,
+  onUpsertNote,
+  onDeleteNote,
   onAddActionItem,
   onUpdateActionItem,
-  pillar
+  onDeleteActionItem,
+  pillar,
+  isLoading = false
 }: ActionItemsAndNotesSectionProps) => {
-  if (!meetingNotes || !actionItems) {
+  if (isLoading) {
     return <div className="flex justify-center items-center h-32">Loading...</div>;
   }
 
   // Check if we have yesterday's data to show
   const hasYesterdayData = (yesterdayActionItems && yesterdayActionItems.length > 0) || 
-                          (yesterdayMeetingNotes && yesterdayMeetingNotes.length > 0);
+                          Boolean(yesterdayMeetingNote);
 
   return (
     <div className="space-y-6">
@@ -62,11 +66,12 @@ export const ActionItemsAndNotesSection = ({
           {/* Right Half - Notes */}
           <div>
             <NotesSection
-              meetingNotes={meetingNotes || []}
+              meetingNote={meetingNote}
               title={notesTitle}
-              onUpdateMeetingNotes={onUpdateMeetingNotes}
               showCard={false}
-              onAddNote={onAddNote}
+              onUpsertNote={onUpsertNote}
+              onDeleteNote={onDeleteNote}
+              isLoading={isLoading}
             />
           </div>
         </div>
@@ -87,7 +92,7 @@ export const ActionItemsAndNotesSection = ({
             {/* Right Half - Yesterday's Notes */}
             <div>
               <YesterdayNotesSection
-                meetingNotes={yesterdayMeetingNotes || []}
+                meetingNote={yesterdayMeetingNote}
                 showCard={false}
               />
             </div>
