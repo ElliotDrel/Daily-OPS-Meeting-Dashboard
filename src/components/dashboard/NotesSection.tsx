@@ -149,9 +149,19 @@ export const NotesSection = ({
           <Button
             variant="ghost"
             size="sm"
+            onClick={handleDeleteNote}
+            disabled={!localNoteValue || localNoteValue.trim() === ""}
+            className="h-8 px-2 bg-red-500 hover:bg-red-600 text-white"
+          >
+            <Trash2 className="w-4 h-4 mr-1" />
+            Delete
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleEditMode}
             disabled={!localNoteValue || localNoteValue.trim() === ""}
-            className="h-8 px-2"
+            className={`h-8 px-2 ${isEditing ? 'bg-green-500 hover:bg-green-600 text-white' : ''}`}
           >
             {isEditing ? (
               <>
@@ -164,16 +174,6 @@ export const NotesSection = ({
                 Edit
               </>
             )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDeleteNote}
-            disabled={!localNoteValue || localNoteValue.trim() === ""}
-            className="h-8 px-2 text-destructive hover:text-destructive"
-          >
-            <Trash2 className="w-4 h-4 mr-1" />
-            Delete
           </Button>
         </div>
       </div>
@@ -224,9 +224,9 @@ export const NotesSection = ({
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <h4 className="text-sm font-medium text-muted-foreground">
                 {yesterdayMeetingNote 
-                  ? `${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')} Meeting Notes`
+                  ? `${format(new Date(yesterdayMeetingNote.note_date), 'EEEE')}\'s Meeting Notes (${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')})`
                   : lastRecordedNote
-                    ? `${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')} Meeting Notes`
+                    ? `${format(new Date(lastRecordedNote.note_date), 'EEEE')}\'s Meeting Notes (${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})`
                     : "Previous Meeting Notes"
                 }
               </h4>
@@ -235,14 +235,11 @@ export const NotesSection = ({
             <div className="space-y-4 opacity-75">
               {yesterdayMeetingNote ? (
                 <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center mb-3">
                     <div className="flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      {format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')}
-                    </span>
                   </div>
                   
                   <div className="space-y-2">
@@ -262,14 +259,11 @@ export const NotesSection = ({
                 </div>
               ) : lastRecordedNote ? (
                 <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center mb-3">
                     <div className="flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
                       <span className="text-sm font-medium text-muted-foreground">Last Recorded Notes</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      from {format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')}
-                    </span>
                   </div>
                   
                   <div className="space-y-2">
