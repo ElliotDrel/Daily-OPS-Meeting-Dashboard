@@ -129,6 +129,13 @@ export const NotesSection = ({
     }, 1000); // 1 second debounce
   }, [onUpsertNote]);
 
+  // Manual save handler for BulletTextArea
+  const handleManualSave = useCallback(() => {
+    if (onUpsertNote) {
+      onUpsertNote(localNoteValue);
+    }
+  }, [onUpsertNote, localNoteValue]);
+
   // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
@@ -192,6 +199,8 @@ export const NotesSection = ({
               placeholder="Type meeting notes and press Enter..."
               className="min-h-[2.5rem] mb-4"
               disabled={!onUpsertNote || !isEditing}
+              initialValue={localNoteValue}
+              onSave={handleManualSave}
             />
           ) : (
             <div className="text-center py-8 text-muted-foreground text-sm mb-4">
@@ -266,20 +275,17 @@ export const NotesSection = ({
             </div>
           </div>
 
-          {/* Last Recorded Notes Section */}
-          <div className="mt-6 pt-4 border-t border-muted/50">
-            <div className="flex items-center space-x-2 mb-3">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium text-muted-foreground">
-                {lastRecordedNote 
-                  ? `Last Recorded Notes (${format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})`
-                  : "Last Recorded Notes"
-                }
-              </h4>
-            </div>
-            
-            <div className="space-y-4 opacity-75">
-              {lastRecordedNote ? (
+          {/* Last Recorded Notes Section - Only show if different from yesterday's notes and yesterday exists */}
+          {lastRecordedNote && yesterdayMeetingNote && lastRecordedNote.note_date !== yesterdayMeetingNote.note_date && (
+            <div className="mt-6 pt-4 border-t border-muted/50">
+              <div className="flex items-center space-x-2 mb-3">
+                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <h4 className="text-sm font-medium text-muted-foreground">
+                  Last Recorded Notes ({format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})
+                </h4>
+              </div>
+              
+              <div className="space-y-4 opacity-75">
                 <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
                   <div className="flex items-center mb-3">
                     <div className="flex items-center space-x-2">
@@ -303,16 +309,47 @@ export const NotesSection = ({
                     )}
                   </div>
                 </div>
-              ) : (
-                <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
-                  <div className="text-center py-4 text-muted-foreground">
-                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No historical notes found</p>
+              </div>
+            </div>
+          )}
+
+          {/* Last Recorded Notes Section - Show when no yesterday notes exist but last recorded exists */}
+          {lastRecordedNote && !yesterdayMeetingNote && (
+            <div className="mt-6 pt-4 border-t border-muted/50">
+              <div className="flex items-center space-x-2 mb-3">
+                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <h4 className="text-sm font-medium text-muted-foreground">
+                  Last Recorded Notes ({format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})
+                </h4>
+              </div>
+              
+              <div className="space-y-4 opacity-75">
+                <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center mb-3">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-muted-foreground">Historical Notes</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {lastRecordedNote.keyPoints && lastRecordedNote.keyPoints.length > 0 ? (
+                      <ul className="space-y-1 list-none">
+                        {lastRecordedNote.keyPoints.map((point, index) => (
+                          <li key={index} className="flex items-start space-x-2">
+                            <span className="text-sm text-muted-foreground">•</span>
+                            <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">No key points in last recorded notes</p>
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
 
           {showDeleteConfirm && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

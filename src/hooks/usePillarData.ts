@@ -28,10 +28,10 @@ export interface ActionItem {
 export const usePillarData = (pillar: string, selectedDate: string) => {
   const queryClient = useQueryClient()
 
-  // Calculate yesterday's date
-  const yesterdayDate = new Date(selectedDate)
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
-  const yesterdayString = yesterdayDate.toISOString().slice(0, 10)
+  // Calculate yesterday's date (timezone-safe)
+  const selectedDateParts = selectedDate.split('-').map(Number) // [YYYY, MM, DD]
+  const yesterdayDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] - 1)
+  const yesterdayString = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, '0')}-${String(yesterdayDate.getDate()).padStart(2, '0')}`
 
   // Load single meeting note for the day
   const { data: meetingNote = null, isLoading: notesLoading } = useQuery({

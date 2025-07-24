@@ -29,14 +29,16 @@ export interface ActionItem {
 export const usePillarDataOptimized = (pillar: string, selectedDate: string) => {
   const queryClient = useQueryClient()
 
-  // Calculate date ranges for prefetching
-  const yesterdayDate = new Date(selectedDate)
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
-  const yesterdayString = yesterdayDate.toISOString().slice(0, 10)
+  // Calculate date ranges for prefetching (timezone-safe)
+  const selectedDateParts = selectedDate.split('-').map(Number) // [YYYY, MM, DD]
+  
+  // Calculate yesterday (timezone-safe)
+  const yesterdayDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] - 1)
+  const yesterdayString = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, '0')}-${String(yesterdayDate.getDate()).padStart(2, '0')}`
 
-  const tomorrowDate = new Date(selectedDate)
-  tomorrowDate.setDate(tomorrowDate.getDate() + 1)
-  const tomorrowString = tomorrowDate.toISOString().slice(0, 10)
+  // Calculate tomorrow (timezone-safe)
+  const tomorrowDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] + 1)
+  const tomorrowString = `${tomorrowDate.getFullYear()}-${String(tomorrowDate.getMonth() + 1).padStart(2, '0')}-${String(tomorrowDate.getDate()).padStart(2, '0')}`
 
   // Optimized query functions with batch loading
   const fetchNotesForDateRange = useCallback(async (startDate: string, endDate: string) => {
@@ -112,6 +114,36 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
   const yesterdayMeetingNotes = notesData?.[yesterdayString] || []
   const actionItems = actionItemsData?.[selectedDate] || []
   const yesterdayActionItems = actionItemsData?.[yesterdayString] || []
+
+  // Get single notes (first entry from arrays for compatibility)
+  const meetingNote = meetingNotes[0] || null
+  const yesterdayMeetingNote = yesterdayMeetingNotes[0] || null
+
+  // Load last recorded meeting note (when yesterday is empty and different from yesterday/today)
+  const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading } = useQuery({
+    queryKey: ['last-meeting-note', pillar],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('meeting_notes')
+        .select('*')
+        .eq('pillar', pillar)
+        .order('note_date', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      
+      if (error) throw error
+      
+      // Transform Supabase data to UI format
+      if (!data || data.note_date === selectedDate || data.note_date === yesterdayString) return null
+      return {
+        ...data,
+        keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
+      } as MeetingNote
+    },
+    enabled: !yesterdayMeetingNote, // Only fetch if yesterday note doesn't exist
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+  })
 
   // Background prefetching for adjacent weeks
   useEffect(() => {
@@ -381,12 +413,16 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
   })
 
   return {
+    meetingNote,
     meetingNotes,
     actionItems,
+    yesterdayMeetingNote,
     yesterdayMeetingNotes,
     yesterdayActionItems,
+    lastRecordedNote,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: false, // Data comes from same batch query
+    isLastRecordedLoading: lastRecordedNotesLoading,
     createNote: createNoteMutation.mutate,
     updateNote: updateNoteMutation.mutate,
     createItem: createItemMutation.mutate,
