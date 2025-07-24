@@ -98,7 +98,7 @@ export const PillarLayout = ({
             </div>
             <div className="flex items-center space-x-2 bg-muted/50 px-4 py-2 rounded-lg">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => setSelectedDate(subDays(selectedDate, 1))}
                 className="px-2 py-1 h-8 flex items-center gap-1"
@@ -114,18 +114,17 @@ export const PillarLayout = ({
                   {format(selectedDate, 'EEEE, MMMM d, yyyy')}
                 </span>
               </div>
-              {!isToday(selectedDate) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedDate(new Date())}
-                  className="px-2 py-1 h-8"
-                  title="Go to today"
-                  aria-label="Go to today"
-                >
-                  Today
-                </Button>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={!isToday(selectedDate) ? () => setSelectedDate(new Date()) : undefined}
+                disabled={isToday(selectedDate)}
+                className="px-2 py-1 h-8"
+                title={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
+                aria-label={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
+              >
+                {isToday(selectedDate) ? "Current" : "Today"}
+              </Button>
             </div>
           </div>
 
