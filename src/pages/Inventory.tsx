@@ -25,6 +25,7 @@ export const Inventory = () => {
     actionItems, 
     yesterdayMeetingNote, 
     yesterdayActionItems, 
+    lastRecordedNote,
     upsertNote, 
     createItem, 
     updateItem, 
@@ -82,6 +83,7 @@ export const Inventory = () => {
           actionItems={actionItems}
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
+          lastRecordedNote={lastRecordedNote}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -90,6 +92,7 @@ export const Inventory = () => {
           actionItemsTitle="Internal Process Action Items"
           notesTitle="Internal Process Meeting Notes"
           isLoading={isLoading}
+          selectedDate={selectedDate.toISOString().slice(0, 10)}
         />
       </div>
     </PillarLayout>

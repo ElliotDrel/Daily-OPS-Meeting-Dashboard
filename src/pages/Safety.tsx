@@ -77,6 +77,7 @@ export const Safety = () => {
     actionItems, 
     yesterdayMeetingNote, 
     yesterdayActionItems, 
+    lastRecordedNote,
     upsertNote, 
     createItem, 
     updateItem, 
@@ -163,12 +164,14 @@ export const Safety = () => {
           actionItems={actionItems}
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
+          lastRecordedNote={lastRecordedNote}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="safety"
           isLoading={isLoading}
+          selectedDate={selectedDate.toISOString().slice(0, 10)}
         />
 
         {/* Bottom Row - Legacy Action Table */}

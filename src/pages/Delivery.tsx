@@ -48,6 +48,7 @@ export const Delivery = () => {
     actionItems, 
     yesterdayMeetingNote, 
     yesterdayActionItems, 
+    lastRecordedNote,
     upsertNote, 
     createItem, 
     updateItem, 
@@ -134,12 +135,14 @@ export const Delivery = () => {
           actionItems={actionItems}
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
+          lastRecordedNote={lastRecordedNote}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="delivery"
           isLoading={isLoading}
+          selectedDate={selectedDate.toISOString().slice(0, 10)}
         />
 
         {/* Bottom Row - Corrective Actions Table */}

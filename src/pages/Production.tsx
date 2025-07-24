@@ -61,6 +61,7 @@ export const Production = () => {
     actionItems, 
     yesterdayMeetingNote, 
     yesterdayActionItems, 
+    lastRecordedNote,
     upsertNote, 
     createItem, 
     updateItem, 
@@ -147,12 +148,14 @@ export const Production = () => {
           actionItems={actionItems}
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
+          lastRecordedNote={lastRecordedNote}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="production"
           isLoading={isLoading}
+          selectedDate={selectedDate.toISOString().slice(0, 10)}
         />
 
         {/* Bottom Row - Open Processes */}

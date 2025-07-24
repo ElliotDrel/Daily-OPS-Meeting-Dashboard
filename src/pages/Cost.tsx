@@ -53,6 +53,7 @@ export const Cost = () => {
     actionItems, 
     yesterdayMeetingNote, 
     yesterdayActionItems, 
+    lastRecordedNote,
     upsertNote, 
     createItem, 
     updateItem, 
@@ -139,12 +140,14 @@ export const Cost = () => {
           actionItems={actionItems}
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
+          lastRecordedNote={lastRecordedNote}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="cost"
           isLoading={isLoading}
+          selectedDate={selectedDate.toISOString().slice(0, 10)}
         />
 
         {/* Bottom Row - Low Yield Events Table */}
