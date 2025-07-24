@@ -6,7 +6,7 @@ import { dashboardData, qualityData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarDataOptimized";
+import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
 // Toggle this to hide/show charts and stats
@@ -64,13 +64,14 @@ const correctiveActions = [
 export const Quality = () => {
   const { selectedDate } = useDate();
   const { 
-    meetingNotes, 
+    meetingNote, 
     actionItems, 
-    yesterdayMeetingNotes, 
+    yesterdayMeetingNote, 
     yesterdayActionItems, 
-    createNote, 
+    upsertNote, 
     createItem, 
     updateItem, 
+    deleteNote,
     isLoading 
   } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
   if (isLoading) {
@@ -147,18 +148,20 @@ export const Quality = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          meetingNotes={meetingNotes}
+          meetingNote={meetingNote}
           actionItems={actionItems}
-          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
-          onAddNote={createNote}
+          onUpsertNote={upsertNote}
+          onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="quality"
+          isLoading={isLoading}
         />
 
         {/* Bottom Row - Corrective Actions Table */}
-        <Card className="p-6 shadow-lg">
+        <Card className="p-6 shadow-lg hidden">
           <h3 className="text-lg font-semibold text-quality">Quality Corrective Actions</h3>
           <div className="overflow-x-auto">
             <table className="w-full">

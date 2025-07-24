@@ -6,7 +6,7 @@ import { dashboardData, deliveryData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarDataOptimized";
+import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 
 // Toggle this to hide/show charts and stats
@@ -44,13 +44,14 @@ const correctiveActions = [
 export const Delivery = () => {
   const { selectedDate } = useDate();
   const { 
-    meetingNotes, 
+    meetingNote, 
     actionItems, 
-    yesterdayMeetingNotes, 
+    yesterdayMeetingNote, 
     yesterdayActionItems, 
-    createNote, 
+    upsertNote, 
     createItem, 
     updateItem, 
+    deleteNote,
     isLoading 
   } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
 
@@ -129,18 +130,20 @@ export const Delivery = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          meetingNotes={meetingNotes}
+          meetingNote={meetingNote}
           actionItems={actionItems}
-          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
-          onAddNote={createNote}
+          onUpsertNote={upsertNote}
+          onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="delivery"
+          isLoading={isLoading}
         />
 
         {/* Bottom Row - Corrective Actions Table */}
-        <Card className="p-6 shadow-lg">
+        <Card className="p-6 shadow-lg hidden">
           <h3 className="text-lg font-semibold text-delivery">Delivery Improvement Actions</h3>
           <div className="space-y-4">
             {correctiveActions.map((action) => (

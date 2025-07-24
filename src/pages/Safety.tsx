@@ -73,13 +73,14 @@ const safetyActions = [
 export const Safety = () => {
   const { selectedDate } = useDate();
   const { 
-    meetingNotes, 
+    meetingNote, 
     actionItems, 
-    yesterdayMeetingNotes, 
+    yesterdayMeetingNote, 
     yesterdayActionItems, 
-    createNote, 
+    upsertNote, 
     createItem, 
     updateItem, 
+    deleteNote,
     isLoading 
   } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
@@ -158,18 +159,20 @@ export const Safety = () => {
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
-          meetingNotes={meetingNotes}
+          meetingNote={meetingNote}
           actionItems={actionItems}
-          yesterdayMeetingNotes={yesterdayMeetingNotes}
+          yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
-          onAddNote={createNote}
+          onUpsertNote={upsertNote}
+          onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
           pillar="safety"
+          isLoading={isLoading}
         />
 
         {/* Bottom Row - Legacy Action Table */}
-        <Card className="p-6 shadow-lg">
+        <Card className="p-6 shadow-lg hidden">
           <h3 className="text-lg font-semibold text-safety">Safety Corrective Actions</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
