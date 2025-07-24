@@ -52,7 +52,7 @@ export const ActionItemsAndNotesSection = ({
     <div className="space-y-6">
       {/* Today's Section */}
       <Card className="p-0 shadow-lg overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left Half - Action Items */}
           <div className="border-r border-border">
             <ActionItemsSection

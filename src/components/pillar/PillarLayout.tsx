@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, subDays, isToday } from "date-fns";
 import { useDate } from "@/contexts/DateContext";
 
 interface PillarLayoutProps {
@@ -97,10 +97,33 @@ export const PillarLayout = ({
               <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
             </div>
             <div className="flex items-center space-x-2 bg-muted/50 px-4 py-2 rounded-lg">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedDate(subDays(selectedDate, 1))}
+                className="px-2 py-1 h-8 flex items-center gap-1"
+                title="Go to previous day"
+                aria-label="Go to previous day"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Previous Day
+              </Button>
               <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
               <span className="text-lg font-semibold text-foreground">
                 {format(selectedDate, 'EEEE, MMMM d, yyyy')}
               </span>
+              {!isToday(selectedDate) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedDate(new Date())}
+                  className="px-2 py-1 h-8"
+                  title="Go to today"
+                  aria-label="Go to today"
+                >
+                  Today
+                </Button>
+              )}
             </div>
           </div>
 
