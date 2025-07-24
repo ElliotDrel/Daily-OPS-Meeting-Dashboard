@@ -117,23 +117,18 @@ interface ActionItem {
 ### Development Workflow
 
 When working with this codebase:
-1. **ALWAYS run `npm install` first** to ensure dependencies are installed before any other commands
-2. Always run local tests and verify functionality before considering any task complete
-3. Run `npm run tests` to ensure all tests pass locally
-4. Run `npm run build` to verify the project builds successfully
-5. Run `npm run lint` before committing changes
-6. Test the application locally with `npm run dev` to ensure features work as expected
-7. Use the existing component patterns and color system
-8. Follow the established file naming conventions (PascalCase for components)
-9. Maintain the pillar-based architecture when adding new features
-10. Keep mock data structure in sync when adding new data types
+1. **ALWAYS run the complete verification command sequence** whenever you need to run any development commands: `npm install; npm run build; npm run lint; npm audit; npm run typecheck; npm run analyze; npm run dev`
+2. **IMPORTANT**: Always stop the dev server (Ctrl+C) after you get what you need from it - never leave dev servers running
+3. Use the existing component patterns and color system
+4. Follow the established file naming conventions (PascalCase for components)
+5. Maintain the pillar-based architecture when adding new features
+6. Keep mock data structure in sync when adding new data types
 
-**Critical**: Never consider a task complete until you have verified that:
-- Dependencies are installed (`npm install`)
-- All tests pass locally (`npm run tests`)
-- The project builds without errors (`npm run build`)
-- The application runs correctly in development mode (`npm run dev`)
-- All linting checks pass (`npm run lint`)
+**Critical Development Command Policy**: 
+- Run `npm install; npm run build; npm run lint; npm audit; npm run typecheck; npm run analyze; npm run dev` as a single command sequence
+- This ensures dependencies are installed, project builds, linting passes, security audit runs, types are checked, bundle is analyzed, and dev server starts
+- **Remember to stop the dev server** after verifying functionality
+- Never consider a task complete until this full verification sequence passes successfully
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
