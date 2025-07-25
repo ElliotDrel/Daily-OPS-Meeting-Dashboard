@@ -20,6 +20,9 @@ interface ActionItemsAndNotesSectionProps {
   onUpdateActionItems?: (items: ActionItem[]) => void;
   isLoading?: boolean;
   selectedDate?: string; // Current selected date in YYYY-MM-DD format
+  // New loading state props for improved display logic
+  isYesterdayLoading?: boolean;
+  isLastRecordedLoading?: boolean;
 }
 
 export const ActionItemsAndNotesSection = ({
@@ -38,7 +41,9 @@ export const ActionItemsAndNotesSection = ({
   onDeleteActionItem,
   pillar,
   isLoading = false,
-  selectedDate
+  selectedDate,
+  isYesterdayLoading = false,
+  isLastRecordedLoading = false
 }: ActionItemsAndNotesSectionProps) => {
   if (isLoading) {
     return <div className="flex justify-center items-center h-32">Loading...</div>;
@@ -72,6 +77,8 @@ export const ActionItemsAndNotesSection = ({
               onDeleteNote={onDeleteNote}
               isLoading={isLoading}
               selectedDate={selectedDate}
+              isYesterdayLoading={isYesterdayLoading}
+              isLastRecordedLoading={isLastRecordedLoading}
             />
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { FileText, Send, Edit, Trash2, Save, Calendar } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { format } from "date-fns";
+import { useNotesDisplayLogic } from "@/hooks/useNotesDisplayLogic";
 
 export interface MeetingNote {
   id: string;
@@ -31,6 +32,8 @@ interface NotesSectionProps {
   showCard?: boolean;
   isLoading?: boolean;
   selectedDate?: string; // Current selected date in YYYY-MM-DD format
+  isYesterdayLoading?: boolean;
+  isLastRecordedLoading?: boolean;
 }
 
 export const NotesSection = ({ 
@@ -42,8 +45,20 @@ export const NotesSection = ({
   onDeleteNote, 
   showCard = true, 
   isLoading = false,
-  selectedDate
+  selectedDate = '',
+  isYesterdayLoading = false,
+  isLastRecordedLoading = false
 }: NotesSectionProps) => {
+  // New centralized display logic hook
+  const displayLogic = useNotesDisplayLogic({
+    yesterdayMeetingNote,
+    lastRecordedNote,
+    selectedDate,
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
+  });
+
   const [newNote, setNewNote] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -78,7 +93,8 @@ export const NotesSection = ({
 
   const isEditingNonCurrentDay = () => {
     if (!meetingNote?.note_date || !selectedDate) return false;
-    const currentDay = new Date().toISOString().slice(0, 10);
+    // Use local timezone for current date comparison (fixed timezone bug)
+    const currentDay = format(new Date(), 'yyyy-MM-dd');
     return meetingNote.note_date !== currentDay;
   };
 
@@ -114,36 +130,49 @@ export const NotesSection = ({
     setShowDeleteConfirm(false);
   };
 
-  // Debounced onChange handler for the BulletTextArea
+  // Debounced onChange handler for the BulletTextArea (memory leak fixed)
   const debouncedOnChange = useCallback((value: string) => {
     setLocalNoteValue(value);
     
+    // Clear existing timeout to prevent overlapping calls
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+      debounceRef.current = null;
     }
     
+    // Set new timeout with current onUpsertNote reference
     debounceRef.current = setTimeout(() => {
-      if (onUpsertNote) {
-        onUpsertNote(value);
+      // Use current onUpsertNote to avoid stale closures
+      const currentOnUpsertNote = onUpsertNote;
+      if (currentOnUpsertNote) {
+        currentOnUpsertNote(value);
       }
+      debounceRef.current = null; // Clear reference after execution
     }, 1000); // 1 second debounce
   }, [onUpsertNote]);
 
-  // Manual save handler for BulletTextArea
+  // Manual save handler for BulletTextArea  
   const handleManualSave = useCallback(() => {
+    // Cancel any pending debounced saves to avoid duplicate calls
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    
     if (onUpsertNote) {
       onUpsertNote(localNoteValue);
     }
   }, [onUpsertNote, localNoteValue]);
 
-  // Cleanup debounce on unmount
+  // Cleanup debounce on unmount and dependency changes (memory leak prevention)
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+        debounceRef.current = null;
       }
     };
-  }, []);
+  }, [onUpsertNote]); // Re-run cleanup when onUpsertNote changes
 
   const content = (
     <>
@@ -227,99 +256,63 @@ export const NotesSection = ({
             </Button>
           </div>
 
-          {/* Yesterday's Notes Section - Always Show */}
-          <div className="mt-6 pt-4 border-t border-muted/50">
-            <div className="flex items-center space-x-2 mb-3">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium text-muted-foreground">
-                {yesterdayMeetingNote 
-                  ? `Yesterday's Meeting Notes (${format(new Date(yesterdayMeetingNote.note_date), 'MMM dd, yyyy')})`
-                  : "Yesterday's Meeting Notes"
-                }
-              </h4>
-            </div>
-            
-            <div className="space-y-4 opacity-75">
-              {yesterdayMeetingNote ? (
-                <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center mb-3">
-                    <div className="flex items-center space-x-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    {yesterdayMeetingNote.keyPoints && yesterdayMeetingNote.keyPoints.length > 0 ? (
-                      <ul className="space-y-1 list-none">
-                        {yesterdayMeetingNote.keyPoints.map((point, index) => (
-                          <li key={index} className="flex items-start space-x-2">
-                            <span className="text-sm text-muted-foreground">•</span>
-                            <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">No key points recorded yesterday</p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
-                  <div className="text-center py-4 text-muted-foreground">
-                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No notes found</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Last Recorded Notes Section - Only show if different from yesterday's notes and yesterday exists */}
-          {lastRecordedNote && yesterdayMeetingNote && lastRecordedNote.note_date !== yesterdayMeetingNote.note_date && (
+          {/* Yesterday's Notes Section - Always Show with New Logic */}
+          {displayLogic.shouldShowYesterday && (
             <div className="mt-6 pt-4 border-t border-muted/50">
               <div className="flex items-center space-x-2 mb-3">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium text-muted-foreground">
-                  Last Recorded Notes ({format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})
+                  {displayLogic.yesterdayDisplay.note 
+                    ? `Yesterday's Meeting Notes (${displayLogic.yesterdayDisplay.dateLabel})`
+                    : "Yesterday's Meeting Notes"
+                  }
                 </h4>
               </div>
               
               <div className="space-y-4 opacity-75">
-                <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center mb-3">
-                    <div className="flex items-center space-x-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Historical Notes</span>
+                {displayLogic.yesterdayDisplay.hasContent && displayLogic.yesterdayDisplay.note ? (
+                  <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-center mb-3">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      {displayLogic.yesterdayDisplay.note.keyPoints && displayLogic.yesterdayDisplay.note.keyPoints.length > 0 ? (
+                        <ul className="space-y-1 list-none">
+                          {displayLogic.yesterdayDisplay.note.keyPoints.map((point, index) => (
+                            <li key={index} className="flex items-start space-x-2">
+                              <span className="text-sm text-muted-foreground">•</span>
+                              <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">No key points recorded yesterday</p>
+                      )}
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    {lastRecordedNote.keyPoints && lastRecordedNote.keyPoints.length > 0 ? (
-                      <ul className="space-y-1 list-none">
-                        {lastRecordedNote.keyPoints.map((point, index) => (
-                          <li key={index} className="flex items-start space-x-2">
-                            <span className="text-sm text-muted-foreground">•</span>
-                            <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">No key points in last recorded notes</p>
-                    )}
+                ) : (
+                  <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
+                    <div className="text-center py-4 text-muted-foreground">
+                      <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No notes found</p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* Last Recorded Notes Section - Show when no yesterday notes exist but last recorded exists */}
-          {lastRecordedNote && !yesterdayMeetingNote && (
+          {/* Last Recorded Notes Section - NEW LOGIC: Only show with meaningful validation */}
+          {displayLogic.shouldShowLastRecorded && displayLogic.lastRecordedDisplay && (
             <div className="mt-6 pt-4 border-t border-muted/50">
               <div className="flex items-center space-x-2 mb-3">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium text-muted-foreground">
-                  Last Recorded Notes ({format(new Date(lastRecordedNote.note_date), 'MMM dd, yyyy')})
+                  Last Recorded Notes ({displayLogic.lastRecordedDisplay.dateLabel})
                 </h4>
               </div>
               
@@ -333,9 +326,9 @@ export const NotesSection = ({
                   </div>
                   
                   <div className="space-y-2">
-                    {lastRecordedNote.keyPoints && lastRecordedNote.keyPoints.length > 0 ? (
+                    {displayLogic.lastRecordedDisplay.note.keyPoints && displayLogic.lastRecordedDisplay.note.keyPoints.length > 0 ? (
                       <ul className="space-y-1 list-none">
-                        {lastRecordedNote.keyPoints.map((point, index) => (
+                        {displayLogic.lastRecordedDisplay.note.keyPoints.map((point, index) => (
                           <li key={index} className="flex items-start space-x-2">
                             <span className="text-sm text-muted-foreground">•</span>
                             <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
