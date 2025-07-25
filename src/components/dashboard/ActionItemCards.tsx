@@ -18,10 +18,10 @@ interface StatusCardProps {
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case 'High': return 'border-status-issue text-status-issue';
-    case 'Medium': return 'border-status-caution text-status-caution';
-    case 'Low': return 'border-status-good text-status-good';
-    default: return 'border-border text-muted-foreground';
+    case 'High': return 'bg-status-issue text-white';
+    case 'Medium': return 'bg-status-caution text-white';
+    case 'Low': return 'bg-status-good text-white';
+    default: return 'bg-muted text-muted-foreground';
   }
 };
 
@@ -41,7 +41,7 @@ export const PersonCard = ({ assignee }: PersonCardProps) => (
 );
 
 export const PriorityCard = ({ priority }: PriorityCardProps) => (
-  <div className={`inline-flex items-center space-x-1 px-2 py-1 border rounded text-sm ${getPriorityColor(priority)}`}>
+  <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded text-sm ${getPriorityColor(priority)}`}>
     <Flag className="w-4 h-4" />
     <span>{priority}</span>
   </div>
