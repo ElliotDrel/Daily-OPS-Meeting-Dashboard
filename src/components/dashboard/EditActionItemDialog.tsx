@@ -17,31 +17,53 @@ interface EditActionItemDialogProps {
 export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: EditActionItemDialogProps) => {
   const [formData, setFormData] = useState<ActionItem>({
     id: actionItem?.id || '',
+    pillar: actionItem?.pillar || '',
+    item_date: actionItem?.item_date || new Date().toISOString().split('T')[0],
     description: actionItem?.description || '',
-    assignee: actionItem?.assignee || '',
+    assignee: actionItem?.assignee || 'TBD',
     priority: actionItem?.priority || 'Medium',
-    dueDate: actionItem?.dueDate || '',
     status: actionItem?.status || 'Open',
+    due_date: actionItem?.due_date || actionItem?.dueDate || '',
+    created_at: actionItem?.created_at || new Date().toISOString(),
+    updated_at: actionItem?.updated_at || new Date().toISOString(),
     category: actionItem?.category || ''
   });
 
   useEffect(() => {
     setFormData({
       id: actionItem?.id || '',
+      pillar: actionItem?.pillar || '',
+      item_date: actionItem?.item_date || new Date().toISOString().split('T')[0],
       description: actionItem?.description || '',
-      assignee: actionItem?.assignee || '',
+      assignee: actionItem?.assignee || 'TBD',
       priority: actionItem?.priority || 'Medium',
-      dueDate: actionItem?.dueDate || '',
       status: actionItem?.status || 'Open',
+      due_date: actionItem?.due_date || actionItem?.dueDate || '',
+      created_at: actionItem?.created_at || new Date().toISOString(),
+      updated_at: actionItem?.updated_at || new Date().toISOString(),
       category: actionItem?.category || ''
     });
   }, [actionItem]);
 
   const handleSave = () => {
+    const now = new Date().toISOString();
     if (!formData.id) {
-      formData.id = Date.now().toString();
+      // Creating new item
+      const newItem = {
+        ...formData,
+        id: Date.now().toString(),
+        created_at: now,
+        updated_at: now,
+        item_date: now.split('T')[0]
+      };
+      onSave(newItem);
+    } else {
+      // Updating existing item
+      onSave({
+        ...formData,
+        updated_at: now
+      });
     }
-    onSave(formData);
     onClose();
   };
 
@@ -63,7 +85,7 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              onChange={(e) => setFormData({...formData, description: e.target.value, updated_at: new Date().toISOString()})}
               placeholder="Enter action item description"
             />
           </div>
@@ -72,8 +94,8 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
             <Label htmlFor="assignee">Assignee</Label>
             <Input
               id="assignee"
-              value={formData.assignee}
-              onChange={(e) => setFormData({...formData, assignee: e.target.value})}
+              value={formData.assignee || ''}
+              onChange={(e) => setFormData({...formData, assignee: e.target.value, updated_at: new Date().toISOString()})}
               placeholder="Enter assignee name"
             />
           </div>
@@ -82,8 +104,8 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
             <Label htmlFor="category">Category</Label>
             <Input
               id="category"
-              value={formData.category}
-              onChange={(e) => setFormData({...formData, category: e.target.value})}
+              value={formData.category || ''}
+              onChange={(e) => setFormData({...formData, category: e.target.value, updated_at: new Date().toISOString()})}
               placeholder="Enter category (optional)"
             />
           </div>
@@ -91,7 +113,7 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="priority">Priority</Label>
-              <Select value={formData.priority} onValueChange={(value) => setFormData({...formData, priority: value as ActionItem['priority']})}>
+              <Select value={formData.priority} onValueChange={(value) => setFormData({...formData, priority: value as ActionItem['priority'], updated_at: new Date().toISOString()})}>
                 <SelectTrigger id="priority">
                   <SelectValue />
                 </SelectTrigger>
@@ -105,7 +127,7 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
 
             <div>
               <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value as ActionItem['status']})}>
+              <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value as ActionItem['status'], updated_at: new Date().toISOString()})}>
                 <SelectTrigger id="status">
                   <SelectValue />
                 </SelectTrigger>
@@ -119,12 +141,12 @@ export const EditActionItemDialog = ({ actionItem, isOpen, onClose, onSave }: Ed
           </div>
 
           <div>
-            <Label htmlFor="dueDate">Due Date</Label>
+            <Label htmlFor="due_date">Due Date</Label>
             <Input
-              id="dueDate"
+              id="due_date"
               type="date"
-              value={formData.dueDate}
-              onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+              value={formData.due_date || ''}
+              onChange={(e) => setFormData({...formData, due_date: e.target.value, updated_at: new Date().toISOString()})}
             />
           </div>
         </div>

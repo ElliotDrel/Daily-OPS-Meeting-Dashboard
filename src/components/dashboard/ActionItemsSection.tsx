@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, User, AlertTriangle, Pencil, Plus, Send, Calendar } from "lucide-react";
 import { EditActionItemDialog } from "./EditActionItemDialog";
+import { PersonCard, PriorityCard, DateCard, StatusCard } from "./ActionItemCards";
 import { format } from "date-fns";
 
 export interface ActionItem {
@@ -134,150 +135,78 @@ export const ActionItemsSection = ({ actionItems, yesterdayActionItems = [], tit
         <h3 className="text-lg font-semibold">{title}</h3>
       </div>
 
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[35%]">Description</TableHead>
-              <TableHead className="w-[15%]">Assignee</TableHead>
-              <TableHead className="w-[12%]">Priority</TableHead>
-              <TableHead className="w-[15%]">Due Date</TableHead>
-              <TableHead className="w-[12%]">Status</TableHead>
-              <TableHead className="w-[11%]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {actionItems.map((item) => (
-              <TableRow key={item.id} className="hover:bg-muted/50 transition-colors">
-                <TableCell className="py-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">{item.description}</p>
-                    {item.category && (
-                      <Badge variant="outline" className="text-xs">
-                        {item.category}
-                      </Badge>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="py-4">
-                  <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">{item.assignee || 'Unassigned'}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="py-4">
-                  <Badge 
-                    variant="outline"
-                    className={`text-xs ${getPriorityColor(item.priority)}`}
-                  >
-                    {item.priority}
-                  </Badge>
-                </TableCell>
-                <TableCell className="py-4">
-                  <div className="flex items-center space-x-2">
-                    <Clock className={`w-4 h-4 ${isOverdue(item.due_date || '') ? 'text-status-issue' : 'text-muted-foreground'}`} />
-                    <span className={`text-sm ${isOverdue(item.due_date || '') ? 'text-status-issue font-medium' : ''}`}>
-                      {item.due_date || 'No due date'}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="py-4">
-                  <Badge 
-                    variant={item.status === 'Completed' ? 'default' : 'outline'}
-                    className={`text-xs ${getStatusColor(item.status)}`}
-                  >
-                    {item.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="py-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEditItem(item)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            
-            {/* Yesterday's Items Section - Always Show */}
-            <>
-              <TableRow>
-                <TableCell colSpan={6} className="py-3 bg-muted/30">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium text-muted-foreground">Yesterday's Action Items</span>
-                    <Badge variant="outline" className="text-xs bg-muted/50">
-                      {yesterdayActionItems.length} item{yesterdayActionItems.length !== 1 ? 's' : ''}
+      <div className="space-y-4">
+        {actionItems.map((item) => (
+          <div 
+            key={item.id} 
+            className="cursor-pointer hover:bg-muted/30 p-3 rounded-lg transition-colors"
+            onClick={() => handleEditItem(item)}
+          >
+            <div className="space-y-2">
+              <div className="flex items-start space-x-2">
+                <span className="text-muted-foreground mt-1">•</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">{item.description}</p>
+                  {item.category && (
+                    <Badge variant="outline" className="text-xs mt-1">
+                      {item.category}
                     </Badge>
-                  </div>
-                </TableCell>
-              </TableRow>
-              {yesterdayActionItems.length > 0 ? (
-                yesterdayActionItems.map((item) => (
-                  <TableRow key={`yesterday-${item.id}`} className="hover:bg-muted/30 transition-colors opacity-75">
-                    <TableCell className="py-4">
-                      <div className="space-y-1">
+                  )}
+                </div>
+              </div>
+              <div className="ml-4 flex flex-wrap gap-2">
+                <PersonCard assignee={item.assignee || 'TBD'} />
+                <PriorityCard priority={item.priority || 'Medium'} />
+                <DateCard dueDate={item.due_date || ''} />
+                <StatusCard status={item.status || 'Open'} />
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {/* Yesterday's Items Section */}
+        <div className="border-t pt-4 mt-6">
+          <div className="flex items-center space-x-2 mb-4">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Yesterday's Action Items</span>
+            <Badge variant="outline" className="text-xs bg-muted/50">
+              {yesterdayActionItems.length} item{yesterdayActionItems.length !== 1 ? 's' : ''}
+            </Badge>
+          </div>
+          
+          {yesterdayActionItems.length > 0 ? (
+            <div className="space-y-3">
+              {yesterdayActionItems.map((item) => (
+                <div key={`yesterday-${item.id}`} className="opacity-75">
+                  <div className="space-y-2">
+                    <div className="flex items-start space-x-2">
+                      <span className="text-muted-foreground mt-1">•</span>
+                      <div className="flex-1">
                         <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
                         {item.category && (
-                          <Badge variant="outline" className="text-xs opacity-75">
+                          <Badge variant="outline" className="text-xs mt-1 opacity-75">
                             {item.category}
                           </Badge>
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium text-muted-foreground">{item.assignee || 'Unassigned'}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <Badge 
-                        variant="outline"
-                        className={`text-xs opacity-75 ${getPriorityColor(item.priority)}`}
-                      >
-                        {item.priority}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="flex items-center space-x-2">
-                        <Clock className={`w-4 h-4 ${isOverdue(item.due_date || '') ? 'text-status-issue' : 'text-muted-foreground'}`} />
-                        <span className={`text-sm ${isOverdue(item.due_date || '') ? 'text-status-issue font-medium' : 'text-muted-foreground'}`}>
-                          {item.due_date || 'No due date'}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <Badge 
-                        variant={item.status === 'Completed' ? 'default' : 'outline'}
-                        className={`text-xs opacity-75 ${getStatusColor(item.status)}`}
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="w-8 h-8 flex items-center justify-center">
-                        <span className="text-xs text-muted-foreground">
-                          {item.item_date ? format(new Date(item.item_date), 'MMM dd') : 'Yesterday'}
-                        </span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow className="opacity-75">
-                  <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-                    <AlertTriangle className="w-6 h-6 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No action items from yesterday</p>
-                  </TableCell>
-                </TableRow>
-              )}
-            </>
-          </TableBody>
-        </Table>
+                    </div>
+                    <div className="ml-4 flex flex-wrap gap-2">
+                      <PersonCard assignee={item.assignee || 'TBD'} />
+                      <PriorityCard priority={item.priority || 'Medium'} />
+                      <DateCard dueDate={item.due_date || ''} />
+                      <StatusCard status={item.status || 'Open'} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-muted-foreground">
+              <AlertTriangle className="w-6 h-6 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No action items from yesterday</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {actionItems.length === 0 && (
