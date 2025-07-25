@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useCallback } from 'react'
+import { subDays, addDays, parseISO, format, startOfWeek, endOfWeek } from 'date-fns'
 
 export interface MeetingNote {
   id: string
@@ -29,16 +30,23 @@ export interface ActionItem {
 export const usePillarDataOptimized = (pillar: string, selectedDate: string) => {
   const queryClient = useQueryClient()
 
-  // Calculate date ranges for prefetching (timezone-safe)
-  const selectedDateParts = selectedDate.split('-').map(Number) // [YYYY, MM, DD]
+  // Calculate date ranges for prefetching (timezone-safe using date-fns)
+  const selectedDateObj = parseISO(selectedDate) // Parse YYYY-MM-DD string safely
   
   // Calculate yesterday (timezone-safe)
-  const yesterdayDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] - 1)
-  const yesterdayString = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, '0')}-${String(yesterdayDate.getDate()).padStart(2, '0')}`
+  const yesterdayDate = subDays(selectedDateObj, 1)
+  const yesterdayString = format(yesterdayDate, 'yyyy-MM-dd')
 
   // Calculate tomorrow (timezone-safe)
-  const tomorrowDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] + 1)
-  const tomorrowString = `${tomorrowDate.getFullYear()}-${String(tomorrowDate.getMonth() + 1).padStart(2, '0')}-${String(tomorrowDate.getDate()).padStart(2, '0')}`
+  const tomorrowDate = addDays(selectedDateObj, 1)
+  const tomorrowString = format(tomorrowDate, 'yyyy-MM-dd')
+  
+  // DEBUG: Log date calculations to help diagnose Issue 1
+  console.log('🔍 DATE DEBUG:', {
+    selected: selectedDate,
+    yesterday: yesterdayString,
+    tomorrow: tomorrowString
+  })
 
   // Optimized query functions with batch loading
   const fetchNotesForDateRange = useCallback(async (startDate: string, endDate: string) => {
@@ -118,29 +126,38 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
   // Get single notes (first entry from arrays for compatibility)
   const meetingNote = meetingNotes[0] || null
   const yesterdayMeetingNote = yesterdayMeetingNotes[0] || null
+  
+  // DEBUG: Log what dates we actually get from database vs what we expected
+  if (yesterdayMeetingNote) {
+    console.log('🔍 YESTERDAY DEBUG:', {
+      expectedDate: yesterdayString,
+      actualNoteDate: yesterdayMeetingNote.note_date,
+      match: yesterdayString === yesterdayMeetingNote.note_date
+    })
+  }
 
-  // Load last recorded meeting note (when yesterday is empty and different from yesterday/today)
+  // Load last recorded meeting note (FIXED: now filters by date to prevent future notes)
   const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading } = useQuery({
-    queryKey: ['last-meeting-note', pillar],
+    queryKey: ['last-meeting-note', pillar, selectedDate, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meeting_notes')
         .select('*')
         .eq('pillar', pillar)
+        .lt('note_date', yesterdayString) // CRITICAL FIX: Only get notes BEFORE yesterday
         .order('note_date', { ascending: false })
         .limit(1)
         .maybeSingle()
       
       if (error) throw error
       
-      // Transform Supabase data to UI format
-      if (!data || data.note_date === selectedDate || data.note_date === yesterdayString) return null
+      // Transform Supabase data to UI format (no longer need date filtering since SQL handles it)
+      if (!data) return null
       return {
         ...data,
         keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
       } as MeetingNote
     },
-    enabled: !yesterdayMeetingNote, // Only fetch if yesterday note doesn't exist
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
   })
@@ -148,15 +165,15 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
   // Background prefetching for adjacent weeks
   useEffect(() => {
     const prefetchAdjacentWeeks = () => {
-      const currentWeekStart = new Date(selectedDate)
-      currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() - 7) // Previous week
-      
-      const nextWeekEnd = new Date(selectedDate)
-      nextWeekEnd.setDate(nextWeekEnd.getDate() - nextWeekEnd.getDay() + 13) // Next week
+      // Calculate week boundaries using date-fns (timezone-safe)
+      const selectedDateObj = parseISO(selectedDate)
+      const currentWeekStart = startOfWeek(selectedDateObj)
+      const previousWeekStart = subDays(currentWeekStart, 7)
+      const nextWeekEnd = endOfWeek(addDays(currentWeekStart, 7))
       
       // Prefetch previous and next weeks
-      const prefetchStart = currentWeekStart.toISOString().slice(0, 10)
-      const prefetchEnd = nextWeekEnd.toISOString().slice(0, 10)
+      const prefetchStart = format(previousWeekStart, 'yyyy-MM-dd')
+      const prefetchEnd = format(nextWeekEnd, 'yyyy-MM-dd')
       
       queryClient.prefetchQuery({
         queryKey: ['meeting-notes-prefetch', pillar, prefetchStart, prefetchEnd],
@@ -224,21 +241,47 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     }
   }, [pillar, queryClient])
 
-  // Optimized mutations with optimistic updates
-  const createNoteMutation = useMutation({
+  // Unified upsert mutation with proper optimistic updates
+  const upsertNoteMutation = useMutation({
     mutationFn: async (keyPoints: string) => {
-      const { data, error } = await supabase
+      // Try to update existing note first
+      const { data: existingNote } = await supabase
         .from('meeting_notes')
-        .insert({
-          pillar,
-          note_date: selectedDate,
-          key_points: keyPoints
-        })
-        .select()
-        .single()
+        .select('id')
+        .eq('pillar', pillar)
+        .eq('note_date', selectedDate)
+        .limit(1)
+        .maybeSingle()
       
-      if (error) throw error
-      return data
+      if (existingNote) {
+        // Update existing note
+        const { data, error } = await supabase
+          .from('meeting_notes')
+          .update({ 
+            key_points: keyPoints,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingNote.id)
+          .select()
+          .single()
+        
+        if (error) throw error
+        return data
+      } else {
+        // Create new note
+        const { data, error } = await supabase
+          .from('meeting_notes')
+          .insert({
+            pillar,
+            note_date: selectedDate,
+            key_points: keyPoints
+          })
+          .select()
+          .single()
+        
+        if (error) throw error
+        return data
+      }
     },
     onMutate: async (keyPoints) => {
       // Cancel outgoing refetches
@@ -249,23 +292,33 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
       // Snapshot previous value
       const previousData = queryClient.getQueryData(['meeting-notes-batch', pillar, yesterdayString, tomorrowString])
 
-      // Optimistically update
+      // Optimistically update with proper upsert logic
       if (previousData && typeof previousData === 'object') {
+        const updatedData = { ...previousData as Record<string, MeetingNote[]> }
+        if (!updatedData[selectedDate]) {
+          updatedData[selectedDate] = []
+        }
+
+        // Check if note already exists
+        const existingIndex = updatedData[selectedDate].findIndex(note => note.note_date === selectedDate)
+        
         const optimisticNote: MeetingNote = {
-          id: `temp-${Date.now()}`,
+          id: existingIndex >= 0 ? updatedData[selectedDate][existingIndex].id : `temp-${Date.now()}`,
           pillar,
           note_date: selectedDate,
           key_points: keyPoints,
           keyPoints: keyPoints.split('\n').filter(p => p.trim()),
-          created_at: new Date().toISOString(),
+          created_at: existingIndex >= 0 ? updatedData[selectedDate][existingIndex].created_at : new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
 
-        const updatedData = previousData ? { ...previousData as Record<string, MeetingNote[]> } : {} as Record<string, MeetingNote[]>
-        if (!updatedData[selectedDate]) {
-          updatedData[selectedDate] = []
+        if (existingIndex >= 0) {
+          // Update existing note
+          updatedData[selectedDate][existingIndex] = optimisticNote
+        } else {
+          // Add new note
+          updatedData[selectedDate] = [...updatedData[selectedDate], optimisticNote]
         }
-        updatedData[selectedDate] = [...updatedData[selectedDate], optimisticNote]
 
         queryClient.setQueryData(
           ['meeting-notes-batch', pillar, yesterdayString, tomorrowString], 
@@ -365,21 +418,16 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     }
   })
 
-  // Update mutations with optimistic updates
-  const updateNoteMutation = useMutation({
-    mutationFn: async ({ id, keyPoints }: { id: string, keyPoints: string }) => {
-      const { data, error } = await supabase
+  // Delete note mutation
+  const deleteNoteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
         .from('meeting_notes')
-        .update({ 
-          key_points: keyPoints,
-          updated_at: new Date().toISOString()
-        })
+        .delete()
         .eq('id', id)
-        .select()
-        .single()
       
       if (error) throw error
-      return data
+      return id
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
@@ -412,6 +460,25 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     }
   })
 
+  // Delete action item mutation
+  const deleteItemMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('action_items')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return id
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['action-items-batch', pillar],
+        exact: false 
+      })
+    }
+  })
+
   return {
     meetingNote,
     meetingNotes,
@@ -423,14 +490,16 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: false, // Data comes from same batch query
     isLastRecordedLoading: lastRecordedNotesLoading,
-    createNote: createNoteMutation.mutate,
-    updateNote: updateNoteMutation.mutate,
+    upsertNote: upsertNoteMutation.mutate,
+    deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
     updateItem: updateItemMutation.mutate,
-    isCreatingNote: createNoteMutation.isPending,
-    isUpdatingNote: updateNoteMutation.isPending,
+    deleteItem: deleteItemMutation.mutate,
+    isUpsertingNote: upsertNoteMutation.isPending,
+    isDeletingNote: deleteNoteMutation.isPending,
     isCreatingItem: createItemMutation.isPending,
-    isUpdatingItem: updateItemMutation.isPending
+    isUpdatingItem: updateItemMutation.isPending,
+    isDeletingItem: deleteItemMutation.isPending
   }
 }
 
