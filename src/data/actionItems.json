@@ -2,7 +2,196 @@
   "actionItems": [
     {
       "id": "1",
-      "description": "Test office-area AV set-up before tomorrow's huddle start",
+      "description": "Lou Ochs will follow up with Frank today on email regarding the corrective actions",
+      "dueDate": "Jul 16, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 16, 2025",
+      "updatedDate": "Jul 16, 2025"
+    },
+    {
+      "id": "2",
+      "description": "Ryan will audit all areas for tornado shelter signage today",
+      "dueDate": "Jul 16, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 16, 2025",
+      "updatedDate": "Jul 16, 2025"
+    },
+    {
+      "id": "3",
+      "description": "Mike Ayers will get a tracking sheet of trailer numbers by Friday",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 16, 2025",
+      "updatedDate": "Jul 16, 2025"
+    },
+    {
+      "id": "4",
+      "description": "Test new computer plus phone camera set-up Monday before the huddle and fix any echo issues",
+      "dueDate": "Jul 21, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "5",
+      "description": "Facilitators arrive early to set up dashboards and equipment",
+      "dueDate": "Jul 17, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "6",
+      "description": "Submit Limble ticket to repair G4 door latch and install Employee Only signage",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "7",
+      "description": "Order additional restricted access and severe weather shelter signs for doors lacking clear labels",
+      "dueDate": "Jul 19, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "8",
+      "description": "Frank to share corrective-action plan for bent crank supplier once details are confirmed",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "9",
+      "description": "Adam to confirm warranty wheel order quantity and delivery timeline for paint-flaking issue",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "10",
+      "description": "Lou to brief Ryan Jansen and the customer-experience team on the no-rebalancing decision",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "11",
+      "description": "Amber to run Katana advance schedule Friday, generate a two-to-three-week production plan, and publish to stakeholders Monday",
+      "dueDate": "Jul 21, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "12",
+      "description": "Model shipping scenarios (Indiana direct versus West Coast DC) and decide by Friday",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "13",
+      "description": "Troy to verify exact fork count on-hand and advise Lou on required consumption timing",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "14",
+      "description": "Mike to schedule four extra unloaders for next week and confirm dock manpower plan",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "15",
+      "description": "Quarantine locations for wheels and bolts documented and shared with quality and manufacturing",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "16",
+      "description": "Manufacturing supervisors to integrate new hires into the training matrix and monitor first-pass-yield impact",
+      "dueDate": "Jul 19, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "17",
+      "description": "HR to track attendance daily, adjust staffing plans, and communicate gaps to line leads",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "18",
+      "description": "Place hand sanitizer, wipes, and cleaning supplies in every restroom",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "19",
+      "description": "Trent to obtain a repair quote for each damaged rental trailer and share with Ranger for cost review",
+      "dueDate": "Jul 19, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "20",
+      "description": "Jennica to photograph damaged trailers and send images to Ranger and claims",
+      "dueDate": "Jul 18, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "21",
+      "description": "Mike to finish trailer-condition tracker and publish it for team review",
+      "dueDate": "Jul 19, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 17, 2025",
+      "updatedDate": "Jul 17, 2025"
+    },
+    {
+      "id": "22",
+      "description": "Test the office-area AV set-up before tomorrow's huddle start",
       "dueDate": "Jul 23, 2025",
       "status": "Open",
       "pillar": "production",
@@ -10,7 +199,7 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "2",
+      "id": "23",
       "description": "Embed daily production dashboards in tier board and flag component blockers",
       "dueDate": "Jul 24, 2025",
       "status": "Open",
@@ -19,35 +208,26 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "3",
+      "id": "24",
       "description": "Order and install 'Employees Only' sign at G4 side door",
-      "dueDate": "Jul 23, 2025",
+      "dueDate": "Jul 24, 2025",
       "status": "Open",
       "pillar": "safety",
       "createdDate": "Jul 22, 2025",
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "4",
+      "id": "25",
       "description": "Log forklift incident coaching in training records",
-      "dueDate": "Jul 22, 2025",
+      "dueDate": "Jul 23, 2025",
       "status": "Open",
       "pillar": "safety",
       "createdDate": "Jul 22, 2025",
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "5",
+      "id": "26",
       "description": "Issue containment and corrective-action plan for freewheel wobble",
-      "dueDate": "Jul 22, 2025",
-      "status": "Open",
-      "pillar": "quality",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "6",
-      "description": "Confirm batch scope on faulty rims, photograph findings, and share with supply-chain team",
       "dueDate": "Jul 23, 2025",
       "status": "Open",
       "pillar": "quality",
@@ -55,7 +235,16 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "7",
+      "id": "27",
+      "description": "Confirm batch scope on faulty rims, photograph findings, and share with supply-chain team",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
+    },
+    {
+      "id": "28",
       "description": "Freeze DC rebalancing for 14-inch, 26-inch, and Adult Small models after tomorrow's truck",
       "dueDate": "Jul 24, 2025",
       "status": "Open",
@@ -64,26 +253,17 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "8",
+      "id": "29",
       "description": "Update ERP promise dates if freeze proceeds",
-      "dueDate": "Jul 23, 2025",
+      "dueDate": "Jul 24, 2025",
       "status": "Open",
       "pillar": "inventory",
       "createdDate": "Jul 22, 2025",
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "9",
+      "id": "30",
       "description": "Validate dock staffing plan for 3-per-day unloads and update Troy if gaps appear",
-      "dueDate": "Jul 22, 2025",
-      "status": "Open",
-      "pillar": "delivery",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "10",
-      "description": "Identify overflow storage space for unpainted forks before Monday's first container",
       "dueDate": "Jul 23, 2025",
       "status": "Open",
       "pillar": "delivery",
@@ -91,7 +271,16 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "11",
+      "id": "31",
+      "description": "Identify overflow storage space for unpainted forks before Monday's first container",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
+    },
+    {
+      "id": "32",
       "description": "Manufacturing supervisors to stabilize run lengths and cut changeovers by 25%",
       "dueDate": "Jul 24, 2025",
       "status": "Open",
@@ -100,7 +289,7 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "12",
+      "id": "33",
       "description": "Integrate 4 new hires into training matrix and track first-pass yield daily",
       "dueDate": "Jul 24, 2025",
       "status": "Open",
@@ -109,7 +298,7 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "13",
+      "id": "34",
       "description": "HR to review attendance early each morning and backfill no-shows within 4 hours",
       "dueDate": "Jul 23, 2025",
       "status": "Open",
@@ -118,103 +307,319 @@
       "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "14",
+      "id": "35",
       "description": "Place sanitizer and wipes in all restrooms; confirm by facilities walk-through",
-      "dueDate": "Jul 21, 2025",
-      "status": "Open",
-      "pillar": "safety",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "15",
-      "description": "Forward annual trailer inspection report to Lou and Jennica",
       "dueDate": "Jul 22, 2025",
       "status": "Open",
-      "pillar": "delivery",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "16",
-      "description": "Obtain repair quote for owned trailers with floor damage and share with Ranger",
-      "dueDate": "Jul 24, 2025",
-      "status": "Open",
-      "pillar": "delivery",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "17",
-      "description": "Photograph remaining damaged trailers and send to claims",
-      "dueDate": "Jul 23, 2025",
-      "status": "Open",
-      "pillar": "delivery",
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
-    },
-    {
-      "id": "18",
-      "description": "Weather-area signage audit for buildings other than G10; source additional signs",
-      "dueDate": "Jul 24, 2025",
-      "status": "In Progress",
       "pillar": "safety",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
     },
     {
-      "id": "19",
-      "description": "Provide supplier with more detail on bent cranks for follow-up",
+      "id": "36",
+      "description": "Forward annual trailer inspection report to Lou and Jennica",
       "dueDate": "Jul 23, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
+    },
+    {
+      "id": "37",
+      "description": "Obtain repair quote for owned trailers with floor damage and share with Ranger",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
+    },
+    {
+      "id": "38",
+      "description": "Photograph any remaining damaged trailers and send to claims",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 22, 2025",
+      "updatedDate": "Jul 22, 2025"
+    },
+    {
+      "id": "39",
+      "description": "Monitor heat safety compliance and push water breaks during high heat index days",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "40",
+      "description": "Follow up with Frank on bent crank corrective action plan",
+      "dueDate": "Jul 24, 2025",
       "status": "Open",
       "pillar": "quality",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
-      "id": "20",
-      "description": "Model shipping scenario analysis - Ryan Jansen to review",
+      "id": "41",
+      "description": "Maintain pressure on Frank for more frequent quality updates",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "42",
+      "description": "Follow up with Arpon on cost assumptions and clarify DC inventory availability scenarios",
       "dueDate": "Jul 24, 2025",
-      "status": "In Progress",
+      "status": "Open",
       "pillar": "inventory",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
-      "id": "21",
-      "description": "Quarantine bolts from Germany in G2; Quality has location details",
-      "dueDate": "Jul 22, 2025",
-      "status": "Completed",
-      "pillar": "delivery",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "id": "43",
+      "description": "Determine switch timing considering upcoming sales events",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
     },
     {
-      "id": "22",
-      "description": "SOP updates in progress to speed onboarding",
-      "dueDate": "Jul 24, 2025",
-      "status": "In Progress",
-      "pillar": "production",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
-    },
-    {
-      "id": "23",
-      "description": "Monitor water consumption amid heat index alerts",
-      "dueDate": "Jul 23, 2025",
-      "status": "Completed",
-      "pillar": "production",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
-    },
-    {
-      "id": "24",
-      "description": "Determine need for additional trailers before August 3 parking-lot restripe",
-      "dueDate": "Aug 1, 2025",
+      "id": "44",
+      "description": "Maintain extended staffing coverage for 3-4 week container surge",
+      "dueDate": "Jul 30, 2025",
       "status": "Open",
       "pillar": "delivery",
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "45",
+      "description": "Monitor zone-based container system effectiveness and adjust as needed",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "46",
+      "description": "Integrate fork and powder coat production into daily tracking metrics",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "47",
+      "description": "Coordinate Martin cleaning setup for powder coat area",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "48",
+      "description": "Develop retention strategy to address 21% call-in rate",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "49",
+      "description": "Implement daily attendance monitoring with 4-hour backfill target",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "50",
+      "description": "Order 6 metal scrap bins for G1 from Kroots",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "51",
+      "description": "Obtain updated truck tracker from Mike",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 23, 2025",
+      "updatedDate": "Jul 23, 2025"
+    },
+    {
+      "id": "52",
+      "description": "Monitor all staff for heat exhaustion and heat stroke symptoms throughout shift",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "53",
+      "description": "Enforce mandatory breaks in air conditioning with water during afternoon heat",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "safety",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "54", 
+      "description": "Pull 30-day scrap data from Omni dashboard for cranksets",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "55",
+      "description": "Compile comprehensive defect list with pictures and POs for Frank",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "56",
+      "description": "Investigate root cause beyond 'cheap Chinese parts' assessment",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "quality",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "57",
+      "description": "Make final decision on DC distribution pause considering cost versus service trade-offs",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "58",
+      "description": "Calculate impact on customer experience team scrambling for fulfillment",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "59",
+      "description": "Assess Indiana capacity for absorbing additional volume and accessories",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "inventory",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "60",
+      "description": "Confirm Thursday/Friday truck slots for continuous flow",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "61",
+      "description": "Maintain current staffing levels to support 3-truck daily cadence",
+      "dueDate": "Jul 30, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "62",
+      "description": "Complete frame assembly testing bike and validate 360/day capacity",
+      "dueDate": "Jul 26, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "63",
+      "description": "Evaluate weekend production feasibility to achieve 1,891 daily rate",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "64",
+      "description": "Continue attendance improvement initiatives that reduced rate to 13%",
+      "dueDate": "Jul 30, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "65",
+      "description": "Monitor sustainability of improved attendance rates",
+      "dueDate": "Jul 30, 2025",
+      "status": "Open",
+      "pillar": "production",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "66",
+      "description": "Schedule weed treatment following ground preparation",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "67",
+      "description": "Coordinate Friday restriping date with Valeo for temporary back lot parking",
+      "dueDate": "Jul 26, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "68",
+      "description": "Complete Limble setup for all trailers, spotter trucks, and box trucks PM schedules",
+      "dueDate": "Jul 25, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
+    },
+    {
+      "id": "69",
+      "description": "Send trailer/truck ownership list to Lou for sanity check",
+      "dueDate": "Jul 24, 2025",
+      "status": "Open",
+      "pillar": "delivery",
+      "createdDate": "Jul 24, 2025",
+      "updatedDate": "Jul 24, 2025"
     }
   ],
   "schema": {

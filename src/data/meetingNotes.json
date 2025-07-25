@@ -4,107 +4,343 @@
       "id": "1",
       "pillar": "safety",
       "keyPoints": [
-        "Forklift clipped ceiling light, maintenance replaced fixture, driver received immediate coaching",
-        "G4 side door closer repaired, still needs 'Employees Only' sign; Limble ticket submitted",
-        "Insurance walk-through closed with zero findings, new carrier onboarding in progress"
+        "Need signage for designated weather areas - audit required for all buildings except G10",
+        "Warehouses restrooms designated as tornado shelter areas",
+        "Safety tour for insurance happening today and tomorrow at all buildings",
+        "5S tour completed for all buildings with good results",
+        "No issues reported yesterday; operator forearm cut issue being worked on",
+        "Martin Supply on site for safety knife quotes - safety knives now being used",
+        "Cut resistant sleeves and lens cleaning station through Martin will be VMI",
+        "Ceramic blades or hook safety knives challenging due to thick banding"
       ],
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
+      "createdDate": "July 16, 2025",
+      "updatedDate": "July 16, 2025"
     },
     {
       "id": "2",
       "pillar": "quality",
       "keyPoints": [
-        "Wobbly single-speed freewheels persist on 14-inch and 16-inch wheels, balance bikes unaffected; Frank aware",
-        "400 rims with paint-adhesion issues will be air-freighted; supplier inspection required before shipment"
+        "Same ongoing quality issues continue",
+        "Lou and Adam will follow up with escalated issues",
+        "Paint flaking yesterday on 26-inch BP rims - adhesion issue same as before",
+        "Need to order 600 more warranty wheels for China wheel flaking issue - Adam to escalate",
+        "IQC: Lucas will discuss setup changes and NPIs",
+        "Untrue rims on 14s and 16s - will contact Frank about the issue",
+        "Burrs and brake bosses issues continue - station specific quality issues",
+        "Josh working on improving operator chain tension spacing",
+        "Lots of wheel issues on 16s from China supplier - majority of defects from China",
+        "Frank implementing corrective action for burrs and brake bosses",
+        "Josh ordered tools to help with quality defects on line"
       ],
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
+      "createdDate": "July 16, 2025",
+      "updatedDate": "July 16, 2025"
     },
     {
       "id": "3",
       "pillar": "inventory",
       "keyPoints": [
-        "Production missed plan 12 straight days, leaving month-to-date shortfall of 4,652 bikes",
-        "8 production days remain, 20,652 bikes still required to hit plan (1,877 bikes per calendar day)",
-        "Charts highlight daily gap and cumulative divergence from target"
+        "Overall inventory lowest it's ever been but remaining flat/marginally improving",
+        "Backlog expected on multiple models to continue through August",
+        "2 models overdue: 14 BG (1) and 26 LB (29), 7 models will be overdue today",
+        "Inventory Policy Change - DENY noted on most models instead of continue",
+        "16-inch out of backlog but inventory remains low for BG model",
+        "14-inch and 26-inch remain in and out of backlog through August",
+        "Balance, 20S, 20L, Adult L have no stockouts",
+        "Top stockout: GBE-24-7-LB (173 units), GBE-26-7-LB (166 units), GBE-275-7-SM-DB (123 units)",
+        "Total preorder units: 589, with 375 overdue units"
       ],
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
+      "createdDate": "July 16, 2025",
+      "updatedDate": "July 16, 2025"
     },
     {
       "id": "4",
       "pillar": "delivery",
       "keyPoints": [
-        "2 containers received this week (both wheels), 24 additional containers arriving tomorrow through next Friday",
-        "July total will reach 56 containers",
-        "Extra labor secured: 3 temps per day this week, 4 per day next week"
+        "2 containers today, 1 container pushed to tomorrow",
+        "1st container: unpainted forks, 2nd container G2: Vzan wheels",
+        "3rd container: all bolts from Germany",
+        "14 containers next week PO 823/824",
+        "31 containers total planned: 14 last week, 9 this week",
+        "Vzan rims arriving need to stay in warehouse",
+        "14, 16, 20 unpainted forks/frames arriving this week",
+        "Could be located at G9, Heather supplying staff for container support",
+        "Adult bike stems delayed in Chicago until 15th, 2-3 weeks until ready"
       ],
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
+      "createdDate": "July 16, 2025",
+      "updatedDate": "July 16, 2025"
     },
     {
       "id": "5",
       "pillar": "production",
       "keyPoints": [
-        "Yesterday produced 1,518 units. Today's target is 1,540 but will finish about 1,340 after reworking 100 bikes with incorrect wheel colors",
-        "Continuous changeovers and ongoing new-hire training limit line speed",
-        "6 full-time hires onboarded yesterday, 3 remain active; SMX provided additional temps"
+        "1492 units yesterday, 1600 planned today before weather issue",
+        "Production numbers will be lower today due to wheel color mismatch",
+        "Ran 100 bikes with wrong color, had to be re-run",
+        "Staff decreasing daily causing training/retraining issues",
+        "9 from SMX staffing through end of year, HR aware",
+        "Training ongoing, 4 people short of new hires",
+        "SOPs being updated to support standardized processes on line"
       ],
-      "createdDate": "Jul 22, 2025",
-      "updatedDate": "Jul 22, 2025"
+      "createdDate": "July 16, 2025",
+      "updatedDate": "July 16, 2025"
     },
     {
       "id": "6",
       "pillar": "safety",
       "keyPoints": [
-        "Weather-area signage audit remains open for buildings other than G10",
-        "Additional signage sourcing in progress"
+        "Safety bumpers installed on support beams in G4",
+        "G4 door continues to stick, visitors entering production area",
+        "Employee Only sign and latch repair ticket needed for Limble",
+        "Insurance walk-through more detailed today than yesterday",
+        "Five-S tours continuing across all buildings"
       ],
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "July 17, 2025",
+      "updatedDate": "July 17, 2025"
     },
     {
       "id": "7",
       "pillar": "quality",
       "keyPoints": [
-        "Supplier requested more detail on bent cranks issue",
-        "Follow-up communication required with supplier"
+        "Wobbly freewheels on 24-inch and 26-inch bikes corrected yesterday",
+        "Only two bikes scrapped from freewheel issue",
+        "Frank replied to supplier inquiry on bent cranks, follow-up pending",
+        "Paint flaking on 26-inch BP rims remains under investigation",
+        "Order of 600 warranty wheels planned for paint-flaking issue"
       ],
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "July 17, 2025",
+      "updatedDate": "July 17, 2025"
     },
     {
       "id": "8",
       "pillar": "inventory",
       "keyPoints": [
-        "Model shipping scenario analysis started",
-        "Ryan Jansen reviewing shipping scenarios"
+        "Total inventory increased to 11,102 units (up 2%)",
+        "Backorders fell to 641 units (down 45%)",
+        "Largest overdue exposures: GBE_24_7_LB at 124 units, GBE_26_7_BP at 86 units",
+        "Recommend pausing DC rebalancing for 14-inch, 26-inch, Adult Small for 30 days",
+        "Ship only from Indiana until stock recovers"
       ],
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "July 17, 2025",
+      "updatedDate": "July 17, 2025"
     },
     {
       "id": "9",
       "pillar": "delivery",
       "keyPoints": [
-        "Bolts from Germany quarantined in G2 location",
-        "Quality team has location details for quarantined items",
-        "Additional trailer needs assessment ongoing for parking lot restripe"
+        "Yesterday 3 containers received: 11,500 unpainted forks and new wheels",
+        "Bolts from Germany and additional wheels quarantined in G2",
+        "14 containers projected next week, first arriving Monday with Brazilian wheels",
+        "4 additional laborers arranged to support unloading",
+        "Floor space in G2 and G5 evaluated for unpainted fork storage"
       ],
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "July 17, 2025",
+      "updatedDate": "July 17, 2025"
     },
     {
       "id": "10",
       "pillar": "production",
       "keyPoints": [
-        "SOP updates in progress to improve onboarding speed",
-        "Water source issues resolved, bottles restocked",
-        "Monitoring water consumption due to heat index alerts"
+        "Output yesterday hit 1,562 units",
+        "Today's target 1,540, about 200 below normal due to wheel-color rework",
+        "100 bikes required rework after wheel-color mismatch",
+        "Training continues on main line with 4 vacancies being filled",
+        "6 employees either left sick or resigned yesterday"
       ],
-      "createdDate": "Jul 21, 2025",
-      "updatedDate": "Jul 21, 2025"
+      "createdDate": "July 17, 2025",
+      "updatedDate": "July 17, 2025"
+    },
+    {
+      "id": "11",
+      "pillar": "safety",
+      "keyPoints": [
+        "Forklift clipped ceiling light, maintenance replaced fixture",
+        "Driver received immediate coaching for forklift incident",
+        "G4 side door closer repaired, still needs Employee Only sign",
+        "Limble ticket submitted for door signage",
+        "Insurance walk-through closed with zero findings",
+        "New carrier onboarding in progress"
+      ],
+      "createdDate": "July 22, 2025",
+      "updatedDate": "July 22, 2025"
+    },
+    {
+      "id": "12",
+      "pillar": "quality",
+      "keyPoints": [
+        "Wobbly single-speed freewheels persist on 14-inch and 16-inch wheels",
+        "Balance bikes unaffected by freewheel issue, Frank aware",
+        "400 rims with paint-adhesion issues will be air-freighted",
+        "Supplier inspection required before rim shipment"
+      ],
+      "createdDate": "July 22, 2025",
+      "updatedDate": "July 22, 2025"
+    },
+    {
+      "id": "13",
+      "pillar": "inventory",
+      "keyPoints": [
+        "Production missed plan 12 straight days",
+        "Month-to-date shortfall of 4,652 bikes",
+        "8 production days remain, 20,652 bikes still required to hit plan",
+        "Requires 1,877 bikes per calendar day if every day used",
+        "Charts highlight daily gap and cumulative divergence from target"
+      ],
+      "createdDate": "July 22, 2025",
+      "updatedDate": "July 22, 2025"
+    },
+    {
+      "id": "14",
+      "pillar": "delivery",
+      "keyPoints": [
+        "2 containers received this week, both wheels",
+        "24 additional containers arriving tomorrow through next Friday",
+        "July total will reach 56 containers",
+        "Extra labor secured: 3 temps per day this week, 4 per day next week"
+      ],
+      "createdDate": "July 22, 2025",
+      "updatedDate": "July 22, 2025"
+    },
+    {
+      "id": "15",
+      "pillar": "production",
+      "keyPoints": [
+        "Yesterday produced 1,518 units",
+        "Today's target 1,540 but will finish about 1,340 after reworking 100 bikes",
+        "Incorrect wheel colors requiring rework",
+        "Continuous changeovers and new-hire training limit line speed",
+        "6 full-time hires onboarded yesterday, 3 remain active",
+        "SMX provided additional temps"
+      ],
+      "createdDate": "July 22, 2025",
+      "updatedDate": "July 22, 2025"
+    },
+    {
+      "id": "16",
+      "pillar": "safety",
+      "keyPoints": [
+        "No new incidents reported",
+        "Preparing for extreme heat with 107-degree heat index expected Thursday",
+        "Insurance walkthrough completed with no findings",
+        "Proceeding with new carrier transition",
+        "Emphasizing hydration and heat safety protocols across all facilities"
+      ],
+      "createdDate": "July 23, 2025",
+      "updatedDate": "July 23, 2025"
+    },
+    {
+      "id": "17",
+      "pillar": "quality",
+      "keyPoints": [
+        "Bent cranks persist as primary quality concern",
+        "Frank working on resolution but communication limited to one reply per week",
+        "Previous wobbly single-speed freewheels and paint adhesion issues continue",
+        "Frank's oversight needed for more frequent quality updates"
+      ],
+      "createdDate": "July 23, 2025",
+      "updatedDate": "July 23, 2025"
+    },
+    {
+      "id": "18",
+      "pillar": "inventory",
+      "keyPoints": [
+        "Proposed DC redistribution freeze for 14-inch, 26-inch, Adult Small models",
+        "$10-per-shipment cost increase from Indiana fulfillment",
+        "Potential $200,000 shipping cost impact per 20,000 orders during sales",
+        "Current shortfall: 4,757 bikes with 6 days remaining",
+        "Required daily output: 2,793 units (scheduled days) or 1,862 units (including weekends)"
+      ],
+      "createdDate": "July 23, 2025",
+      "updatedDate": "July 23, 2025"
+    },
+    {
+      "id": "19",
+      "pillar": "delivery",
+      "keyPoints": [
+        "2 containers received of 24 expected over next 8 workdays",
+        "New zone-based unloading system showing promise",
+        "Smooth first container processing with zone system",
+        "Additional 26 containers either in LA port or on water",
+        "Maintaining high-volume cadence through mid-August"
+      ],
+      "createdDate": "July 23, 2025",
+      "updatedDate": "July 23, 2025"
+    },
+    {
+      "id": "20",
+      "pillar": "production",
+      "keyPoints": [
+        "Strong output of 1,634 units yesterday with robust day expected",
+        "New workshop initiated to push value improvements",
+        "Fork production started on 16-inch models",
+        "Fixtures for 20-inch and 14-inch forks in development",
+        "Powder coat line fire-up scheduled for tomorrow"
+      ],
+      "createdDate": "July 23, 2025",
+      "updatedDate": "July 23, 2025"
+    },
+    {
+      "id": "21",
+      "pillar": "safety",
+      "keyPoints": [
+        "Implemented heat safety protocols with afternoon breaks",
+        "Team briefed on heat exhaustion vs heat stroke symptoms",
+        "Heat exhaustion: heavy sweating, headache, muscle cramps, weak pulse",
+        "Heat stroke: body temp >103°F, hot/red/dry skin, confusion, rapid pulse",
+        "No new incidents reported from previous day"
+      ],
+      "createdDate": "July 24, 2025",
+      "updatedDate": "July 24, 2025"
+    },
+    {
+      "id": "22",
+      "pillar": "quality",
+      "keyPoints": [
+        "Bent cranks remain daily occurrence with Frank requesting specific quantities",
+        "Tracking complicated by need to review scrap reports and defect logs",
+        "Additional adhesion problems emerging on various rim sizes",
+        "Primary issues concentrated on 24-inch and 26-inch sizes affecting nearly all sizes"
+      ],
+      "createdDate": "July 24, 2025",
+      "updatedDate": "July 24, 2025"
+    },
+    {
+      "id": "23",
+      "pillar": "inventory",
+      "keyPoints": [
+        "Analysis of 30-day DC distribution pause reveals significant cost implications",
+        "50% of orders currently shipping from Indiana, consolidating would add $10 per shipment",
+        "Generate $10,000 weekly in additional FedEx charges",
+        "Eliminate two-day delivery promise capability",
+        "Models continue cycling in and out of stockout complicating decisions"
+      ],
+      "createdDate": "July 24, 2025",
+      "updatedDate": "July 24, 2025"
+    },
+    {
+      "id": "24",
+      "pillar": "delivery",
+      "keyPoints": [
+        "Maintaining 3 trucks daily schedule with strong performance",
+        "Next week's schedule pretty full though Thursday/Friday slots pending",
+        "Bike parts inventory expected to increase over next several days",
+        "Smooth operations reported across all dock activities"
+      ],
+      "createdDate": "July 24, 2025",
+      "updatedDate": "July 24, 2025"
+    },
+    {
+      "id": "25",
+      "pillar": "production",
+      "keyPoints": [
+        "Yesterday's production 1,668 units continues below 2,000 daily target",
+        "Month-to-date shortage: 5,131 bikes with 5 production days remaining",
+        "Remaining plan quantity: 10,000 bikes requiring 3,026 units daily (unattainable)",
+        "Frame Assembly: Testing bike expected by end of week",
+        "Potential capacity of 360 bikes daily by next week",
+        "Attendance improved to 13% from previous 20%+ call-in levels"
+      ],
+      "createdDate": "July 24, 2025",
+      "updatedDate": "July 24, 2025"
     }
   ],
   "schema": {
