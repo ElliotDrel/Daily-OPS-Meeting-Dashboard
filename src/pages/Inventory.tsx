@@ -30,7 +30,9 @@ export const Inventory = () => {
     createItem, 
     updateItem, 
     deleteNote,
-    isLoading 
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
   } = usePillarData('inventory', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -93,6 +95,8 @@ export const Inventory = () => {
           notesTitle="Internal Process Meeting Notes"
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
         />
       </div>
     </PillarLayout>

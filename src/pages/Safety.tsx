@@ -82,7 +82,9 @@ export const Safety = () => {
     createItem, 
     updateItem, 
     deleteNote,
-    isLoading 
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
   } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -172,6 +174,8 @@ export const Safety = () => {
           pillar="safety"
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
         />
 
         {/* Bottom Row - Legacy Action Table */}

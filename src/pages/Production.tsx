@@ -66,7 +66,9 @@ export const Production = () => {
     createItem, 
     updateItem, 
     deleteNote,
-    isLoading 
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
   } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -156,6 +158,8 @@ export const Production = () => {
           pillar="production"
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
         />
 
         {/* Bottom Row - Open Processes */}

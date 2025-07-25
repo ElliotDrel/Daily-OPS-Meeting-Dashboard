@@ -73,7 +73,9 @@ export const Quality = () => {
     createItem, 
     updateItem, 
     deleteNote,
-    isLoading 
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
   } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
   if (isLoading) {
     return (
@@ -161,6 +163,8 @@ export const Quality = () => {
           pillar="quality"
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
         />
 
         {/* Bottom Row - Corrective Actions Table */}

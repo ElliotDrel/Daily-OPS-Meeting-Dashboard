@@ -53,7 +53,9 @@ export const Delivery = () => {
     createItem, 
     updateItem, 
     deleteNote,
-    isLoading 
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedLoading
   } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -143,6 +145,8 @@ export const Delivery = () => {
           pillar="delivery"
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
         />
 
         {/* Bottom Row - Corrective Actions Table */}
