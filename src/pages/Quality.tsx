@@ -8,9 +8,8 @@ import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
+import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 
-// Toggle this to hide/show charts and stats
-const SHOW_CHARTS_AND_STATS = false;
 
 const qualityMetrics = [
   { label: "Customer Complaints", value: "14", icon: Mail, color: "bg-status-issue" },
@@ -92,6 +91,19 @@ export const Quality = () => {
       </PillarLayout>
     );
   }
+  const graphsPane = (
+    <PillarGraphsPane
+      pillarName="Quality"
+      pillarColor="quality"
+      lineChartData={qualityData.lineChart}
+      pieChartData={qualityData.donutData}
+      metrics={qualityMetrics}
+      lineChartTitle="Quality Performance - 5 Month Trend"
+      pieChartTitle="Quality Metrics Distribution"
+      formatValue={(value) => `${value}%`}
+    />
+  );
+
   return (
     <PillarLayout
       letter="Q"
@@ -99,55 +111,9 @@ export const Quality = () => {
       pillarColor="quality"
       squares={dashboardData.pillars.quality.squares}
       actionItems={actionItems}
+      graphsPane={graphsPane}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart and Pie Chart */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {/* Line Chart */}
-          <div className="lg:col-span-2">
-            <Card className="p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-quality">Quality Performance - 5 Month Trend</h3>
-              <TrendLineChart 
-                data={qualityData.lineChart}
-                title="Quality Score"
-                color="#3b82f6"
-                formatValue={(value) => `${value}%`}
-              />
-            </Card>
-          </div>
-
-          {/* Pie Chart */}
-          <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-quality">Quality Metrics Distribution</h3>
-            <PieChartComponent 
-              data={qualityData.donutData}
-              title="Quality Breakdown"
-              showLegend={true}
-              height="h-48"
-            />
-          </Card>
-        </div>
-        )}
-
-        {/* Second Row - Metrics */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-          {qualityMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-3">
-                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                  <metric.icon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection
