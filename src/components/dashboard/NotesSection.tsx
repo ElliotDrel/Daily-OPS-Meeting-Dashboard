@@ -232,9 +232,9 @@ export const NotesSection = ({
               onSave={handleManualSave}
             />
           ) : (
-            <div className="text-center py-8 text-muted-foreground text-sm mb-4">
-              <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p>No meeting notes yet. Use the input below to create your first note.</p>
+            <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm mb-4">
+              <FileText className="w-24 h-24 mr-4 opacity-50" />
+              <p className="max-w-xs">No meeting notes yet. Use the input below to create your first note.</p>
             </div>
           )}
 
@@ -271,14 +271,7 @@ export const NotesSection = ({
               
               <div className="space-y-4 opacity-75">
                 {displayLogic.yesterdayDisplay.hasContent && displayLogic.yesterdayDisplay.note ? (
-                  <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
-                    <div className="flex items-center mb-3">
-                      <div className="flex items-center space-x-2">
-                        <FileText className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
-                      </div>
-                    </div>
-                    
+                  <div className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
                     <div className="space-y-2">
                       {displayLogic.yesterdayDisplay.note.keyPoints && displayLogic.yesterdayDisplay.note.keyPoints.length > 0 ? (
                         <ul className="space-y-1 list-none">
@@ -317,7 +310,7 @@ export const NotesSection = ({
               </div>
               
               <div className="space-y-4 opacity-75">
-                <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
+                <div className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors">
                   <div className="flex items-center mb-3">
                     <div className="flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
