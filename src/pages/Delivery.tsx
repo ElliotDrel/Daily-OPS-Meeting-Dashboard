@@ -8,9 +8,8 @@ import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
+import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 
-// Toggle this to hide/show charts and stats
-const SHOW_CHARTS_AND_STATS = false;
 
 const deliveryMetrics = [
   { label: "On Time %", value: "92.5%", icon: Truck, color: "bg-status-good" },
@@ -74,6 +73,19 @@ export const Delivery = () => {
     );
   }
 
+  const graphsPane = (
+    <PillarGraphsPane
+      pillarName="Delivery"
+      pillarColor="delivery"
+      lineChartData={deliveryData.lineChart}
+      pieChartData={deliveryData.donutData}
+      metrics={deliveryMetrics}
+      lineChartTitle="On-Time Delivery - 5 Month Trend"
+      pieChartTitle="Delivery Metrics Overview"
+      formatValue={(value) => `${value.toFixed(1)}%`}
+    />
+  );
+
   return (
     <PillarLayout
       letter="D"
@@ -81,55 +93,9 @@ export const Delivery = () => {
       pillarColor="delivery"
       squares={dashboardData.pillars.delivery.squares}
       actionItems={actionItems}
+      graphsPane={graphsPane}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart and Pie Chart */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {/* Line Chart */}
-          <div className="lg:col-span-2">
-            <Card className="p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-delivery">On-Time Delivery - 5 Month Trend</h3>
-              <TrendLineChart 
-                data={deliveryData.lineChart}
-                title="Delivery Performance"
-                color="#10b981"
-                formatValue={(value) => `${value.toFixed(1)}%`}
-              />
-            </Card>
-          </div>
-
-          {/* Pie Chart */}
-          <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-delivery">Delivery Metrics Overview</h3>
-            <PieChartComponent 
-              data={deliveryData.donutData}
-              title="Delivery Analysis"
-              showLegend={true}
-              height="h-48"
-            />
-          </Card>
-        </div>
-        )}
-
-        {/* Second Row - Metrics */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="space-y-4">
-          {deliveryMetrics.map((metric, index) => (
-            <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                  <metric.icon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-foreground">{metric.value}</p>
-                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection

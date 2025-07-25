@@ -8,9 +8,8 @@ import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
+import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 
-// Toggle this to hide/show charts and stats
-const SHOW_CHARTS_AND_STATS = false;
 
 const productionMetrics = [
   { label: "People on Shift", value: "24/28", icon: Users, color: "bg-status-caution" },
@@ -87,6 +86,19 @@ export const Production = () => {
     );
   }
 
+  const graphsPane = (
+    <PillarGraphsPane
+      pillarName="Production"
+      pillarColor="production"
+      lineChartData={productionData.lineChart}
+      pieChartData={productionData.donutData}
+      metrics={productionMetrics}
+      lineChartTitle="Production Output vs Target - 5 Month Trend"
+      pieChartTitle="Production Analysis"
+      formatValue={(value) => `${Math.round(value)} units`}
+    />
+  );
+
   return (
     <PillarLayout
       letter="P"
@@ -94,55 +106,9 @@ export const Production = () => {
       pillarColor="production"
       squares={dashboardData.pillars.production.squares}
       actionItems={actionItems}
+      graphsPane={graphsPane}
     >
       <div className="space-y-6">
-        {/* Top Row - Line Chart and Pie Chart */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {/* Line Chart */}
-          <div className="lg:col-span-2">
-            <Card className="p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-production">Production Output vs Target - 5 Month Trend</h3>
-              <TrendLineChart 
-                data={productionData.lineChart}
-                title="Output Units"
-                color="#4b6cb7"
-                formatValue={(value) => `${Math.round(value)} units`}
-              />
-            </Card>
-          </div>
-
-          {/* Pie Chart */}
-          <Card className="p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-production">Production Analysis</h3>
-            <PieChartComponent 
-              data={productionData.donutData}
-              title="Production Breakdown"
-              showLegend={true}
-              height="h-48"
-            />
-          </Card>
-        </div>
-        )}
-
-        {/* Second Row - Metrics */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-          {productionMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-3">
-                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                  <metric.icon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection

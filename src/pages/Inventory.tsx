@@ -6,9 +6,8 @@ import { dashboardData } from "@/data/mockData";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
+import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 
-// Toggle this to hide/show charts and stats
-const SHOW_CHARTS_AND_STATS = false;
 
 const inventoryMetrics = [
   { label: "Process Efficiency", value: "85%", icon: Settings, color: "bg-status-good" },
@@ -16,6 +15,23 @@ const inventoryMetrics = [
   { label: "Cross-Dept Collaboration", value: "91%", icon: Users, color: "bg-status-good" },
   { label: "Workflow Optimization", value: "68%", icon: Workflow, color: "bg-chart-blue" }
 ];
+
+// Mock inventory data since it's not available in mockData
+const inventoryData = {
+  lineChart: [
+    { month: 'Aug', value: 78, target: 85 },
+    { month: 'Sep', value: 82, target: 85 },
+    { month: 'Oct', value: 79, target: 85 },
+    { month: 'Nov', value: 85, target: 85 },
+    { month: 'Dec', value: 88, target: 85 }
+  ],
+  donutData: [
+    { name: 'Raw Materials', value: 35, color: '#ef4444' },
+    { name: 'Work in Process', value: 25, color: '#f97316' },
+    { name: 'Finished Goods', value: 30, color: '#22c55e' },
+    { name: 'Supplies', value: 10, color: '#3b82f6' }
+  ]
+};
 
 
 export const Inventory = () => {
@@ -51,6 +67,19 @@ export const Inventory = () => {
     );
   }
 
+  const graphsPane = (
+    <PillarGraphsPane
+      pillarName="Inventory"
+      pillarColor="inventory"
+      lineChartData={inventoryData.lineChart}
+      pieChartData={inventoryData.donutData}
+      metrics={inventoryMetrics}
+      lineChartTitle="Inventory Levels - 5 Month Trend"
+      pieChartTitle="Inventory Composition"
+      formatValue={(value) => `${value.toFixed(1)}%`}
+    />
+  );
+
   return (
     <PillarLayout
       letter="I"
@@ -58,26 +87,9 @@ export const Inventory = () => {
       pillarColor="inventory"
       squares={dashboardData.pillars.inventory.squares}
       actionItems={actionItems || []}
+      graphsPane={graphsPane}
     >
       <div className="space-y-6">
-        {/* Metric Tiles */}
-        {SHOW_CHARTS_AND_STATS && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-          {inventoryMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-3">
-                <div className={`p-3 rounded-xl ${metric.color} shadow-lg`}>
-                  <metric.icon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                  <p className="text-sm text-muted-foreground font-medium">{metric.label}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-        )}
 
         {/* Action Items and Notes Section */}
         <ActionItemsAndNotesSection 
