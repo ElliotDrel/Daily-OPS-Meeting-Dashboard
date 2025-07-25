@@ -96,7 +96,7 @@ export const PillarLayout = ({
               </Link>
               <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
             </div>
-            <div className="flex items-center space-x-2 bg-muted/50 px-4 py-2 rounded-lg">
+            <div className="flex items-center bg-muted/50 px-4 py-2 rounded-lg">
               <Button
                 variant="outline"
                 size="sm"
@@ -108,7 +108,7 @@ export const PillarLayout = ({
                 <ArrowLeft className="w-4 h-4" />
                 Previous Day
               </Button>
-              <div className="flex flex-col items-center min-w-64 px-4">
+              <div className="flex flex-col items-center min-w-64">
                 <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
                 <span className="text-lg font-semibold text-foreground">
                   {format(selectedDate, 'EEEE, MMMM d, yyyy')}
