@@ -51,39 +51,33 @@ export const ActionItemsAndNotesSection = ({
 
   return (
     <div className="space-y-6">
-      {/* Main Section with Today's and Yesterday's Data Integrated */}
+      {/* Notes Section - Top */}
       <Card className="p-0 shadow-lg overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          {/* Left Half - Action Items */}
-          <div className="border-r border-border">
-            <ActionItemsSection
-              actionItems={actionItems || []}
-              yesterdayActionItems={yesterdayActionItems || []}
-              title={actionItemsTitle}
-              onUpdateActionItems={onUpdateActionItems}
-              showCard={false}
-            />
-          </div>
-          
-          {/* Right Half - Notes */}
-          <div>
-            <NotesSection
-              meetingNote={meetingNote}
-              yesterdayMeetingNote={yesterdayMeetingNote}
-              lastRecordedNote={lastRecordedNote}
-              title={notesTitle}
-              showCard={false}
-              onUpsertNote={onUpsertNote}
-              onDeleteNote={onDeleteNote}
-              isLoading={isLoading}
-              selectedDate={selectedDate}
-              isYesterdayLoading={isYesterdayLoading}
-              isLastRecordedLoading={isLastRecordedLoading}
-            />
-          </div>
-        </div>
+        <NotesSection
+          meetingNote={meetingNote}
+          yesterdayMeetingNote={yesterdayMeetingNote}
+          lastRecordedNote={lastRecordedNote}
+          title={notesTitle}
+          showCard={false}
+          onUpsertNote={onUpsertNote}
+          onDeleteNote={onDeleteNote}
+          isLoading={isLoading}
+          selectedDate={selectedDate}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedLoading={isLastRecordedLoading}
+        />
       </Card>
 
+      {/* Action Items Section - Bottom */}
+      <Card className="p-0 shadow-lg overflow-hidden">
+        <ActionItemsSection
+          actionItems={actionItems || []}
+          yesterdayActionItems={yesterdayActionItems || []}
+          title={actionItemsTitle}
+          onUpdateActionItems={onUpdateActionItems}
+          showCard={false}
+        />
+      </Card>
     </div>
   );
 };
