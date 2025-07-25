@@ -26,6 +26,7 @@ interface PillarLayoutProps {
     status: string;
     count?: number;
   }>;
+  graphsPane?: React.ReactNode;
 }
 
 const getStatusColor = (status: string) => {
@@ -57,7 +58,8 @@ export const PillarLayout = ({
   pillarColor,
   children,
   squares,
-  actionItems = []
+  actionItems = [],
+  graphsPane
 }: PillarLayoutProps) => {
   const { selectedDate, setSelectedDate } = useDate();
   const [month, setMonth] = useState(new Date());
@@ -128,98 +130,102 @@ export const PillarLayout = ({
             </div>
           </div>
 
-          {/* Two column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
-            {/* Left Column - 25% */}
-            <div className="lg:col-span-1 space-y-3">
-              {/* Calendar */}
-              <Calendar
-                size="mini"
-                scale={1.2}
-                selectedDate={selectedDate}
-                onDateSelect={setSelectedDate}
-                month={month}
-                onMonthChange={setMonth}
-                showHeader={true}
-                className="w-full min-h-[280px]"
-              />
+          {/* Three column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+            {/* Left Column - Calendar (25%) */}
+            <div className="lg:col-span-3 h-screen overflow-y-auto">
+              <div className="space-y-3">
+                {/* Calendar */}
+                <Calendar
+                  size="mini"
+                  scale={1.2}
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                  month={month}
+                  onMonthChange={setMonth}
+                  showHeader={true}
+                  className="w-full min-h-[280px]"
+                />
 
-              {/* Previous Month Calendar */}
-              <Calendar
-                size="mini"
-                scale={1.2}
-                selectedDate={selectedDate}
-                onDateSelect={setSelectedDate}
-                month={getPreviousMonth(month)}
-                onMonthChange={() => {}} // No-op to prevent navigation
-                showHeader={true}
-                showNavigation={false}
-                className="w-full min-h-[280px]"
-              />
+                {/* Previous Month Calendar */}
+                <Calendar
+                  size="mini"
+                  scale={1.2}
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                  month={getPreviousMonth(month)}
+                  onMonthChange={() => {}} // No-op to prevent navigation
+                  showHeader={true}
+                  showNavigation={false}
+                  className="w-full min-h-[280px]"
+                />
 
-              {/* Multi-Calendar Card */}
-              <Card className="p-4">
-                <div className="grid grid-cols-2 gap-2">
-                  {/* 2 Months Ago - Top Left */}
-                  <Calendar
-                    size="mini"
-                    scale={0.7}
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    month={getMonthsBack(month, 2)}
-                    onMonthChange={() => {}}
-                    showHeader={true}
-                    showNavigation={false}
-                    className="w-full"
-                  />
+                {/* Multi-Calendar Card */}
+                <Card className="p-4">
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* 2 Months Ago - Top Left */}
+                    <Calendar
+                      size="mini"
+                      scale={0.7}
+                      selectedDate={selectedDate}
+                      onDateSelect={setSelectedDate}
+                      month={getMonthsBack(month, 2)}
+                      onMonthChange={() => {}}
+                      showHeader={true}
+                      showNavigation={false}
+                      className="w-full"
+                    />
 
-                  {/* 3 Months Ago - Top Right */}
-                  <Calendar
-                    size="mini"
-                    scale={0.7}
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    month={getMonthsBack(month, 3)}
-                    onMonthChange={() => {}}
-                    showHeader={true}
-                    showNavigation={false}
-                    className="w-full"
-                  />
+                    {/* 3 Months Ago - Top Right */}
+                    <Calendar
+                      size="mini"
+                      scale={0.7}
+                      selectedDate={selectedDate}
+                      onDateSelect={setSelectedDate}
+                      month={getMonthsBack(month, 3)}
+                      onMonthChange={() => {}}
+                      showHeader={true}
+                      showNavigation={false}
+                      className="w-full"
+                    />
 
-                  {/* 4 Months Ago - Bottom Left */}
-                  <Calendar
-                    size="mini"
-                    scale={0.7}
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    month={getMonthsBack(month, 4)}
-                    onMonthChange={() => {}}
-                    showHeader={true}
-                    showNavigation={false}
-                    className="w-full"
-                  />
+                    {/* 4 Months Ago - Bottom Left */}
+                    <Calendar
+                      size="mini"
+                      scale={0.7}
+                      selectedDate={selectedDate}
+                      onDateSelect={setSelectedDate}
+                      month={getMonthsBack(month, 4)}
+                      onMonthChange={() => {}}
+                      showHeader={true}
+                      showNavigation={false}
+                      className="w-full"
+                    />
 
-                  {/* 5 Months Ago - Bottom Right */}
-                  <Calendar
-                    size="mini"
-                    scale={0.7}
-                    selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    month={getMonthsBack(month, 5)}
-                    onMonthChange={() => {}}
-                    showHeader={true}
-                    showNavigation={false}
-                    className="w-full"
-                  />
-                </div>
-              </Card>
-
-              {/* Action Items */}
-              
+                    {/* 5 Months Ago - Bottom Right */}
+                    <Calendar
+                      size="mini"
+                      scale={0.7}
+                      selectedDate={selectedDate}
+                      onDateSelect={setSelectedDate}
+                      month={getMonthsBack(month, 5)}
+                      onMonthChange={() => {}}
+                      showHeader={true}
+                      showNavigation={false}
+                      className="w-full"
+                    />
+                  </div>
+                </Card>
+              </div>
             </div>
 
-            {/* Right Column - 75% */}
-            <div className="lg:col-span-3">
+            {/* Middle Column - Graphs (37.5%) */}
+            <div className="lg:col-span-4 h-screen">
+              {graphsPane}
+            </div>
+
+            {/* Right Column - Notes and Action Items (37.5%) */}
+            <div className="lg:col-span-5 h-screen overflow-y-auto">
               {children}
             </div>
           </div>
