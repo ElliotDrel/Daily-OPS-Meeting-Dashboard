@@ -40,7 +40,7 @@ export const NotesSection = ({
   meetingNote, 
   yesterdayMeetingNote,
   lastRecordedNote,
-  title = "Meeting Notes & Discoveries", 
+  title = "Meeting Notes", 
   onUpsertNote, 
   onDeleteNote, 
   showCard = true, 
