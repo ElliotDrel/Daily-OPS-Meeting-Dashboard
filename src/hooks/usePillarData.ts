@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useEffect } from 'react'
+import { subDays, parseISO, format } from 'date-fns'
 
 export interface MeetingNote {
   id: string
@@ -28,10 +29,10 @@ export interface ActionItem {
 export const usePillarData = (pillar: string, selectedDate: string) => {
   const queryClient = useQueryClient()
 
-  // Calculate yesterday's date (timezone-safe)
-  const selectedDateParts = selectedDate.split('-').map(Number) // [YYYY, MM, DD]
-  const yesterdayDate = new Date(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2] - 1)
-  const yesterdayString = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, '0')}-${String(yesterdayDate.getDate()).padStart(2, '0')}`
+  // Calculate yesterday's date (timezone-safe using date-fns)
+  const selectedDateObj = parseISO(selectedDate)
+  const yesterdayDate = subDays(selectedDateObj, 1)
+  const yesterdayString = format(yesterdayDate, 'yyyy-MM-dd')
 
   // Load single meeting note for the day
   const { data: meetingNote = null, isLoading: notesLoading } = useQuery({
@@ -81,28 +82,28 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
-  // Load last recorded meeting note (when yesterday is empty)
+  // Load last recorded meeting note (FIXED: now filters by date to prevent future notes)
   const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading } = useQuery({
-    queryKey: ['last-meeting-note', pillar],
+    queryKey: ['last-meeting-note', pillar, selectedDate, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meeting_notes')
         .select('*')
         .eq('pillar', pillar)
+        .lt('note_date', yesterdayString) // CRITICAL FIX: Only get notes BEFORE yesterday
         .order('note_date', { ascending: false })
         .limit(1)
         .maybeSingle()
       
       if (error) throw error
       
-      // Transform Supabase data to UI format
-      if (!data || data.note_date === selectedDate || data.note_date === yesterdayString) return null
+      // Transform Supabase data to UI format (no longer need date filtering since SQL handles it)
+      if (!data) return null
       return {
         ...data,
         keyPoints: data.key_points ? data.key_points.split('\n').filter(p => p.trim()) : []
       } as MeetingNote
-    },
-    enabled: !yesterdayMeetingNote // Only fetch if yesterday note doesn't exist
+    }
   })
 
   // Load action items  
