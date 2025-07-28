@@ -42,13 +42,15 @@ export const Inventory = () => {
     yesterdayMeetingNote, 
     yesterdayActionItems, 
     lastRecordedNote,
+    lastRecordedActionItems,
     upsertNote, 
     createItem, 
     updateItem, 
     deleteNote,
     isLoading,
     isYesterdayLoading,
-    isLastRecordedLoading
+    isLastRecordedLoading,
+    isLastRecordedActionItemsLoading
   } = usePillarData('inventory', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -101,6 +103,7 @@ export const Inventory = () => {
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
           lastRecordedNote={lastRecordedNote}
+          lastRecordedActionItems={lastRecordedActionItems}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -112,6 +115,7 @@ export const Inventory = () => {
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
       </div>
     </PillarLayout>

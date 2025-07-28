@@ -68,13 +68,15 @@ export const Quality = () => {
     yesterdayMeetingNote, 
     yesterdayActionItems, 
     lastRecordedNote,
+    lastRecordedActionItems,
     upsertNote, 
     createItem, 
     updateItem, 
     deleteNote,
     isLoading,
     isYesterdayLoading,
-    isLastRecordedLoading
+    isLastRecordedLoading,
+    isLastRecordedActionItemsLoading
   } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
   if (isLoading) {
     return (
@@ -123,6 +125,7 @@ export const Quality = () => {
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
           lastRecordedNote={lastRecordedNote}
+          lastRecordedActionItems={lastRecordedActionItems}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -132,6 +135,7 @@ export const Quality = () => {
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
 
         {/* Bottom Row - Corrective Actions Table */}

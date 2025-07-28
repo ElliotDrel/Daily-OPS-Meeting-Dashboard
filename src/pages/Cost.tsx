@@ -53,13 +53,15 @@ export const Cost = () => {
     yesterdayMeetingNote, 
     yesterdayActionItems, 
     lastRecordedNote,
+    lastRecordedActionItems,
     upsertNote, 
     createItem, 
     updateItem, 
     deleteNote,
     isLoading,
     isYesterdayLoading,
-    isLastRecordedLoading
+    isLastRecordedLoading,
+    isLastRecordedActionItemsLoading
   } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -112,6 +114,7 @@ export const Cost = () => {
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
           lastRecordedNote={lastRecordedNote}
+          lastRecordedActionItems={lastRecordedActionItems}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -121,6 +124,7 @@ export const Cost = () => {
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
 
         {/* Bottom Row - Low Yield Events Table */}

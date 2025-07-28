@@ -61,13 +61,15 @@ export const Production = () => {
     yesterdayMeetingNote, 
     yesterdayActionItems, 
     lastRecordedNote,
+    lastRecordedActionItems,
     upsertNote, 
     createItem, 
     updateItem, 
     deleteNote,
     isLoading,
     isYesterdayLoading,
-    isLastRecordedLoading
+    isLastRecordedLoading,
+    isLastRecordedActionItemsLoading
   } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -120,6 +122,7 @@ export const Production = () => {
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
           lastRecordedNote={lastRecordedNote}
+          lastRecordedActionItems={lastRecordedActionItems}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -129,6 +132,7 @@ export const Production = () => {
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
 
         {/* Bottom Row - Open Processes */}

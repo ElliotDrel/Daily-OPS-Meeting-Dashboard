@@ -9,6 +9,7 @@ interface ActionItemsAndNotesSectionProps {
   yesterdayMeetingNote?: MeetingNote | null;
   yesterdayActionItems?: ActionItem[];
   lastRecordedNote?: MeetingNote | null;
+  lastRecordedActionItems?: ActionItem[];
   onUpsertNote: (keyPoints: string) => Promise<void>;
   onDeleteNote?: (id: string) => void;
   onAddActionItem: (item: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
@@ -23,6 +24,7 @@ interface ActionItemsAndNotesSectionProps {
   // New loading state props for improved display logic
   isYesterdayLoading?: boolean;
   isLastRecordedLoading?: boolean;
+  isLastRecordedActionItemsLoading?: boolean;
 }
 
 export const ActionItemsAndNotesSection = ({
@@ -31,6 +33,7 @@ export const ActionItemsAndNotesSection = ({
   yesterdayActionItems,
   yesterdayMeetingNote,
   lastRecordedNote,
+  lastRecordedActionItems,
   onUpdateActionItems,
   actionItemsTitle,
   notesTitle,
@@ -43,7 +46,8 @@ export const ActionItemsAndNotesSection = ({
   isLoading = false,
   selectedDate,
   isYesterdayLoading = false,
-  isLastRecordedLoading = false
+  isLastRecordedLoading = false,
+  isLastRecordedActionItemsLoading = false
 }: ActionItemsAndNotesSectionProps) => {
   if (isLoading) {
     return <div className="flex justify-center items-center h-32">Loading...</div>;
@@ -73,9 +77,14 @@ export const ActionItemsAndNotesSection = ({
         <ActionItemsSection
           actionItems={actionItems || []}
           yesterdayActionItems={yesterdayActionItems || []}
+          lastRecordedActionItems={lastRecordedActionItems || []}
           title={actionItemsTitle}
           onUpdateActionItems={onUpdateActionItems}
           showCard={false}
+          selectedDate={selectedDate}
+          isLoading={isLoading}
+          isYesterdayLoading={isYesterdayLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
       </Card>
     </div>
