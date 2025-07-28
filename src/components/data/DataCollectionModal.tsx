@@ -62,6 +62,25 @@ export const DataCollectionModal = ({
 
   const onFormSubmit = async (formData: QuestionFormData) => {
     try {
+      // Validate incident descriptions for safety pillar
+      if (pillar === 'safety') {
+        const incidentCount = Number(formData['incident_count']) || 0;
+        if (incidentCount > 0) {
+          const missingDescriptions = [];
+          for (let i = 1; i <= incidentCount; i++) {
+            const description = formData[`incident_detail_${i}`];
+            if (!description || String(description).trim() === '') {
+              missingDescriptions.push(i);
+            }
+          }
+          
+          if (missingDescriptions.length > 0) {
+            alert(`Please provide descriptions for incident(s): ${missingDescriptions.join(', ')}`);
+            return;
+          }
+        }
+      }
+
       logFormData(formData) // Debug logging
       await onSubmit(formData)
       onClose()
@@ -99,6 +118,31 @@ export const DataCollectionModal = ({
     console.log('📊 Watched values:', watchedValues)
     console.log('🔍 Visible questions:', questions.filter(shouldShowQuestion).map(q => q.question_key))
   }
+
+  const renderIncidentDescriptionFields = (incidentCount: number) => {
+    if (incidentCount <= 0) return null;
+
+    return (
+      <div className="space-y-6">
+        {Array.from({ length: incidentCount }, (_, index) => (
+          <div key={index} className="space-y-2">
+            <Label className="text-sm font-medium" htmlFor={`incident_detail_${index + 1}`}>
+              Please describe incident {index + 1} details:
+              <span className="text-red-500 ml-1">*</span>
+            </Label>
+            <Textarea
+              id={`incident_detail_${index + 1}`}
+              value={String(watchedValues[`incident_detail_${index + 1}`] || '')}
+              onChange={(e) => setValue(`incident_detail_${index + 1}`, e.target.value)}
+              placeholder="Enter your response"
+              rows={3}
+              required
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const renderQuestionField = (question: PillarQuestion) => {
     const key = question.question_key
@@ -231,6 +275,11 @@ export const DataCollectionModal = ({
                   {question.is_required && <span className="text-red-500 ml-1">*</span>}
                 </Label>
                 {renderQuestionField(question)}
+                
+                {/* Render dynamic incident description fields for safety pillar */}
+                {question.question_key === 'incident_count' && pillar === 'safety' && (
+                  renderIncidentDescriptionFields(Number(watchedValues['incident_count']) || 0)
+                )}
               </div>
             )
           })}
