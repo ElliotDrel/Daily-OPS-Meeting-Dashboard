@@ -96,7 +96,7 @@ const ActionItemRow = ({ item }: { item: ActionItem }) => {
           </TableCell>
         </TableRow>
       </TooltipTrigger>
-      <TooltipContent className="max-w-xs">
+      <TooltipContent className="max-w-xs bg-black/95 text-white border-black shadow-2xl">
         <p>These items can only be edited on the day they were created</p>
       </TooltipContent>
     </Tooltip>

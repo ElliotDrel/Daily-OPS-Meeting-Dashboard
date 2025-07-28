@@ -7,6 +7,7 @@ import { AlertTriangle, Plus, Calendar } from "lucide-react";
 import { EditActionItemDialog } from "./EditActionItemDialog";
 import { PersonCard, PriorityCard, DateCard, StatusCard } from "./ActionItemCards";
 import { useDelayedTooltip } from "@/hooks/useDelayedTooltip";
+import { useActionItemsDisplayLogic } from "@/hooks/useActionItemsDisplayLogic";
 
 export interface ActionItem {
   id: string;
@@ -25,9 +26,14 @@ export interface ActionItem {
 interface ActionItemsSectionProps {
   actionItems: ActionItem[];
   yesterdayActionItems?: ActionItem[];
+  lastRecordedActionItems?: ActionItem[];
   title?: string;
   onUpdateActionItems?: (actionItems: ActionItem[]) => void;
   showCard?: boolean;
+  selectedDate?: string;
+  isLoading?: boolean;
+  isYesterdayLoading?: boolean;
+  isLastRecordedActionItemsLoading?: boolean;
 }
 
 const getPriorityColor = (priority: string) => {
@@ -87,16 +93,37 @@ const YesterdayActionItem = ({ item }: { item: ActionItem }) => {
           </div>
         </div>
       </TooltipTrigger>
-      <TooltipContent className="max-w-xs">
+      <TooltipContent className="max-w-xs bg-black/95 text-white border-black shadow-2xl">
         <p>These items can only be edited on the day they were created</p>
       </TooltipContent>
     </Tooltip>
   );
 };
 
-export const ActionItemsSection = ({ actionItems, yesterdayActionItems = [], title = "Action Items", onUpdateActionItems, showCard = true }: ActionItemsSectionProps) => {
+export const ActionItemsSection = ({ 
+  actionItems, 
+  yesterdayActionItems = [], 
+  lastRecordedActionItems = [],
+  title = "Action Items", 
+  onUpdateActionItems, 
+  showCard = true,
+  selectedDate = '',
+  isLoading = false,
+  isYesterdayLoading = false,
+  isLastRecordedActionItemsLoading = false
+}: ActionItemsSectionProps) => {
   const [editingItem, setEditingItem] = useState<ActionItem | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Use display logic to determine what to show
+  const displayLogic = useActionItemsDisplayLogic({
+    yesterdayActionItems,
+    lastRecordedActionItems,
+    selectedDate,
+    isLoading,
+    isYesterdayLoading,
+    isLastRecordedActionItemsLoading
+  });
 
   const handleEditItem = (item: ActionItem) => {
     setEditingItem(item);
@@ -168,28 +195,80 @@ export const ActionItemsSection = ({ actionItems, yesterdayActionItems = [], tit
         )}
         
         {/* Yesterday's Items Section */}
-        <div className="border-t pt-4 mt-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Calendar className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Yesterday's Action Items</span>
-            <Badge variant="outline" className="text-xs bg-muted/50">
-              {yesterdayActionItems.length} item{yesterdayActionItems.length !== 1 ? 's' : ''}
-            </Badge>
+        {displayLogic.shouldShowYesterday && (
+          <div className="border-t pt-4 mt-6">
+            <div className="flex items-center space-x-2 mb-4">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
+                {displayLogic.yesterdayDisplay.dateLabel} Action Items
+              </span>
+              <Badge variant="outline" className="text-xs bg-muted/50">
+                {displayLogic.yesterdayDisplay.items.length} item{displayLogic.yesterdayDisplay.items.length !== 1 ? 's' : ''}
+              </Badge>
+            </div>
+            
+            {displayLogic.yesterdayDisplay.hasContent ? (
+              <div className="space-y-3">
+                {displayLogic.yesterdayDisplay.items.map((item) => (
+                  <YesterdayActionItem key={`yesterday-${item.id}`} item={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-muted-foreground">
+                <AlertTriangle className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No action items from yesterday</p>
+              </div>
+            )}
           </div>
-          
-          {yesterdayActionItems.length > 0 ? (
-            <div className="space-y-3">
-              {yesterdayActionItems.map((item) => (
-                <YesterdayActionItem key={`yesterday-${item.id}`} item={item} />
+        )}
+
+        {/* Last Recorded Items Section */}
+        {displayLogic.shouldShowLastRecorded && displayLogic.lastRecordedDisplay && (
+          <div className="border-t pt-4 mt-6">
+            <div className="flex items-center space-x-2 mb-4">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
+                Last Recorded Action Items ({displayLogic.lastRecordedDisplay.dateLabel})
+              </span>
+              <Badge variant="outline" className="text-xs bg-muted/50">
+                {displayLogic.lastRecordedDisplay.items.length} item{displayLogic.lastRecordedDisplay.items.length !== 1 ? 's' : ''}
+              </Badge>
+            </div>
+            
+            <div className="space-y-3 opacity-75">
+              {displayLogic.lastRecordedDisplay.items.map((item) => (
+                <Tooltip key={`last-recorded-${item.id}`}>
+                  <TooltipTrigger asChild>
+                    <div className="opacity-75 cursor-help">
+                      <div className="space-y-2">
+                        <div className="flex items-start space-x-2">
+                          <span className="text-muted-foreground mt-1">•</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
+                            {item.category && (
+                              <Badge variant="outline" className="text-xs mt-1 opacity-75">
+                                {item.category}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="ml-4 flex flex-wrap gap-2">
+                          <PersonCard assignee={item.assignee || 'TBD'} />
+                          <PriorityCard priority={item.priority || 'Medium'} />
+                          <DateCard dueDate={item.due_date || ''} />
+                          <StatusCard status={item.status || 'Open'} />
+                        </div>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs bg-black/95 text-white border-black shadow-2xl">
+                    <p>These items can only be edited on the day they were created</p>
+                  </TooltipContent>
+                </Tooltip>
               ))}
             </div>
-          ) : (
-            <div className="py-8 text-center text-muted-foreground">
-              <AlertTriangle className="w-6 h-6 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No action items from yesterday</p>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="border-t pt-4 mt-4">
