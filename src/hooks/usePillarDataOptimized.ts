@@ -580,17 +580,25 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
       return await submitResponses(responses)
     },
     onSuccess: () => {
-      // Invalidate related queries
+      // Invalidate and refetch related queries immediately
       queryClient.invalidateQueries({ 
         queryKey: ['pillar-responses', pillar, selectedDate] 
       })
       queryClient.invalidateQueries({ 
         queryKey: ['has-responses', pillar, selectedDate] 
       })
+      
+      // Force immediate refetch to ensure fresh data for form auto-fill
+      queryClient.refetchQueries({ 
+        queryKey: ['pillar-responses', pillar, selectedDate] 
+      })
+      queryClient.refetchQueries({ 
+        queryKey: ['has-responses', pillar, selectedDate] 
+      })
     }
   })
 
-  // Update responses mutation (same as submit due to upsert logic)
+  // Update responses mutation (same as submit due to delete-and-create logic)
   const updateResponsesMutation = useMutation({
     mutationFn: async (responses: ResponseSubmission) => {
       return await submitResponses(responses)

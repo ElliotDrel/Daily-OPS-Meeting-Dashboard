@@ -68,45 +68,89 @@ export async function fetchResponsesForDateRange(
 
 /**
  * Submits responses for a pillar on a specific date
- * Uses upsert logic - updates existing or creates new responses
+ * Uses delete-and-create strategy - deletes existing responses and creates new ones
  */
 export async function submitResponses(submission: ResponseSubmission): Promise<PillarResponse[]> {
   const { pillar, date, user_name, responses } = submission
 
-  // Prepare responses for upsert
-  const responsesToUpsert = responses.map(r => ({
-    pillar,
-    date,
-    user_name,
-    question_id: r.question_id,
-    answer: JSON.stringify(r.answer)
-  }))
+  try {
+    console.log('🗑️ Deleting existing responses for:', {pillar, date, user_name})
+    
+    // First, get existing responses to confirm they exist
+    const { data: existingData, error: fetchError } = await supabase
+      .from('pillar_responses')
+      .select('id')
+      .eq('pillar', pillar)
+      .eq('date', date)
+      .eq('user_name', user_name)
 
-  // Use upsert to handle existing responses
-  const { data, error } = await supabase
-    .from('pillar_responses')
-    .upsert(responsesToUpsert, {
-      onConflict: 'pillar,date,user_name,question_id',
-      ignoreDuplicates: false
-    })
-    .select()
+    if (fetchError) {
+      console.error('Fetch error:', fetchError)
+    } else {
+      console.log('📋 Found existing responses:', existingData?.length || 0)
+    }
 
-  if (error) {
-    throw new Error(`Error submitting responses: ${error.message}`)
+    // Delete all existing responses for this user/date/pillar combination
+    const { error: deleteError, count: deletedCount } = await supabase
+      .from('pillar_responses')
+      .delete({ count: 'exact' })
+      .eq('pillar', pillar)
+      .eq('date', date)
+      .eq('user_name', user_name)
+
+    if (deleteError) {
+      console.error('Delete error:', deleteError)
+      // Don't throw error, continue with upsert instead
+    } else {
+      console.log('🗑️ Deleted responses count:', deletedCount)
+    }
+
+    // Prepare new responses for insertion
+    const responsesToInsert = responses.map(r => ({
+      pillar,
+      date,
+      user_name,
+      question_id: r.question_id,
+      answer: JSON.stringify(r.answer)
+    }))
+
+    console.log('🔄 Inserting responses:', responsesToInsert)
+
+    // Always use upsert to handle any remaining conflicts
+    const { data, error: upsertError } = await supabase
+      .from('pillar_responses')
+      .upsert(responsesToInsert, {
+        onConflict: 'pillar,date,user_name,question_id',
+        ignoreDuplicates: false
+      })
+      .select()
+
+    if (upsertError) {
+      console.error('Upsert error:', upsertError)
+      throw new Error(`Error upserting responses: ${upsertError.message}`)
+    }
+
+    console.log('✅ Successfully upserted responses:', data?.length || 0)
+
+    // Parse JSONB answer field in returned data
+    return (data || []).map(r => ({
+      ...r,
+      answer: typeof r.answer === 'string' ? JSON.parse(r.answer) : r.answer
+    })) as PillarResponse[]
+
+  } catch (error) {
+    console.error('submitResponses error:', error)
+    throw error
   }
-
-  // Parse JSONB answer field in returned data
-  return (data || []).map(r => ({
-    ...r,
-    answer: typeof r.answer === 'string' ? JSON.parse(r.answer) : r.answer
-  })) as PillarResponse[]
 }
 
 /**
  * Updates specific responses (for editing existing submissions)
+ * Uses the same delete-and-create strategy as submitResponses
  */
 export async function updateResponses(submission: ResponseSubmission): Promise<PillarResponse[]> {
-  // For updates, we can reuse the submit logic since upsert handles both cases
+  // For updates, we use the same delete-and-create logic as submitResponses
+  // This ensures consistency and fresh data on every update
   return submitResponses(submission)
 }
 
