@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertTriangle, Plus, Calendar } from "lucide-react";
 import { EditActionItemDialog } from "./EditActionItemDialog";
 import { PersonCard, PriorityCard, DateCard, StatusCard } from "./ActionItemCards";
@@ -138,27 +139,34 @@ export const ActionItemsSection = ({ actionItems, yesterdayActionItems = [], tit
           {yesterdayActionItems.length > 0 ? (
             <div className="space-y-3">
               {yesterdayActionItems.map((item) => (
-                <div key={`yesterday-${item.id}`} className="opacity-75">
-                  <div className="space-y-2">
-                    <div className="flex items-start space-x-2">
-                      <span className="text-muted-foreground mt-1">•</span>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
-                        {item.category && (
-                          <Badge variant="outline" className="text-xs mt-1 opacity-75">
-                            {item.category}
-                          </Badge>
-                        )}
+                <Tooltip key={`yesterday-${item.id}`}>
+                  <TooltipTrigger asChild>
+                    <div className="opacity-75 cursor-help">
+                      <div className="space-y-2">
+                        <div className="flex items-start space-x-2">
+                          <span className="text-muted-foreground mt-1">•</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
+                            {item.category && (
+                              <Badge variant="outline" className="text-xs mt-1 opacity-75">
+                                {item.category}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="ml-4 flex flex-wrap gap-2">
+                          <PersonCard assignee={item.assignee || 'TBD'} />
+                          <PriorityCard priority={item.priority || 'Medium'} />
+                          <DateCard dueDate={item.due_date || ''} />
+                          <StatusCard status={item.status || 'Open'} />
+                        </div>
                       </div>
                     </div>
-                    <div className="ml-4 flex flex-wrap gap-2">
-                      <PersonCard assignee={item.assignee || 'TBD'} />
-                      <PriorityCard priority={item.priority || 'Medium'} />
-                      <DateCard dueDate={item.due_date || ''} />
-                      <StatusCard status={item.status || 'Open'} />
-                    </div>
-                  </div>
-                </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>These items can only be edited on the day they were created</p>
+                  </TooltipContent>
+                </Tooltip>
               ))}
             </div>
           ) : (
