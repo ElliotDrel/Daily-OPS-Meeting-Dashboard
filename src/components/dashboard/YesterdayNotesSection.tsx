@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { FileText, Calendar } from "lucide-react";
 import type { MeetingNote } from "@/hooks/usePillarData";
 import { format } from "date-fns";
@@ -42,34 +43,39 @@ export const YesterdayNotesSection = ({
       </div>
 
       <div className="space-y-4 opacity-75">
-        <div 
-          className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <FileText className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="border border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors cursor-help">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">Meeting Notes</span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {format(new Date(meetingNote.note_date), 'MMM dd, yyyy')}
+                </span>
+              </div>
+              
+              <div className="space-y-2">
+                {meetingNote.keyPoints && meetingNote.keyPoints.length > 0 ? (
+                  <ul className="space-y-1 list-none">
+                    {meetingNote.keyPoints.map((point, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <span className="text-sm text-muted-foreground">•</span>
+                        <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">No key points recorded</p>
+                )}
+              </div>
             </div>
-            <span className="text-xs text-muted-foreground">
-              {format(new Date(meetingNote.note_date), 'MMM dd, yyyy')}
-            </span>
-          </div>
-          
-          <div className="space-y-2">
-            {meetingNote.keyPoints && meetingNote.keyPoints.length > 0 ? (
-              <ul className="space-y-1 list-none">
-                {meetingNote.keyPoints.map((point, index) => (
-                  <li key={index} className="flex items-start space-x-2">
-                    <span className="text-sm text-muted-foreground">•</span>
-                    <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground italic">No key points recorded</p>
-            )}
-          </div>
-        </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>These notes can only be edited on the day they were created</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </>
   );
