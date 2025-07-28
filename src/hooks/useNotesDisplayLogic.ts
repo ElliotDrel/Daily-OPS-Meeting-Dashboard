@@ -136,11 +136,14 @@ export const useNotesDisplayLogic = ({
     const isValidLastRecorded = isValidLastRecordedDate(normalizedLastRecorded, yesterdayDate);
     
     // Core display logic - centralized and clear
-    const shouldShowYesterday = true; // Always show yesterday section
+    // First determine if last recorded should be shown
     const shouldShowLastRecorded = isReady && 
                                   !yesterdayHasContent && // Only when yesterday has no meaningful content
                                   lastRecordedHasContent && // And last recorded has content
                                   isValidLastRecorded; // And is actually older than yesterday
+    
+    // Only show yesterday when we're not showing last recorded (mutually exclusive)
+    const shouldShowYesterday = !shouldShowLastRecorded;
     
     // Prepare display data
     const yesterdayDisplay = {
