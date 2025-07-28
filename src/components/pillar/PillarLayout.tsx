@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { format, subDays, isToday } from "date-fns";
 import { useDate } from "@/contexts/DateContext";
+import { DataCollectionButton } from "@/components/data/DataCollectionButton";
 
 interface PillarLayoutProps {
   letter: string;
@@ -98,35 +99,44 @@ export const PillarLayout = ({
               </Link>
               <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
             </div>
-            <div className="flex items-center bg-muted/50 px-4 py-2 rounded-lg">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedDate(subDays(selectedDate, 1))}
-                className="px-2 py-1 h-8 flex items-center gap-1"
-                title="Go to previous day"
-                aria-label="Go to previous day"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Previous Day
-              </Button>
-              <div className="flex flex-col items-center min-w-64">
-                <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
-                <span className="text-lg font-semibold text-foreground">
-                  {format(selectedDate, 'EEEE, MMMM d, yyyy')}
-                </span>
+            <div className="flex items-center gap-4">
+              {/* Data Collection Button */}
+              <DataCollectionButton
+                pillar={pillarName.toLowerCase()}
+                selectedDate={format(selectedDate, 'yyyy-MM-dd')}
+              />
+              
+              {/* Date Controls */}
+              <div className="flex items-center bg-muted/50 px-4 py-2 rounded-lg">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedDate(subDays(selectedDate, 1))}
+                  className="px-2 py-1 h-8 flex items-center gap-1"
+                  title="Go to previous day"
+                  aria-label="Go to previous day"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Previous Day
+                </Button>
+                <div className="flex flex-col items-center min-w-64">
+                  <span className="text-sm font-medium text-muted-foreground">Selected Date:</span>
+                  <span className="text-lg font-semibold text-foreground">
+                    {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={!isToday(selectedDate) ? () => setSelectedDate(new Date()) : undefined}
+                  disabled={isToday(selectedDate)}
+                  className="px-2 py-1 h-8"
+                  title={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
+                  aria-label={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
+                >
+                  {isToday(selectedDate) ? "Current" : "Today"}
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={!isToday(selectedDate) ? () => setSelectedDate(new Date()) : undefined}
-                disabled={isToday(selectedDate)}
-                className="px-2 py-1 h-8"
-                title={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
-                aria-label={isToday(selectedDate) ? "Currently viewing today" : "Go to today"}
-              >
-                {isToday(selectedDate) ? "Current" : "Today"}
-              </Button>
             </div>
           </div>
 
