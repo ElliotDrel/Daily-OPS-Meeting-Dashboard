@@ -169,13 +169,21 @@ export const PillarLayout = ({
               <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
               {pillar && (
                 <Button
-                  variant={pillarData?.hasResponses ? "outline" : "default"}
+                  variant={
+                    !pillarData?.questions?.length ? "secondary" :
+                    pillarData?.hasResponses ? "outline" : "default"
+                  }
                   size="sm"
                   onClick={() => setIsDataCollectionOpen(true)}
                   className="flex items-center space-x-2"
-                  disabled={pillarData?.isQuestionsLoading}
+                  disabled={pillarData?.isQuestionsLoading || !pillarData?.questions?.length}
                 >
-                  {pillarData?.hasResponses ? (
+                  {!pillarData?.questions?.length ? (
+                    <>
+                      <ClipboardList className="w-4 h-4 opacity-50" />
+                      <span>No Questions</span>
+                    </>
+                  ) : pillarData?.hasResponses ? (
                     <>
                       <CheckCircle className="w-4 h-4" />
                       <span>Edit Data</span>
