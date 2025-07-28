@@ -6,9 +6,9 @@ import { dashboardData, qualityData } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
-import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
+import { usePillarData } from "@/hooks/usePillarData";
 
 
 const qualityMetrics = [
@@ -111,8 +111,7 @@ export const Quality = () => {
       letter="Q"
       pillarName="Quality"
       pillarColor="quality"
-      pillar="quality"
-      squares={dashboardData.pillars.quality.squares}
+            squares={dashboardData.pillars.quality.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
     >
@@ -130,8 +129,7 @@ export const Quality = () => {
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
-          pillar="quality"
-          isLoading={isLoading}
+                    isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}

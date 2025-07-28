@@ -78,7 +78,7 @@ export const Production = () => {
         letter="P"
         pillarName="Production"
         pillarColor="production"
-      pillar="production"
+      
         squares={dashboardData.pillars.production.squares}
         actionItems={actionItems}
       >
@@ -93,7 +93,7 @@ export const Production = () => {
     <PillarGraphsPane
       pillarName="Production"
       pillarColor="production"
-      pillar="production"
+      
       lineChartData={productionData.lineChart}
       pieChartData={productionData.donutData}
       metrics={productionMetrics}
@@ -108,7 +108,7 @@ export const Production = () => {
       letter="P"
       pillarName="Production"
       pillarColor="production"
-      pillar="production"
+      
       squares={dashboardData.pillars.production.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
@@ -127,7 +127,7 @@ export const Production = () => {
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
-          pillar="production"
+          
           isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}

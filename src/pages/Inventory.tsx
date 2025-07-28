@@ -59,7 +59,7 @@ export const Inventory = () => {
         letter="I"
         pillarName="Inventory"
         pillarColor="inventory"
-      pillar="inventory"
+      
         squares={dashboardData.pillars.inventory.squares}
         actionItems={actionItems || []}
       >
@@ -74,7 +74,7 @@ export const Inventory = () => {
     <PillarGraphsPane
       pillarName="Inventory"
       pillarColor="inventory"
-      pillar="inventory"
+      
       lineChartData={inventoryData.lineChart}
       pieChartData={inventoryData.donutData}
       metrics={inventoryMetrics}
@@ -89,7 +89,7 @@ export const Inventory = () => {
       letter="I"
       pillarName="Inventory"
       pillarColor="inventory"
-      pillar="inventory"
+      
       squares={dashboardData.pillars.inventory.squares}
       actionItems={actionItems || []}
       graphsPane={graphsPane}
@@ -108,7 +108,7 @@ export const Inventory = () => {
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
-          pillar="inventory"
+          
           actionItemsTitle="Internal Process Action Items"
           notesTitle="Internal Process Meeting Notes"
           isLoading={isLoading}

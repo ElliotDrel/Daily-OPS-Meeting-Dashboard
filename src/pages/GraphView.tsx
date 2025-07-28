@@ -71,7 +71,7 @@ export const GraphView = () => {
                   <SimpleBarChart
                     data={barChartData}
                     title="Weekly Performance"
-                    pillar="performance"
+                    
                   />
                 </CardContent>
               </Card>

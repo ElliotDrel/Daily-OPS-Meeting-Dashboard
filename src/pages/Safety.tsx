@@ -8,9 +8,9 @@ import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
-import { usePillarData } from "@/hooks/usePillarDataOptimized";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
+import { usePillarData } from "@/hooks/usePillarData";
 
 
 const safetyMetrics = [
@@ -94,8 +94,7 @@ export const Safety = () => {
         letter="S"
         pillarName="Safety"
         pillarColor="safety"
-        pillar="safety"
-        squares={dashboardData.pillars.safety.squares}
+                squares={dashboardData.pillars.safety.squares}
         actionItems={actionItems}
       >
         <div className="flex justify-center items-center h-64">
@@ -123,8 +122,7 @@ export const Safety = () => {
       letter="S"
       pillarName="Safety"
       pillarColor="safety"
-      pillar="safety"
-      squares={dashboardData.pillars.safety.squares}
+            squares={dashboardData.pillars.safety.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
     >
@@ -142,8 +140,7 @@ export const Safety = () => {
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
           onUpdateActionItem={updateItem}
-          pillar="safety"
-          isLoading={isLoading}
+                    isLoading={isLoading}
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
