@@ -109,6 +109,7 @@ export const Quality = () => {
       letter="Q"
       pillarName="Quality"
       pillarColor="quality"
+      pillar="quality"
       squares={dashboardData.pillars.quality.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}

@@ -92,6 +92,7 @@ export const Safety = () => {
         letter="S"
         pillarName="Safety"
         pillarColor="safety"
+        pillar="safety"
         squares={dashboardData.pillars.safety.squares}
         actionItems={actionItems}
       >
@@ -120,6 +121,7 @@ export const Safety = () => {
       letter="S"
       pillarName="Safety"
       pillarColor="safety"
+      pillar="safety"
       squares={dashboardData.pillars.safety.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}

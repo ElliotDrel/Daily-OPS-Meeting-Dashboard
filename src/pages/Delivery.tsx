@@ -63,6 +63,7 @@ export const Delivery = () => {
         letter="D"
         pillarName="Delivery"
         pillarColor="delivery"
+      pillar="delivery"
         squares={dashboardData.pillars.delivery.squares}
         actionItems={actionItems}
       >
@@ -77,6 +78,7 @@ export const Delivery = () => {
     <PillarGraphsPane
       pillarName="Delivery"
       pillarColor="delivery"
+      pillar="delivery"
       lineChartData={deliveryData.lineChart}
       pieChartData={deliveryData.donutData}
       metrics={deliveryMetrics}
@@ -91,6 +93,7 @@ export const Delivery = () => {
       letter="D"
       pillarName="Delivery"
       pillarColor="delivery"
+      pillar="delivery"
       squares={dashboardData.pillars.delivery.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}

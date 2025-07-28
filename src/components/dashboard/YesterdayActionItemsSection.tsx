@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Clock, User, AlertTriangle, Calendar } from "lucide-react";
 import type { ActionItem } from "@/hooks/usePillarData";
 import { format } from "date-fns";
+import { useDelayedTooltip } from "@/hooks/useDelayedTooltip";
 
 interface YesterdayActionItemsSectionProps {
   actionItems: ActionItem[];
@@ -34,6 +35,72 @@ const isOverdue = (dueDate: string) => {
   const today = new Date();
   const due = new Date(dueDate);
   return due < today;
+};
+
+const ActionItemRow = ({ item }: { item: ActionItem }) => {
+  const tooltip = useDelayedTooltip(5000);
+
+  return (
+    <Tooltip open={tooltip.isOpen} onOpenChange={(open) => !open && tooltip.handleClose()}>
+      <TooltipTrigger asChild>
+        <TableRow 
+          className="hover:bg-muted/30 transition-colors cursor-help"
+          onMouseEnter={tooltip.handleMouseEnter}
+          onMouseLeave={tooltip.handleMouseLeave}
+          onClick={tooltip.handleClick}
+        >
+          <TableCell className="py-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
+              {item.category && (
+                <Badge variant="outline" className="text-xs opacity-75">
+                  {item.category}
+                </Badge>
+              )}
+            </div>
+          </TableCell>
+          <TableCell className="py-4">
+            <div className="flex items-center space-x-2">
+              <User className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">{item.assignee}</span>
+            </div>
+          </TableCell>
+          <TableCell className="py-4">
+            <Badge 
+              variant="outline"
+              className={`text-xs opacity-75 ${getPriorityColor(item.priority)}`}
+            >
+              {item.priority}
+            </Badge>
+          </TableCell>
+          <TableCell className="py-4">
+            <div className="flex items-center space-x-2">
+              <Clock className={`w-4 h-4 ${isOverdue(item.due_date || '') ? 'text-status-issue' : 'text-muted-foreground'}`} />
+              <span className={`text-sm ${isOverdue(item.due_date || '') ? 'text-status-issue font-medium' : 'text-muted-foreground'}`}>
+                {item.due_date || 'No due date'}
+              </span>
+            </div>
+          </TableCell>
+          <TableCell className="py-4">
+            <Badge 
+              variant={item.status === 'Completed' ? 'default' : 'outline'}
+              className={`text-xs opacity-75 ${getStatusColor(item.status)}`}
+            >
+              {item.status}
+            </Badge>
+          </TableCell>
+          <TableCell className="py-4">
+            <span className="text-xs text-muted-foreground">
+              {format(new Date(item.item_date), 'MMM dd')}
+            </span>
+          </TableCell>
+        </TableRow>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <p>These items can only be edited on the day they were created</p>
+      </TooltipContent>
+    </Tooltip>
+  );
 };
 
 export const YesterdayActionItemsSection = ({ 
@@ -69,60 +136,7 @@ export const YesterdayActionItemsSection = ({
           </TableHeader>
           <TableBody>
             {actionItems.map((item) => (
-              <Tooltip key={item.id}>
-                <TooltipTrigger asChild>
-                  <TableRow className="hover:bg-muted/30 transition-colors cursor-help">
-                    <TableCell className="py-4">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground">{item.description}</p>
-                        {item.category && (
-                          <Badge variant="outline" className="text-xs opacity-75">
-                            {item.category}
-                          </Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium text-muted-foreground">{item.assignee}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <Badge 
-                        variant="outline"
-                        className={`text-xs opacity-75 ${getPriorityColor(item.priority)}`}
-                      >
-                        {item.priority}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="flex items-center space-x-2">
-                        <Clock className={`w-4 h-4 ${isOverdue(item.due_date || '') ? 'text-status-issue' : 'text-muted-foreground'}`} />
-                        <span className={`text-sm ${isOverdue(item.due_date || '') ? 'text-status-issue font-medium' : 'text-muted-foreground'}`}>
-                          {item.due_date || 'No due date'}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <Badge 
-                        variant={item.status === 'Completed' ? 'default' : 'outline'}
-                        className={`text-xs opacity-75 ${getStatusColor(item.status)}`}
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(item.item_date), 'MMM dd')}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>These items can only be edited on the day they were created</p>
-                </TooltipContent>
-              </Tooltip>
+              <ActionItemRow key={item.id} item={item} />
             ))}
           </TableBody>
         </Table>

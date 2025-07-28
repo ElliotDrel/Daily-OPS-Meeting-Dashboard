@@ -7,6 +7,7 @@ import { FileText, Send, Edit, Trash2, Save, Calendar } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { format } from "date-fns";
 import { useNotesDisplayLogic } from "@/hooks/useNotesDisplayLogic";
+import { useDelayedTooltip } from "@/hooks/useDelayedTooltip";
 
 export interface MeetingNote {
   id: string;
@@ -21,6 +22,83 @@ export interface MeetingNote {
 // Helper function to strip bullets from text
 const stripBullets = (text: string): string => {
   return text.replace(/^[•·\-*]\s*/, '').trim();
+};
+
+const YesterdayNotesCard = ({ note }: { note: MeetingNote }) => {
+  const tooltip = useDelayedTooltip(5000);
+
+  return (
+    <Tooltip open={tooltip.isOpen} onOpenChange={(open) => !open && tooltip.handleClose()}>
+      <TooltipTrigger asChild>
+        <div 
+          className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors cursor-help"
+          onMouseEnter={tooltip.handleMouseEnter}
+          onMouseLeave={tooltip.handleMouseLeave}
+          onClick={tooltip.handleClick}
+        >
+          <div className="space-y-2">
+            {note.keyPoints && note.keyPoints.length > 0 ? (
+              <ul className="space-y-1 list-none">
+                {note.keyPoints.map((point, index) => (
+                  <li key={index} className="flex items-start space-x-2">
+                    <span className="text-sm text-muted-foreground">•</span>
+                    <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No key points recorded yesterday</p>
+            )}
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <p>These notes can only be edited on the day they were created</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
+
+const HistoricalNotesCard = ({ note }: { note: MeetingNote }) => {
+  const tooltip = useDelayedTooltip(5000);
+
+  return (
+    <Tooltip open={tooltip.isOpen} onOpenChange={(open) => !open && tooltip.handleClose()}>
+      <TooltipTrigger asChild>
+        <div 
+          className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors cursor-help"
+          onMouseEnter={tooltip.handleMouseEnter}
+          onMouseLeave={tooltip.handleMouseLeave}
+          onClick={tooltip.handleClick}
+        >
+          <div className="flex items-center mb-3">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">Historical Notes</span>
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            {note.keyPoints && note.keyPoints.length > 0 ? (
+              <ul className="space-y-1 list-none">
+                {note.keyPoints.map((point, index) => (
+                  <li key={index} className="flex items-start space-x-2">
+                    <span className="text-sm text-muted-foreground">•</span>
+                    <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No key points in last recorded notes</p>
+            )}
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <p>These notes can only be edited on the day they were created</p>
+      </TooltipContent>
+    </Tooltip>
+  );
 };
 
 interface NotesSectionProps {
@@ -272,29 +350,7 @@ export const NotesSection = ({
               
               <div className="space-y-4 opacity-75">
                 {displayLogic.yesterdayDisplay.hasContent && displayLogic.yesterdayDisplay.note ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors cursor-help">
-                        <div className="space-y-2">
-                          {displayLogic.yesterdayDisplay.note.keyPoints && displayLogic.yesterdayDisplay.note.keyPoints.length > 0 ? (
-                            <ul className="space-y-1 list-none">
-                              {displayLogic.yesterdayDisplay.note.keyPoints.map((point, index) => (
-                                <li key={index} className="flex items-start space-x-2">
-                                  <span className="text-sm text-muted-foreground">•</span>
-                                  <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-muted-foreground italic">No key points recorded yesterday</p>
-                          )}
-                        </div>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>These notes can only be edited on the day they were created</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <YesterdayNotesCard note={displayLogic.yesterdayDisplay.note} />
                 ) : (
                   <div className="border border-muted/50 rounded-lg p-4 bg-background/50">
                     <div className="text-center py-4 text-muted-foreground">
@@ -318,36 +374,7 @@ export const NotesSection = ({
               </div>
               
               <div className="space-y-4 opacity-75">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="border-x border-muted/50 rounded-lg p-4 bg-background/50 hover:bg-muted/30 transition-colors cursor-help">
-                      <div className="flex items-center mb-3">
-                        <div className="flex items-center space-x-2">
-                          <FileText className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm font-medium text-muted-foreground">Historical Notes</span>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        {displayLogic.lastRecordedDisplay.note.keyPoints && displayLogic.lastRecordedDisplay.note.keyPoints.length > 0 ? (
-                          <ul className="space-y-1 list-none">
-                            {displayLogic.lastRecordedDisplay.note.keyPoints.map((point, index) => (
-                              <li key={index} className="flex items-start space-x-2">
-                                <span className="text-sm text-muted-foreground">•</span>
-                                <span className="text-sm text-muted-foreground flex-1">{stripBullets(point)}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic">No key points in last recorded notes</p>
-                        )}
-                      </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>These notes can only be edited on the day they were created</p>
-                  </TooltipContent>
-                </Tooltip>
+                <HistoricalNotesCard note={displayLogic.lastRecordedDisplay.note} />
               </div>
             </div>
           )}

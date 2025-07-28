@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ClipboardList, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,11 +8,15 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { format, subDays, isToday } from "date-fns";
 import { useDate } from "@/contexts/DateContext";
+import { DataCollectionModal } from "@/components/data/DataCollectionModal";
+import { usePillarData } from "@/hooks/usePillarDataOptimized";
+import { PillarType } from "@/types/pillarData";
 
 interface PillarLayoutProps {
   letter: string;
   pillarName: string;
   pillarColor: string;
+  pillar?: PillarType; // Add pillar prop for data collection
   children: React.ReactNode;
   squares: Array<{
     status: string;
@@ -56,6 +60,7 @@ export const PillarLayout = ({
   letter,
   pillarName,
   pillarColor,
+  pillar,
   children,
   squares,
   actionItems = [],
@@ -63,6 +68,71 @@ export const PillarLayout = ({
 }: PillarLayoutProps) => {
   const { selectedDate, setSelectedDate } = useDate();
   const [month, setMonth] = useState(new Date());
+  const [isDataCollectionOpen, setIsDataCollectionOpen] = useState(false);
+
+  // Always call the hook, but only use data if pillar is provided
+  // This satisfies React Hook rules while allowing conditional usage
+  const selectedDateString = selectedDate.toISOString().slice(0, 10);
+  const hookResult = usePillarData(pillar || 'safety', selectedDateString);
+  const pillarData = pillar ? hookResult : null;
+
+  // Handle data collection submission
+  const handleDataCollectionSubmit = async (formData: Record<string, unknown>) => {
+    if (!pillar || !pillarData) return;
+
+    console.log('🔍 Processing form submission:', formData);
+
+    // First pass: collect incident details
+    const incidentDetails: Record<string, unknown> = {};
+    Object.entries(formData).forEach(([questionKey, answer]) => {
+      if (questionKey.startsWith('incident_detail_') && answer && String(answer).trim()) {
+        incidentDetails[questionKey] = answer;
+      }
+    });
+
+    // Second pass: build responses for regular questions
+    const responses: Array<{ question_key: string; question_id: string; answer: unknown }> = [];
+    Object.entries(formData).forEach(([questionKey, answer]) => {
+      // Skip dynamic questions - they're handled as part of incident_count
+      if (questionKey.startsWith('incident_detail_')) {
+        return;
+      }
+
+      // Handle regular questions
+      const question = pillarData.questions?.find(q => q.question_key === questionKey);
+      if (!question) {
+        console.warn(`⚠️ Question not found for key: ${questionKey}`);
+        return;
+      }
+      
+      let finalAnswer = answer;
+      
+      // For safety incident_count, include incident details if they exist
+      if (questionKey === 'incident_count' && Object.keys(incidentDetails).length > 0) {
+        finalAnswer = {
+          count: answer,
+          details: incidentDetails
+        };
+      }
+
+      responses.push({
+        question_key: questionKey,
+        question_id: question.id,
+        answer: finalAnswer
+      });
+    });
+
+    console.log('📤 Final responses:', responses);
+
+    const submission = {
+      pillar,
+      date: selectedDate.toISOString().slice(0, 10),
+      user_name: 'default_user', // TODO: Replace with actual user management
+      responses
+    };
+
+    await pillarData.submitResponses(submission);
+  };
   
   // Calculate previous month for the second calendar
   const getPreviousMonth = (date: Date) => {
@@ -97,6 +167,27 @@ export const PillarLayout = ({
                 </Button>
               </Link>
               <h1 className="text-3xl font-bold">{pillarName} KPI Dashboard</h1>
+              {pillar && (
+                <Button
+                  variant={pillarData?.hasResponses ? "outline" : "default"}
+                  size="sm"
+                  onClick={() => setIsDataCollectionOpen(true)}
+                  className="flex items-center space-x-2"
+                  disabled={pillarData?.isQuestionsLoading}
+                >
+                  {pillarData?.hasResponses ? (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Edit Data</span>
+                    </>
+                  ) : (
+                    <>
+                      <ClipboardList className="w-4 h-4" />
+                      <span>Collect Data</span>
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
             <div className="flex items-center bg-muted/50 px-4 py-2 rounded-lg">
               <Button
@@ -231,5 +322,21 @@ export const PillarLayout = ({
           </div>
         </motion.div>
       </div>
+
+      {/* Data Collection Modal */}
+      {pillar && pillarData && (
+        <DataCollectionModal
+          isOpen={isDataCollectionOpen}
+          onClose={() => setIsDataCollectionOpen(false)}
+          pillarName={pillarName}
+          pillar={pillar}
+          date={selectedDate.toISOString().slice(0, 10)}
+          questions={pillarData.questions || []}
+          existingResponses={pillarData.dailyResponses || []}
+          hasResponses={pillarData.hasResponses || false}
+          onSubmit={handleDataCollectionSubmit}
+          isSubmitting={pillarData.isSubmittingResponses || false}
+        />
+      )}
     </div>;
 };

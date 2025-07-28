@@ -2,6 +2,9 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useCallback } from 'react'
 import { subDays, addDays, parseISO, format, startOfWeek, endOfWeek } from 'date-fns'
+import { fetchQuestionsForPillar } from '@/services/questionService'
+import { fetchResponsesForPillarAndDate, submitResponses, hasResponsesForDate } from '@/services/responseService'
+import { PillarQuestion, PillarResponse, PillarType, ResponseSubmission } from '@/types/pillarData'
 
 export interface MeetingNote {
   id: string
@@ -162,6 +165,57 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
   })
 
+  // Load last recorded action items (FIXED: now filters by date to prevent future items)
+  const { data: lastRecordedActionItems = [], isLoading: lastRecordedActionItemsLoading } = useQuery({
+    queryKey: ['last-action-items', pillar, selectedDate, yesterdayString],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('action_items')
+        .select('*')
+        .eq('pillar', pillar)
+        .lt('item_date', yesterdayString) // CRITICAL FIX: Only get items BEFORE yesterday
+        .order('item_date', { ascending: false })
+        .limit(10) // Get up to 10 items from the most recent date
+      
+      if (error) throw error
+      
+      return (data as ActionItem[]) || []
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+  })
+
+  // Load questions for the pillar (cached with long stale time since questions rarely change)
+  const { data: questions = [], isLoading: questionsLoading } = useQuery({
+    queryKey: ['pillar-questions', pillar],
+    queryFn: () => fetchQuestionsForPillar(pillar as PillarType),
+    staleTime: 30 * 60 * 1000, // 30 minutes - questions don't change often
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    refetchOnWindowFocus: false,
+  })
+
+  // Load responses for the selected date
+  const { data: dailyResponses = [], isLoading: responsesLoading } = useQuery({
+    queryKey: ['pillar-responses', pillar, selectedDate],
+    queryFn: () => fetchResponsesForPillarAndDate(pillar as PillarType, selectedDate),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  })
+
+  // Check if user has already responded today (assumes single user for now)
+  const { data: hasResponses = false, isLoading: hasResponsesLoading } = useQuery({
+    queryKey: ['has-responses', pillar, selectedDate],
+    queryFn: async () => {
+      // For now, use 'default_user' - this can be enhanced with actual user management
+      const userName = 'default_user'
+      return hasResponsesForDate(pillar as PillarType, selectedDate, userName)
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  })
+
   // Background prefetching for adjacent weeks
   useEffect(() => {
     const prefetchAdjacentWeeks = () => {
@@ -232,6 +286,34 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
         filter: `pillar=eq.${pillar}` 
       }, () => {
         throttledInvalidation('action_items')
+      })
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'pillar_questions',
+        filter: `pillar=eq.${pillar}` 
+      }, () => {
+        // Questions changed - invalidate questions cache
+        queryClient.invalidateQueries({ 
+          queryKey: ['pillar-questions', pillar],
+          exact: false 
+        })
+      })
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'pillar_responses',
+        filter: `pillar=eq.${pillar}` 
+      }, () => {
+        // Responses changed - invalidate responses and has-responses cache
+        queryClient.invalidateQueries({ 
+          queryKey: ['pillar-responses', pillar],
+          exact: false 
+        })
+        queryClient.invalidateQueries({ 
+          queryKey: ['has-responses', pillar],
+          exact: false 
+        })
       })
       .subscribe()
 
@@ -479,7 +561,40 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     }
   })
 
+  // Submit responses mutation
+  const submitResponsesMutation = useMutation({
+    mutationFn: async (responses: ResponseSubmission) => {
+      return await submitResponses(responses)
+    },
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['pillar-responses', pillar, selectedDate] 
+      })
+      queryClient.invalidateQueries({ 
+        queryKey: ['has-responses', pillar, selectedDate] 
+      })
+    }
+  })
+
+  // Update responses mutation (same as submit due to upsert logic)
+  const updateResponsesMutation = useMutation({
+    mutationFn: async (responses: ResponseSubmission) => {
+      return await submitResponses(responses)
+    },
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['pillar-responses', pillar, selectedDate] 
+      })
+      queryClient.invalidateQueries({ 
+        queryKey: ['has-responses', pillar, selectedDate] 
+      })
+    }
+  })
+
   return {
+    // Existing returns
     meetingNote,
     meetingNotes,
     actionItems,
@@ -499,7 +614,19 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     isDeletingNote: deleteNoteMutation.isPending,
     isCreatingItem: createItemMutation.isPending,
     isUpdatingItem: updateItemMutation.isPending,
-    isDeletingItem: deleteItemMutation.isPending
+    isDeletingItem: deleteItemMutation.isPending,
+    
+    // New data collection returns
+    questions,
+    dailyResponses,
+    hasResponses,
+    isQuestionsLoading: questionsLoading,
+    isResponsesLoading: responsesLoading,
+    isHasResponsesLoading: hasResponsesLoading,
+    submitResponses: submitResponsesMutation.mutate,
+    updateResponses: updateResponsesMutation.mutate,
+    isSubmittingResponses: submitResponsesMutation.isPending,
+    isUpdatingResponses: updateResponsesMutation.isPending
   }
 }
 

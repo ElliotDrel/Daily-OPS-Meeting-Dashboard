@@ -68,6 +68,7 @@ export const Cost = () => {
         letter="C"
         pillarName="Cost"
         pillarColor="cost"
+      pillar="cost"
         squares={dashboardData.pillars.cost.squares}
         actionItems={actionItems}
       >
@@ -82,6 +83,7 @@ export const Cost = () => {
     <PillarGraphsPane
       pillarName="Cost"
       pillarColor="cost"
+      pillar="cost"
       lineChartData={costData.lineChart}
       pieChartData={costData.donutData}
       metrics={costMetrics}
@@ -96,6 +98,7 @@ export const Cost = () => {
       letter="C"
       pillarName="Cost"
       pillarColor="cost"
+      pillar="cost"
       squares={dashboardData.pillars.cost.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}

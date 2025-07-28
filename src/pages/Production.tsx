@@ -76,6 +76,7 @@ export const Production = () => {
         letter="P"
         pillarName="Production"
         pillarColor="production"
+      pillar="production"
         squares={dashboardData.pillars.production.squares}
         actionItems={actionItems}
       >
@@ -90,6 +91,7 @@ export const Production = () => {
     <PillarGraphsPane
       pillarName="Production"
       pillarColor="production"
+      pillar="production"
       lineChartData={productionData.lineChart}
       pieChartData={productionData.donutData}
       metrics={productionMetrics}
@@ -104,6 +106,7 @@ export const Production = () => {
       letter="P"
       pillarName="Production"
       pillarColor="production"
+      pillar="production"
       squares={dashboardData.pillars.production.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
