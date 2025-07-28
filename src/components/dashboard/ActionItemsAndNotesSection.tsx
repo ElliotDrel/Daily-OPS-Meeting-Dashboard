@@ -54,7 +54,7 @@ export const ActionItemsAndNotesSection = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Notes Section - Top */}
       <Card className="p-0 shadow-lg overflow-hidden">
         <NotesSection
