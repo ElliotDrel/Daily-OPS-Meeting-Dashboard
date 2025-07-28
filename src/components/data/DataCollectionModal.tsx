@@ -24,20 +24,8 @@ interface DataCollectionModalProps {
   isSubmitting?: boolean
 }
 
-// Generate dynamic Safety incident questions based on count
-const generateIncidentQuestions = (count: string): Array<{ key: string; text: string; type: 'textarea'; required: boolean }> => {
-  const incidentCount = count === '6+' ? 6 : parseInt(count)
-  const questions = []
-  for (let i = 1; i <= incidentCount; i++) {
-    questions.push({
-      key: `incident_detail_${i}`,
-      text: `Describe incident ${i}:`,
-      type: 'textarea' as const,
-      required: true
-    })
-  }
-  return questions
-}
+// All conditional questions are now handled through database structure
+// No need for hardcoded dynamic generation
 
 export const DataCollectionModal = ({
   isOpen,
@@ -52,7 +40,6 @@ export const DataCollectionModal = ({
   isSubmitting = false
 }: DataCollectionModalProps) => {
   const { register, handleSubmit, watch, setValue, reset } = useForm<QuestionFormData>()
-  const [dynamicQuestions, setDynamicQuestions] = useState<Array<{ key: string; text: string; type: string; required: boolean }>>([])
 
   // Initialize form with existing responses
   useEffect(() => {
@@ -61,27 +48,7 @@ export const DataCollectionModal = ({
       existingResponses.forEach(response => {
         const question = questions.find(q => q.id === response.question_id)
         if (question) {
-          // Handle incident_count with embedded details
-          if (question.question_key === 'incident_count' && typeof response.answer === 'object' && response.answer !== null) {
-            const answerObj = response.answer as { count?: unknown; details?: Record<string, unknown> }
-            
-            // Set the count value (handle both string and object formats)
-            if (answerObj.count !== undefined) {
-              formData[question.question_key] = answerObj.count
-            } else {
-              // Fallback for old format
-              formData[question.question_key] = response.answer
-            }
-            
-            // Extract and populate incident details
-            if (answerObj.details) {
-              Object.entries(answerObj.details).forEach(([detailKey, detailValue]) => {
-                formData[detailKey] = detailValue
-              })
-            }
-          } else {
-            formData[question.question_key] = response.answer
-          }
+          formData[question.question_key] = response.answer
         }
       })
       reset(formData)
@@ -90,22 +57,8 @@ export const DataCollectionModal = ({
     }
   }, [existingResponses, questions, reset])
 
-  // Watch for changes in conditional questions (e.g., Safety incidents)
+  // Watch for changes in form values to handle conditional logic
   const watchedValues = watch()
-
-  useEffect(() => {
-    if (pillar === 'safety' && watchedValues.incident_count && watchedValues.incident_count !== '0') {
-      const incidentQuestions = generateIncidentQuestions(watchedValues.incident_count)
-      setDynamicQuestions(incidentQuestions)
-    } else {
-      // Clear dynamic questions and their values when count changes
-      setDynamicQuestions([])
-      // Clear any existing incident detail values
-      for (let i = 1; i <= 6; i++) {
-        setValue(`incident_detail_${i}`, '')
-      }
-    }
-  }, [pillar, watchedValues.incident_count, setValue])
 
   const onFormSubmit = async (formData: QuestionFormData) => {
     try {
@@ -121,22 +74,36 @@ export const DataCollectionModal = ({
     if (!question.conditional_parent) return true
     
     const parentValue = watchedValues[question.conditional_parent]
-    return parentValue === question.conditional_value
+    const conditionalValue = question.conditional_value
+    
+    // Handle multi-select conditions (parent value is an array)
+    if (Array.isArray(parentValue)) {
+      // Parse conditional value if it's a JSON string
+      const targetValue = typeof conditionalValue === 'string' && conditionalValue.startsWith('"') 
+        ? JSON.parse(conditionalValue) 
+        : conditionalValue
+      return parentValue.includes(targetValue)
+    }
+    
+    // Handle single-select conditions
+    // Parse conditional value if it's a JSON string
+    const targetValue = typeof conditionalValue === 'string' && conditionalValue.startsWith('"') 
+      ? JSON.parse(conditionalValue) 
+      : conditionalValue
+    return parentValue === targetValue
   }
 
   // Debug function to log form data
   const logFormData = (formData: QuestionFormData) => {
     console.log('📝 Form submission data:', formData)
-    console.log('🔄 Dynamic questions:', dynamicQuestions)
     console.log('📊 Watched values:', watchedValues)
+    console.log('🔍 Visible questions:', questions.filter(shouldShowQuestion).map(q => q.question_key))
   }
 
-  const renderQuestionField = (question: PillarQuestion | { key: string; text: string; type: string; required: boolean }) => {
-    const key = 'id' in question ? question.question_key : question.key
-    const text = 'id' in question ? question.question_text : question.text
-    const type = 'id' in question ? question.question_type : question.type
-    const required = 'id' in question ? question.is_required : question.required
-    const options = 'id' in question ? question.options : undefined
+  const renderQuestionField = (question: PillarQuestion) => {
+    const key = question.question_key
+    const type = question.question_type
+    const options = question.options
 
     switch (type) {
       case 'boolean':
@@ -267,17 +234,6 @@ export const DataCollectionModal = ({
               </div>
             )
           })}
-
-          {/* Dynamic questions (e.g., Safety incident details) */}
-          {dynamicQuestions.map((question) => (
-            <div key={question.key} className="space-y-2">
-              <Label htmlFor={question.key} className="text-sm font-medium">
-                {question.text}
-                {question.required && <span className="text-red-500 ml-1">*</span>}
-              </Label>
-              {renderQuestionField(question)}
-            </div>
-          ))}
 
           <DialogFooter className="flex justify-between">
             <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
