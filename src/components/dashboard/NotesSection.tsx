@@ -255,7 +255,7 @@ export const NotesSection = ({
 
   const content = (
     <>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <FileText className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold">{title}</h3>
@@ -305,13 +305,13 @@ export const NotesSection = ({
               value={localNoteValue}
               onChange={debouncedOnChange}
               placeholder="Type meeting notes and press Enter..."
-              className="min-h-[2.5rem] mb-4"
+              className="min-h-[2.5rem] mb-2"
               disabled={!onUpsertNote || !isEditing}
               initialValue={localNoteValue}
               onSave={handleManualSave}
             />
           ) : (
-            <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm mb-4">
+            <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm">
               <FileText className="w-24 h-24 mr-4 opacity-50" />
               <p className="max-w-xs">No meeting notes yet. Use the input below to create your first note.</p>
             </div>
@@ -337,7 +337,7 @@ export const NotesSection = ({
 
           {/* Yesterday's Notes Section - Always Show with New Logic */}
           {displayLogic.shouldShowYesterday && (
-            <div className="mt-6 pt-4 border-t border-muted/50">
+            <div className="mt-6 pt-4 border-t-2 border-gray-400">
               <div className="flex items-center space-x-2 mb-3">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium text-muted-foreground">
@@ -365,8 +365,8 @@ export const NotesSection = ({
 
           {/* Last Recorded Notes Section - NEW LOGIC: Only show with meaningful validation */}
           {displayLogic.shouldShowLastRecorded && displayLogic.lastRecordedDisplay && (
-            <div className="mt-6 pt-4 border-t border-muted/50">
-              <div className="flex items-center space-x-2 mb-3">
+            <div className="mt-6 pt-4 border-t-2 border-gray-400">
+              <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <h4 className="text-sm font-medium text-muted-foreground">
                   Last Recorded Notes ({displayLogic.lastRecordedDisplay.dateLabel})

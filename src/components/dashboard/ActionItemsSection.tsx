@@ -152,10 +152,10 @@ export const ActionItemsSection = ({
 
   const content = (
     <>
-      <div className="flex items-center space-x-2 mb-4">
-        <AlertTriangle className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-semibold">{title}</h3>
-      </div>
+             <div className="flex items-center space-x-2">
+         <AlertTriangle className="w-5 h-5 text-primary" />
+         <h3 className="text-lg font-semibold">{title}</h3>
+       </div>
 
       <div className="space-y-4">
         {/* Current Action Items */}
@@ -196,8 +196,8 @@ export const ActionItemsSection = ({
         
         {/* Yesterday's Items Section */}
         {displayLogic.shouldShowYesterday && (
-          <div className="border-t pt-4 mt-6">
-            <div className="flex items-center space-x-2 mb-4">
+          <div className="border-t-2 border-gray-400 pt-4 mt-6">
+            <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm font-medium text-muted-foreground">
                 {displayLogic.yesterdayDisplay.dateLabel} Action Items
@@ -224,8 +224,8 @@ export const ActionItemsSection = ({
 
         {/* Last Recorded Items Section */}
         {displayLogic.shouldShowLastRecorded && displayLogic.lastRecordedDisplay && (
-          <div className="border-t pt-4 mt-6">
-            <div className="flex items-center space-x-2 mb-4">
+          <div className="border-t-2 border-gray-400 pt-4 mt-6">
+            <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm font-medium text-muted-foreground">
                 Last Recorded Action Items ({displayLogic.lastRecordedDisplay.dateLabel})
@@ -271,7 +271,7 @@ export const ActionItemsSection = ({
         )}
       </div>
 
-      <div className="border-t pt-4 mt-4">
+      <div className="border-t-2 border-gray-400 pt-4 mt-4">
         <Button onClick={handleAddNew} variant="outline" size="sm" className="w-full">
           <Plus className="w-4 h-4 mr-2" />
           Add Action Item
