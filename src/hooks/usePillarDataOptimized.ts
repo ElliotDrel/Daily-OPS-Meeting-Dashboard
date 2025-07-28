@@ -179,7 +179,20 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
       
       if (error) throw error
       
-      return (data as ActionItem[]) || []
+      const result = (data as ActionItem[]) || []
+      console.log('🔍 LAST RECORDED ACTION ITEMS QUERY:', {
+        pillar,
+        yesterdayString,
+        resultCount: result.length,
+        items: result.slice(0, 3).map(item => ({ 
+          date: item.item_date, 
+          desc: item.description?.substring(0, 50),
+          hasDesc: !!item.description,
+          descLength: item.description?.length || 0,
+          fullItem: item
+        }))
+      })
+      return result
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
@@ -602,9 +615,11 @@ export const usePillarDataOptimized = (pillar: string, selectedDate: string) => 
     yesterdayMeetingNotes,
     yesterdayActionItems,
     lastRecordedNote,
+    lastRecordedActionItems,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: false, // Data comes from same batch query
     isLastRecordedLoading: lastRecordedNotesLoading,
+    isLastRecordedActionItemsLoading: lastRecordedActionItemsLoading,
     upsertNote: upsertNoteMutation.mutate,
     deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
