@@ -8,7 +8,7 @@ import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
 import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
-import { usePillarData } from "@/hooks/usePillarData";
+import { usePillarData } from "@/hooks/usePillarDataOptimized";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 
@@ -77,13 +77,15 @@ export const Safety = () => {
     yesterdayMeetingNote, 
     yesterdayActionItems, 
     lastRecordedNote,
+    lastRecordedActionItems,
     upsertNote, 
     createItem, 
     updateItem, 
     deleteNote,
     isLoading,
     isYesterdayLoading,
-    isLastRecordedLoading
+    isLastRecordedLoading,
+    isLastRecordedActionItemsLoading
   } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -135,6 +137,7 @@ export const Safety = () => {
           yesterdayMeetingNote={yesterdayMeetingNote}
           yesterdayActionItems={yesterdayActionItems}
           lastRecordedNote={lastRecordedNote}
+          lastRecordedActionItems={lastRecordedActionItems}
           onUpsertNote={upsertNote}
           onDeleteNote={deleteNote}
           onAddActionItem={createItem}
@@ -144,6 +147,7 @@ export const Safety = () => {
           selectedDate={selectedDate.toISOString().slice(0, 10)}
           isYesterdayLoading={isYesterdayLoading}
           isLastRecordedLoading={isLastRecordedLoading}
+          isLastRecordedActionItemsLoading={isLastRecordedActionItemsLoading}
         />
 
         {/* Bottom Row - Legacy Action Table */}
