@@ -300,11 +300,11 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     yesterdayMeetingNote,
     yesterdayActionItems,
     lastRecordedNote,
-    lastRecordedActionItems: [], // TODO: Implement in this legacy hook or migrate to usePillarDataOptimized
+    lastRecordedActionItems: [], // Legacy hook - limited functionality
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
     isLastRecordedLoading: lastRecordedNotesLoading,
-    isLastRecordedActionItemsLoading: false, // TODO: Implement in this legacy hook or migrate to usePillarDataOptimized
+    isLastRecordedActionItemsLoading: false, // Legacy hook - limited functionality
     upsertNote: upsertNoteMutation.mutate,
     deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
