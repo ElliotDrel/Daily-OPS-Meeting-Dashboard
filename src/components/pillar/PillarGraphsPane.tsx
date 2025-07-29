@@ -74,13 +74,17 @@ export const PillarGraphsPane = ({
       <div className="space-y-4 p-4">
         {/* Line Chart */}
         <Card className="p-4 shadow-lg">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className={`text-base font-semibold text-${pillarColor}`}>{lineChartTitle}</h3>
+          <div className="mb-3">
+            <h3 className={`text-base font-semibold text-${pillarColor} mb-2`}>{lineChartTitle}</h3>
             {onTimePeriodChange && (
-              <TimePeriodSelector
-                selectedPeriod={selectedTimePeriod}
-                onPeriodChange={onTimePeriodChange}
-              />
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-medium text-muted-foreground">Time Period:</span>
+                <TimePeriodSelector
+                  selectedPeriod={selectedTimePeriod}
+                  onPeriodChange={onTimePeriodChange}
+                  showLabel={false}
+                />
+              </div>
             )}
           </div>
           <div className="h-48">
