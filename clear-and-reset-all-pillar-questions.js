@@ -368,16 +368,6 @@ async function resetAllPillarQuestions() {
         order_index: 1
       },
 
-      // Cost pillar
-      {
-        pillar: 'cost',
-        question_id: 'cost-variances',
-        question_text: 'Were there any significant cost variances yesterday?',
-        question_type: 'select',
-        required: true,
-        options: ["Yes", "No"],
-        order_index: 1
-      }
     ]
 
     // Create individual Safety incident description questions (1-10)

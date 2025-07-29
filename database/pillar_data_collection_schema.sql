@@ -108,10 +108,8 @@ INSERT INTO pillar_questions (pillar, question_id, question_text, question_type,
 ('quality', 'equipment-malfunctions-details', 'Equipment malfunctions, describe the details:', 'textarea', true, NULL, 9),
 
 -- Safety pillar
-('safety', 'safety-incidents-count', 'How many safety incidents occurred yesterday?', 'select', true, '["0", "1", "2 or more"]'::jsonb, 1),
+('safety', 'safety-incidents-count', 'How many safety incidents occurred yesterday?', 'select', true, '["0", "1", "2 or more"]'::jsonb, 1)
 
--- Cost pillar  
-('cost', 'cost-variances', 'Were there any significant cost variances yesterday?', 'select', true, '["Yes", "No"]'::jsonb, 1)
 
 ON CONFLICT (pillar, question_id) DO NOTHING;
 
