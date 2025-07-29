@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
+import { IncidentColumnChart } from "@/components/charts/IncidentColumnChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { TimePeriodSelector } from "@/components/charts/TimePeriodSelector";
 
@@ -29,6 +30,7 @@ interface PillarGraphsPaneProps {
   isLoading?: boolean;
   selectedTimePeriod?: string;
   onTimePeriodChange?: (period: string) => void;
+  chartType?: 'line' | 'column';
 }
 
 export const PillarGraphsPane = ({
@@ -43,7 +45,8 @@ export const PillarGraphsPane = ({
   hasRealData = false,
   isLoading = false,
   selectedTimePeriod = "5m",
-  onTimePeriodChange
+  onTimePeriodChange,
+  chartType = 'line'
 }: PillarGraphsPaneProps) => {
   // Helper function to render chart with no data fallback
   const renderChartContent = (data: any[], component: React.ReactNode, fallbackMessage: string) => {
@@ -83,12 +86,20 @@ export const PillarGraphsPane = ({
           <div className="h-48">
             {renderChartContent(
               lineChartData,
-              <TrendLineChart 
-                data={lineChartData}
-                title={lineChartTitle}
-                color="hsl(var(--chart-1))"
-                formatValue={formatValue}
-              />,
+              chartType === 'column' ? (
+                <IncidentColumnChart 
+                  data={lineChartData}
+                  title={lineChartTitle}
+                  formatValue={formatValue}
+                />
+              ) : (
+                <TrendLineChart 
+                  data={lineChartData}
+                  title={lineChartTitle}
+                  color="hsl(var(--chart-1))"
+                  formatValue={formatValue}
+                />
+              ),
               "No data found to create graph"
             )}
           </div>

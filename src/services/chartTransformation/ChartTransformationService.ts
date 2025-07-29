@@ -243,6 +243,9 @@ class ChartTransformationService implements IChartTransformationService {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     
+    console.log(`[ChartTransformationService] Fetching ${pillar} responses for last ${days} days`);
+    console.log(`[ChartTransformationService] Cutoff date: ${cutoffDate.toISOString().split('T')[0]}`);
+    
     const { data, error } = await supabase
       .from('pillar_responses')
       .select('*')
@@ -252,6 +255,11 @@ class ChartTransformationService implements IChartTransformationService {
 
     if (error) {
       throw new Error(`Database error fetching ${pillar} responses: ${error.message}`);
+    }
+
+    console.log(`[ChartTransformationService] Found ${(data || []).length} responses from database`);
+    if (data && data.length > 0) {
+      console.log(`[ChartTransformationService] Sample response:`, data[0]);
     }
 
     // Transform database format to app format

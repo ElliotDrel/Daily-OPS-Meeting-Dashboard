@@ -38,27 +38,37 @@ export class SafetyTransformer implements PillarTransformer {
     config: ChartTargetConfig,
     timePeriod?: { days: number; useDailyAggregation: boolean }
   ): Promise<LineChartData[]> {
+    console.log(`[SafetyTransformer] Processing ${responses.length} responses`);
+    console.log(`[SafetyTransformer] Time period:`, timePeriod);
+    
     if (!this.canTransform(responses)) {
+      console.log(`[SafetyTransformer] Cannot transform responses - missing safety-incidents-count`);
       return [];
     }
 
     // Extract incident count values and convert to numbers
     const valueExtractor = (response: PillarResponse): number => {
       const incidentCount = response.responses['safety-incidents-count'];
-      return this.convertIncidentCountToNumber(incidentCount);
+      const numValue = this.convertIncidentCountToNumber(incidentCount);
+      console.log(`[SafetyTransformer] Date: ${response.responseDate}, incidents: ${incidentCount} -> ${numValue}`);
+      return numValue;
     };
 
     // Choose aggregation method based on time period
     let chartData: LineChartData[];
     
     if (timePeriod?.useDailyAggregation) {
+      console.log(`[SafetyTransformer] Using daily aggregation for ${timePeriod.days} days`);
       // Use daily aggregation for shorter periods
       chartData = aggregationUtils.aggregateToDaily(responses, valueExtractor, timePeriod.days);
     } else {
+      console.log(`[SafetyTransformer] Using monthly aggregation`);
       // Use monthly aggregation for longer periods
       const months = timePeriod ? Math.ceil(timePeriod.days / 30) : 5;
       chartData = aggregationUtils.aggregateToMonthly(responses, valueExtractor, months);
     }
+
+    console.log(`[SafetyTransformer] Generated ${chartData.length} chart data points:`, chartData);
 
     // Apply target values (safety target is always 0 incidents)
     return chartData.map(item => ({

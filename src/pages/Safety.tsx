@@ -145,6 +145,7 @@ export const Safety = () => {
       isLoading={isChartLoading}
       selectedTimePeriod={selectedTimePeriod}
       onTimePeriodChange={setSelectedTimePeriod}
+      chartType="column"
     />
   );
 

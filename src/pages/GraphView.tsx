@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
+import { IncidentColumnChart } from "@/components/charts/IncidentColumnChart";
 import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { StatCard } from "@/components/dashboard/StatCard";
@@ -76,17 +77,16 @@ export const GraphView = () => {
               {/* Safety Line Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Safety Incidents - 5 Month Trend</CardTitle>
+                  <CardTitle className="text-foreground">Safety Incidents - {timePeriodConfig.label} Trend</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     {safetyHasData ? 'Real data from safety responses' : 'No data available'}
                   </p>
                 </CardHeader>
                 <CardContent>
                   {renderChart(safetyLineData, safetyHasData, safetyLoading, "No safety data found to create graph") === safetyLineData ? (
-                    <TrendLineChart
+                    <IncidentColumnChart
                       data={safetyLineData}
                       title="Safety Incidents"
-                      color="hsl(var(--chart-1))"
                       formatValue={(value) => value.toString()}
                     />
                   ) : renderChart(safetyLineData, safetyHasData, safetyLoading, "No safety data found to create graph")}
