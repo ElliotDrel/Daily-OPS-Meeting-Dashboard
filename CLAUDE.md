@@ -142,16 +142,59 @@ When working with this codebase:
 
 ## Database Migration Scripts
 
+### Response Storage Migration System
+
+The application includes a comprehensive migration system to transition from JSONB-based response storage to a normalized relational structure for better performance and analytics capabilities.
+
 **Migration Scripts:**
+- `migrate-response-storage.js` - Migrates response data from JSONB to normalized format
+- `rollback-response-storage.js` - Rolls back migration by reconstructing JSONB from normalized data
 - `clear-and-reset-all-pillar-questions.js` - Resets pillar question configuration
 - `clear-and-migrate-notes-actionitems.js` - Migrates notes and action items
 
+**NPM Scripts for Migration:**
+```bash
+# Run migration with validation
+npm run migrate:storage
+
+# Dry-run to preview changes without making them
+npm run migrate:storage:dry-run
+
+# Run migration with post-migration validation
+npm run migrate:storage:validate
+
+# Rollback the migration
+npm run rollback:storage
+
+# Dry-run rollback to preview rollback changes
+npm run rollback:storage:dry-run
+```
+
+**Migration Process:**
+1. **Setup**: Ensure `SUPABASE_SERVICE_KEY` is in `.env.local` (see API settings in Supabase dashboard)
+2. **Schema Creation**: Execute `database/pillar_response_values_schema.sql` in Supabase SQL editor
+3. **Functions**: Execute `database/pillar_response_migration_functions.sql` in Supabase SQL editor
+4. **Test Run**: `npm run migrate:storage:dry-run` to preview changes
+5. **Migrate**: `npm run migrate:storage:validate` to migrate with validation
+6. **Verify**: Check migration statistics and validate data integrity
+
+**Migration Features:**
+- **Batch Processing**: Processes data in configurable batches (default: 100 responses)
+- **Error Handling**: Continues processing on individual failures with detailed error reporting
+- **Progress Tracking**: Real-time progress updates with ETA calculations
+- **Validation**: Built-in data integrity validation comparing original vs migrated data
+- **Rollback Safety**: Complete rollback capability to original JSONB format
+- **Pillar Filtering**: Migrate specific pillars only using `--pillar=safety` option
+
 **Troubleshooting Migration Issues:**
 - If deletions fail due to RLS policies, you may need to add `SUPABASE_SERVICE_KEY` to `.env.local`
+- Migration functions require service-level permissions for database operations
+- Use `--dry-run` flag to test migrations without making changes
+- Check migration statistics with `get_migration_stats()` function in SQL editor
 - The scripts will provide detailed error messages and recovery suggestions
 - Always backup your data before running migrations
 
-⚠️ **Warning**: Migration scripts perform destructive operations. Always backup your data first.
+⚠️ **Warning**: Migration scripts perform destructive operations. Always backup your database first.
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.

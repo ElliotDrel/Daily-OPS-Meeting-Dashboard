@@ -3,7 +3,7 @@ import { PillarLayout } from "@/components/pillar/PillarLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, Users, HardHat } from "lucide-react";
-import { dashboardData, safetyData, MeetingNote } from "@/data/mockData";
+import { dashboardData, MeetingNote } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
@@ -11,6 +11,7 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 import { usePillarData } from "@/hooks/usePillarData";
+import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
 
 
 const safetyMetrics = [
@@ -88,13 +89,31 @@ export const Safety = () => {
     isLastRecordedActionItemsLoading
   } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
-  if (isLoading) {
+  // Get chart data using new transformation service
+  const {
+    lineData,
+    pieData,
+    isLoading: isChartLoading,
+    isError: isChartError,
+    hasRealData,
+    dataStatus,
+    refetch: refetchChartData
+  } = useChartData('safety');
+
+  const invalidateChartData = useInvalidateChartData();
+
+  // Invalidate chart data when date changes to ensure fresh data
+  useEffect(() => {
+    refetchChartData();
+  }, [selectedDate, refetchChartData]);
+
+  if (isLoading || isChartLoading) {
     return (
       <PillarLayout
         letter="S"
         pillarName="Safety"
         pillarColor="safety"
-                squares={dashboardData.pillars.safety.squares}
+        squares={dashboardData.pillars.safety.squares}
         actionItems={actionItems}
       >
         <div className="flex justify-center items-center h-64">
@@ -108,11 +127,11 @@ export const Safety = () => {
     <PillarGraphsPane
       pillarName="Safety"
       pillarColor="safety"
-      lineChartData={safetyData.lineChart}
-      pieChartData={safetyData.donutData}
+      lineChartData={lineData}
+      pieChartData={pieData}
       metrics={safetyMetrics}
-      lineChartTitle="Safety Incidents - 5 Month Trend"
-      pieChartTitle="Safety Incident Types"
+      lineChartTitle={`Safety Incidents - 5 Month Trend ${hasRealData ? '' : '(No Data)'}`}
+      pieChartTitle={`Safety Incident Types ${hasRealData ? '' : '(No Data)'}`}
       formatValue={(value) => value.toString()}
     />
   );

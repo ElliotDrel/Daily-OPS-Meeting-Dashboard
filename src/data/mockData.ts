@@ -240,6 +240,21 @@ export const productionData = {
   ]
 };
 
+// Inventory specific data
+export const inventoryData = {
+  lineChart: generateLineChartData(245, 200), // Actual vs Target Inventory Levels
+  donutData: [
+    { name: '14 inch', value: 45, color: '#ef4444' },
+    { name: '16 inch', value: 32, color: '#f97316' },
+    { name: '20 inch small', value: 28, color: '#eab308' },
+    { name: '20 inch large', value: 35, color: '#84cc16' },
+    { name: '24 inch', value: 22, color: '#06b6d4' },
+    { name: '26 inch', value: 18, color: '#3b82f6' },
+    { name: 'Adult small', value: 25, color: '#8b5cf6' },
+    { name: 'Adult large', value: 30, color: '#ec4899' }
+  ]
+};
+
 // Generate action items for each pillar
 const generateActionItems = (pillarType: string): ActionItem[] => {
   const actionItemsData = {
