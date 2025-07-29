@@ -69,7 +69,8 @@ export const DataCollectionModal = ({
   const generalErrors = errors.filter(error => error.field === 'general');
 
   // Handle form submission
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     await submitForm();
   };
 
@@ -131,7 +132,7 @@ export const DataCollectionModal = ({
 
         {/* Form Content */}
         {!isLoading && visibleQuestions.length > 0 && (
-          <div className="space-y-6">
+          <form id={`data-collection-form-${pillar}`} onSubmit={handleSubmit} className="space-y-6">
             {/* General Errors */}
             {generalErrors.length > 0 && (
               <Alert variant="destructive">
@@ -164,7 +165,7 @@ export const DataCollectionModal = ({
                 </AlertDescription>
               </Alert>
             )}
-          </div>
+          </form>
         )}
 
         {/* Footer */}
@@ -188,7 +189,8 @@ export const DataCollectionModal = ({
             </Button>
             
             <Button
-              onClick={handleSubmit}
+              type="submit"
+              form={`data-collection-form-${pillar}`}
               disabled={
                 isLoading || 
                 visibleQuestions.length === 0 || 

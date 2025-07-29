@@ -7,12 +7,16 @@ dotenv.config({ path: '.env.local' })
 // Use service key for server-side operations
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 )
 
 // Convert "Jul 22, 2025" format to "2025-07-22" ISO format
 function convertToISODate(dateString) {
   const date = new Date(dateString)
+  if (isNaN(date.getTime())) {
+    console.error(`Invalid date format: ${dateString}`)
+    throw new Error(`Invalid date format: ${dateString}`)
+  }
   return date.toISOString().slice(0, 10)
 }
 
@@ -25,7 +29,7 @@ async function clearAndMigrate() {
     const { error: notesDeleteError } = await supabase
       .from('meeting_notes')
       .delete()
-      .neq('id', '') // Delete all records
+      .not('id', 'is', null) // Delete all records
 
     if (notesDeleteError) {
       console.error('Error clearing meeting notes:', notesDeleteError)
@@ -35,7 +39,7 @@ async function clearAndMigrate() {
     const { error: itemsDeleteError } = await supabase
       .from('action_items')
       .delete()
-      .neq('id', '') // Delete all records
+      .not('id', 'is', null) // Delete all records
 
     if (itemsDeleteError) {
       console.error('Error clearing action items:', itemsDeleteError)

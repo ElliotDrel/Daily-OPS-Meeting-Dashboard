@@ -171,6 +171,27 @@ export const useDataCollection = (
     setErrors(prev => prev.filter(error => error.field !== questionId));
   }, []);
 
+  // Clean up hidden field values when visibility changes
+  useEffect(() => {
+    const visibleQuestionIds = new Set(visibleQuestions.map(q => q.id));
+    const currentFormKeys = Object.keys(formData);
+    
+    // Remove values for questions that are no longer visible
+    const hasHiddenFields = currentFormKeys.some(key => !visibleQuestionIds.has(key));
+    
+    if (hasHiddenFields) {
+      setFormData(prev => {
+        const cleaned = { ...prev };
+        currentFormKeys.forEach(key => {
+          if (!visibleQuestionIds.has(key)) {
+            delete cleaned[key];
+          }
+        });
+        return cleaned;
+      });
+    }
+  }, [visibleQuestions, formData]);
+
   // Save response mutation
   const saveResponseMutation = useMutation({
     mutationFn: async (responseData: Record<string, string | number | boolean | string[]>) => {

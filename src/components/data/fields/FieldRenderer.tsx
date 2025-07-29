@@ -23,17 +23,20 @@ export const FieldRenderer = ({ question, value, onChange, error }: FieldRendere
       case 'text':
         return (
           <Input
+            id={question.id}
             type="text"
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
             placeholder={`Enter ${question.text.toLowerCase()}`}
             className={cn(error && 'border-destructive')}
+            aria-describedby={error ? `${question.id}-error` : undefined}
           />
         );
 
       case 'number':
         return (
           <Input
+            id={question.id}
             type="number"
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
@@ -41,24 +44,31 @@ export const FieldRenderer = ({ question, value, onChange, error }: FieldRendere
             min="0"
             step="1"
             className={cn(error && 'border-destructive')}
+            aria-describedby={error ? `${question.id}-error` : undefined}
           />
         );
 
       case 'textarea':
         return (
           <Textarea
+            id={question.id}
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
             placeholder={`Enter ${question.text.toLowerCase()}`}
             rows={3}
             className={cn(error && 'border-destructive')}
+            aria-describedby={error ? `${question.id}-error` : undefined}
           />
         );
 
       case 'select':
         return (
           <Select value={value || ''} onValueChange={onChange}>
-            <SelectTrigger className={cn(error && 'border-destructive')}>
+            <SelectTrigger 
+              id={question.id}
+              className={cn(error && 'border-destructive')}
+              aria-describedby={error ? `${question.id}-error` : undefined}
+            >
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
@@ -140,7 +150,7 @@ export const FieldRenderer = ({ question, value, onChange, error }: FieldRendere
       {renderField()}
       
       {error && (
-        <p className="text-sm text-destructive mt-1">
+        <p id={`${question.id}-error`} className="text-sm text-destructive mt-1" role="alert">
           {error}
         </p>
       )}

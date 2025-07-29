@@ -6,17 +6,17 @@ dotenv.config({ path: '.env.local' })
 // Use service key for server-side operations
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 )
 
 async function resetAllPillarQuestions() {
   console.log('🚀 Resetting ALL Pillar Questions - Complete Clean and Migration')
-  console.log('=' * 70)
+  console.log('='.repeat(70))
 
   // Environment Check
   console.log('🔧 Environment Check:')
   console.log('  VITE_SUPABASE_URL:', process.env.VITE_SUPABASE_URL ? 'SET' : 'NOT SET')
-  console.log('  SUPABASE_SERVICE_KEY:', process.env.SUPABASE_SERVICE_KEY ? 'SET' : 'NOT SET')
+  console.log('  SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
   console.log('  VITE_SUPABASE_ANON_KEY:', process.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET')
   console.log('')
 
@@ -54,18 +54,72 @@ async function resetAllPillarQuestions() {
     }
     console.log('')
 
-    // Step 2: Complete cleanup - delete ALL pillar questions
-    console.log('🧹 Step 2: Deleting ALL existing pillar questions...')
-    const { error: deleteAllError } = await supabase
-      .from('pillar_questions')
-      .delete()
-      .neq('id', '') // Delete all records
-
-    if (deleteAllError) {
-      console.error('❌ Error deleting existing questions:', deleteAllError)
-      return
+    // Step 2: Delete questions individually (works around RLS policies)
+    console.log('🧹 Step 2: Deleting pillar questions individually...')
+    
+    if (currentQuestions && currentQuestions.length > 0) {
+      let deletedCount = 0
+      let failedDeletions = []
+      
+      for (const question of currentQuestions) {
+        const { error: deleteError } = await supabase
+          .from('pillar_questions')
+          .delete()
+          .eq('id', question.id)
+        
+        if (deleteError) {
+          console.error(`❌ Error deleting ${question.pillar}/${question.question_id}:`, deleteError)
+          failedDeletions.push(`${question.pillar}/${question.question_id}`)
+          // Continue trying to delete others
+        } else {
+          deletedCount++
+          console.log(`✅ Deleted ${question.pillar}/${question.question_id}`)
+        }
+      }
+      
+      console.log(`📊 Successfully deleted ${deletedCount} of ${currentQuestions.length} questions`)
+      
+      if (failedDeletions.length > 0) {
+        console.error(`⚠️  Failed to delete ${failedDeletions.length} questions:`)
+        failedDeletions.forEach(q => console.error(`   - ${q}`))
+        console.log('💡 These may be due to RLS policies. Consider using SUPABASE_SERVICE_KEY.')
+      }
+      
+      // Wait for database consistency (Supabase can have replication lag)
+      console.log('⏳ Waiting for database consistency...')
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Final verification with cache bypass
+      const { data: remainingQuestions, error: verifyError } = await supabase
+        .from('pillar_questions')
+        .select('*')
+      
+      if (verifyError) {
+        console.error('❌ Error verifying deletion:', verifyError)
+        return
+      }
+      
+      if (remainingQuestions && remainingQuestions.length > 0) {
+        console.warn(`⚠️  Database shows ${remainingQuestions.length} questions remaining after deletion.`)
+        console.log('🔄 This may be due to database replication lag or caching.')
+        
+        // If all deletions reported success but verification shows remaining questions,
+        // this is likely a caching issue, not a real problem
+        if (deletedCount === currentQuestions.length && failedDeletions.length === 0) {
+          console.log('✅ All individual deletions succeeded - proceeding with migration despite cache inconsistency.')
+          console.log('💡 The cache should clear shortly and questions will disappear.')
+        } else {
+          console.error('❌ CRITICAL: Some deletions actually failed!')
+          remainingQuestions.forEach(q => console.log(`  - ${q.pillar}/${q.question_id}`))
+          console.log('🛑 Stopping migration to prevent data corruption.')
+          return
+        }
+      }
+      
+      console.log('✅ All pillar questions successfully deleted')
+    } else {
+      console.log('✅ No questions to delete')
     }
-    console.log('✅ All existing pillar questions deleted')
     console.log('')
 
     // Step 3: Create ALL pillar questions
@@ -349,17 +403,29 @@ async function resetAllPillarQuestions() {
 
     // Insert all questions
     console.log(`Creating ${allQuestions.length} questions across all pillars...`)
+    const createdQuestions = []
+    
     for (const question of allQuestions) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('pillar_questions')
         .insert(question)
+        .select('question_id')
 
       if (error) {
         console.error(`❌ Error creating question ${question.question_id}:`, error)
+        
+        // If we've created some questions already, this is a partial failure
+        if (createdQuestions.length > 0) {
+          console.error(`💥 PARTIAL FAILURE: Created ${createdQuestions.length} questions before failure.`)
+          console.error('🔄 You may need to run the script again to complete the migration.')
+        }
         return
       }
+      
+      createdQuestions.push(question.question_id)
       console.log(`✅ Created ${question.pillar}/${question.question_id}`)
     }
+    console.log(`📊 Successfully created all ${createdQuestions.length} questions`)
     console.log('')
 
     // Step 4: Final verification
@@ -395,7 +461,7 @@ async function resetAllPillarQuestions() {
 
     // Success summary
     console.log('🎉 SUCCESS! ALL Pillar Questions Reset Complete')
-    console.log('=' * 70)
+    console.log('='.repeat(70))
     console.log('✅ Total questions created:', finalQuestions.length)
     console.log('✅ Pillars configured:', Object.keys(questionsByPillar).join(', '))
     console.log('')

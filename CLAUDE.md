@@ -140,6 +140,19 @@ When working with this codebase:
 3. Maintain the pillar-based architecture when adding new features
 4. Keep mock data structure in sync when adding new data types
 
+## Database Migration Scripts
+
+**Migration Scripts:**
+- `clear-and-reset-all-pillar-questions.js` - Resets pillar question configuration
+- `clear-and-migrate-notes-actionitems.js` - Migrates notes and action items
+
+**Troubleshooting Migration Issues:**
+- If deletions fail due to RLS policies, you may need to add `SUPABASE_SERVICE_KEY` to `.env.local`
+- The scripts will provide detailed error messages and recovery suggestions
+- Always backup your data before running migrations
+
+⚠️ **Warning**: Migration scripts perform destructive operations. Always backup your data first.
+
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
 NEVER create files unless they're absolutely necessary for achieving your goal.
