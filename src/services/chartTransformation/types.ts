@@ -53,7 +53,11 @@ export interface ChartTransformationService {
 // Individual pillar transformer interface
 export interface PillarTransformer {
   // Transform collected responses into line chart format
-  transformToLineChart(responses: PillarResponse[], config: ChartTargetConfig): Promise<LineChartData[]>;
+  transformToLineChart(
+    responses: PillarResponse[], 
+    config: ChartTargetConfig,
+    timePeriod?: { days: number; useDailyAggregation: boolean }
+  ): Promise<LineChartData[]>;
   
   // Transform collected responses into pie chart format  
   transformToPieChart(responses: PillarResponse[]): Promise<DonutData[]>;
@@ -68,7 +72,10 @@ export interface PillarTransformer {
 // Aggregation function types for reusable logic
 export interface AggregationFunctions {
   // Aggregate daily responses into monthly averages
-  aggregateToMonthly(responses: PillarResponse[], valueExtractor: (response: PillarResponse) => number): LineChartData[];
+  aggregateToMonthly(responses: PillarResponse[], valueExtractor: (response: PillarResponse) => number, months?: number): LineChartData[];
+  
+  // Aggregate daily responses into daily data points
+  aggregateToDaily(responses: PillarResponse[], valueExtractor: (response: PillarResponse) => number, days: number): LineChartData[];
   
   // Count categorical values and convert to percentages
   aggregateCategorical(responses: PillarResponse[], categoryExtractor: (response: PillarResponse) => string[]): DonutData[];

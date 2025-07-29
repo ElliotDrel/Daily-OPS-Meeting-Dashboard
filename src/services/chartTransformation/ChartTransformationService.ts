@@ -67,7 +67,17 @@ class ChartTransformationService implements IChartTransformationService {
         throw new ChartTransformationError(`No transformer registered for pillar: ${pillar}`, pillar, 'line');
       }
 
-      let chartData = await transformer.transformToLineChart(responses, DEFAULT_TARGETS);
+      // Determine aggregation method based on time period
+      // Use daily aggregation for periods of 30 days or less
+      const totalDays = months * 30;
+      const useDailyAggregation = totalDays <= 30;
+      
+      const timePeriod = {
+        days: totalDays,
+        useDailyAggregation
+      };
+
+      let chartData = await transformer.transformToLineChart(responses, DEFAULT_TARGETS, timePeriod);
       
       // Apply targets to chart data
       chartData = this.applyTargetsToLineChart(chartData, pillar);

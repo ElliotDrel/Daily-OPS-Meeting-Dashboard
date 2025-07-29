@@ -31,11 +31,12 @@ export class SafetyTransformer implements PillarTransformer {
   }
 
   /**
-   * Transform safety responses into line chart format (monthly incident trends)
+   * Transform safety responses into line chart format (daily or monthly incident trends)
    */
   async transformToLineChart(
     responses: PillarResponse[], 
-    config: ChartTargetConfig
+    config: ChartTargetConfig,
+    timePeriod?: { days: number; useDailyAggregation: boolean }
   ): Promise<LineChartData[]> {
     if (!this.canTransform(responses)) {
       return [];
@@ -47,11 +48,20 @@ export class SafetyTransformer implements PillarTransformer {
       return this.convertIncidentCountToNumber(incidentCount);
     };
 
-    // Use aggregation utility to create monthly data
-    const monthlyData = aggregationUtils.aggregateToMonthly(responses, valueExtractor);
+    // Choose aggregation method based on time period
+    let chartData: LineChartData[];
+    
+    if (timePeriod?.useDailyAggregation) {
+      // Use daily aggregation for shorter periods
+      chartData = aggregationUtils.aggregateToDaily(responses, valueExtractor, timePeriod.days);
+    } else {
+      // Use monthly aggregation for longer periods
+      const months = timePeriod ? Math.ceil(timePeriod.days / 30) : 5;
+      chartData = aggregationUtils.aggregateToMonthly(responses, valueExtractor, months);
+    }
 
     // Apply target values (safety target is always 0 incidents)
-    return monthlyData.map(item => ({
+    return chartData.map(item => ({
       ...item,
       target: 0 // Safety target is always zero incidents
     }));

@@ -65,6 +65,7 @@ const groupResponsesByMonth = (responses: PillarResponse[]): Map<string, PillarR
 export const aggregationUtils: AggregationFunctions = {
   /**
    * Aggregate daily responses into monthly averages for line charts
+   * Only includes months that have actual data
    */
   aggregateToMonthly: (
     responses: PillarResponse[], 
@@ -75,33 +76,114 @@ export const aggregationUtils: AggregationFunctions = {
       return [];
     }
 
-    // Get the target months in chronological order
-    const targetMonths = getLastNMonths(months);
     const monthGroups = groupResponsesByMonth(responses);
     
-    return targetMonths.map(month => {
-      const monthResponses = monthGroups.get(month) || [];
-      
-      if (monthResponses.length === 0) {
+    // Only return data points for months that have actual responses
+    // Sort by chronological order
+    const monthEntries = Array.from(monthGroups.entries())
+      .map(([month, monthResponses]) => {
+        // Calculate average value for the month
+        const values = monthResponses.map(valueExtractor).filter(v => !isNaN(v));
+        const average = values.length > 0 
+          ? values.reduce((sum, val) => sum + val, 0) / values.length 
+          : 0;
+        
+        // Get month index for sorting
+        const monthIndex = MONTH_NAMES.indexOf(month);
+        
         return {
           month,
-          value: 0,
-          target: 0
+          monthIndex,
+          data: {
+            month,
+            value: Math.round(average * 100) / 100,
+            target: 0 // Will be set by the service using target configuration
+          }
         };
+      })
+      .sort((a, b) => {
+        // Handle year transition - assume current year data comes after previous year
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        
+        // If both months are before current month, or both after, simple comparison works
+        if ((a.monthIndex <= currentMonth && b.monthIndex <= currentMonth) ||
+            (a.monthIndex > currentMonth && b.monthIndex > currentMonth)) {
+          return a.monthIndex - b.monthIndex;
+        }
+        
+        // Handle year transition: months after current month are from previous year
+        if (a.monthIndex > currentMonth && b.monthIndex <= currentMonth) {
+          return -1; // a (previous year) comes before b (current year)
+        }
+        if (a.monthIndex <= currentMonth && b.monthIndex > currentMonth) {
+          return 1; // b (previous year) comes before a (current year)
+        }
+        
+        return a.monthIndex - b.monthIndex;
+      })
+      .map(entry => entry.data);
+    
+    return monthEntries;
+  },
+
+  /**
+   * Aggregate daily responses into daily data points for line charts
+   * Only includes days that have actual data
+   */
+  aggregateToDaily: (
+    responses: PillarResponse[], 
+    valueExtractor: (response: PillarResponse) => number,
+    days: number = 30
+  ): LineChartData[] => {
+    if (responses.length === 0) {
+      return [];
+    }
+
+    // Group responses by date
+    const dateGroups = new Map<string, PillarResponse[]>();
+    
+    responses.forEach(response => {
+      const date = new Date(response.responseDate);
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const dateKey = `${month}/${day}`;
+      
+      if (!dateGroups.has(dateKey)) {
+        dateGroups.set(dateKey, []);
       }
-      
-      // Calculate average value for the month
-      const values = monthResponses.map(valueExtractor).filter(v => !isNaN(v));
-      const average = values.length > 0 
-        ? values.reduce((sum, val) => sum + val, 0) / values.length 
-        : 0;
-      
-      return {
-        month,
-        value: Math.round(average * 100) / 100, // Round to 2 decimal places
-        target: 0 // Will be set by the service using target configuration
-      };
+      dateGroups.get(dateKey)!.push(response);
     });
+    
+    // Only return data points for dates that have actual responses
+    // Sort by date to maintain chronological order
+    const dateEntries = Array.from(dateGroups.entries())
+      .map(([dateKey, dayResponses]) => {
+        // Calculate average value for the day
+        const values = dayResponses.map(valueExtractor).filter(v => !isNaN(v));
+        const average = values.length > 0 
+          ? values.reduce((sum, val) => sum + val, 0) / values.length 
+          : 0;
+        
+        // Parse date for sorting
+        const [month, day] = dateKey.split('/').map(Number);
+        const currentYear = new Date().getFullYear();
+        const sortDate = new Date(currentYear, month - 1, day);
+        
+        return {
+          dateKey,
+          sortDate,
+          data: {
+            month: dateKey,
+            value: Math.round(average * 100) / 100,
+            target: 0 // Will be set by the service using target configuration
+          }
+        };
+      })
+      .sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime())
+      .map(entry => entry.data);
+    
+    return dateEntries;
   },
 
   /**
