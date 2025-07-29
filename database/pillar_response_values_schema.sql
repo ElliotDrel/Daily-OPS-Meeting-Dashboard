@@ -76,10 +76,20 @@ WHERE value_number IS NOT NULL;
 
 -- Add foreign key constraint to pillar_questions table
 -- This ensures referential integrity and enables query optimization
-ALTER TABLE pillar_response_values 
-ADD CONSTRAINT IF NOT EXISTS fk_response_values_question 
-FOREIGN KEY (question_id) REFERENCES pillar_questions(question_id) 
-ON DELETE CASCADE;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints 
+    WHERE constraint_name = 'fk_response_values_question'
+    AND table_name = 'pillar_response_values'
+  ) THEN
+    ALTER TABLE pillar_response_values 
+    ADD CONSTRAINT fk_response_values_question 
+    FOREIGN KEY (question_id) REFERENCES pillar_questions(question_id) 
+    ON DELETE CASCADE;
+  END IF;
+END
+$$;
 
 -- Create trigger for automatic timestamp updates
 CREATE TRIGGER IF NOT EXISTS update_pillar_response_values_updated_at 
