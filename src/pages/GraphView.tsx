@@ -10,7 +10,7 @@ import { useChartData } from "@/hooks/useChartData";
 import { TimePeriodSelector, getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
 
 export const GraphView = () => {
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("5m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
 
   // Get real chart data for different pillars

@@ -51,7 +51,7 @@ const lowYieldEvents = [
 
 export const Cost = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("5m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
   
   const { 
