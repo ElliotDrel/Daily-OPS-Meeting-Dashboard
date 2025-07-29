@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
+import { TimePeriodSelector } from "@/components/charts/TimePeriodSelector";
 
 interface PillarGraphsPaneProps {
   pillarName: string;
@@ -26,6 +27,8 @@ interface PillarGraphsPaneProps {
   formatValue?: (value: number) => string;
   hasRealData?: boolean;
   isLoading?: boolean;
+  selectedTimePeriod?: string;
+  onTimePeriodChange?: (period: string) => void;
 }
 
 export const PillarGraphsPane = ({
@@ -38,7 +41,9 @@ export const PillarGraphsPane = ({
   pieChartTitle,
   formatValue = (value) => value.toString(),
   hasRealData = false,
-  isLoading = false
+  isLoading = false,
+  selectedTimePeriod = "5m",
+  onTimePeriodChange
 }: PillarGraphsPaneProps) => {
   // Helper function to render chart with no data fallback
   const renderChartContent = (data: any[], component: React.ReactNode, fallbackMessage: string) => {
@@ -66,7 +71,15 @@ export const PillarGraphsPane = ({
       <div className="space-y-4 p-4">
         {/* Line Chart */}
         <Card className="p-4 shadow-lg">
-          <h3 className={`text-base font-semibold text-${pillarColor} mb-3`}>{lineChartTitle}</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className={`text-base font-semibold text-${pillarColor}`}>{lineChartTitle}</h3>
+            {onTimePeriodChange && (
+              <TimePeriodSelector
+                selectedPeriod={selectedTimePeriod}
+                onPeriodChange={onTimePeriodChange}
+              />
+            )}
+          </div>
           <div className="h-48">
             {renderChartContent(
               lineChartData,

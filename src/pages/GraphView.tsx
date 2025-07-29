@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
@@ -5,22 +6,32 @@ import { PieChartComponent } from "@/components/charts/PieChart";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CheckCircle, BarChart3, DollarSign, Activity } from "lucide-react";
 import { useChartData } from "@/hooks/useChartData";
+import { TimePeriodSelector, getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
 
 export const GraphView = () => {
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("5m");
+  const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
+
   // Get real chart data for different pillars
   const {
     lineData: safetyLineData,
     pieData: safetyPieData,
     isLoading: safetyLoading,
     hasRealData: safetyHasData
-  } = useChartData('safety');
+  } = useChartData('safety', { 
+    months: timePeriodConfig.months,
+    days: timePeriodConfig.days 
+  });
 
   const {
     lineData: qualityLineData,
     pieData: qualityPieData,
     isLoading: qualityLoading,
     hasRealData: qualityHasData
-  } = useChartData('quality');
+  } = useChartData('quality', { 
+    months: timePeriodConfig.months,
+    days: timePeriodConfig.days 
+  });
 
   // Helper function to render chart with no data fallback
   const renderChart = (data: any[], hasData: boolean, isLoading: boolean, fallbackMessage: string) => {
@@ -47,8 +58,16 @@ export const GraphView = () => {
     <div className="min-h-screen bg-gradient-main p-6">
       <div className="container mx-auto space-y-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Graph View</h1>
-          <p className="text-muted-foreground">Visual analytics and chart dashboard (Real Data)</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Graph View</h1>
+              <p className="text-muted-foreground">Visual analytics and chart dashboard (Real Data)</p>
+            </div>
+            <TimePeriodSelector
+              selectedPeriod={selectedTimePeriod}
+              onPeriodChange={setSelectedTimePeriod}
+            />
+          </div>
         </div>
 
         {/* Charts Content */}
