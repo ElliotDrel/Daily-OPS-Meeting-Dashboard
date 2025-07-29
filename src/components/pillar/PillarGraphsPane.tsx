@@ -24,6 +24,8 @@ interface PillarGraphsPaneProps {
   lineChartTitle: string;
   pieChartTitle: string;
   formatValue?: (value: number) => string;
+  hasRealData?: boolean;
+  isLoading?: boolean;
 }
 
 export const PillarGraphsPane = ({
@@ -34,8 +36,31 @@ export const PillarGraphsPane = ({
   metrics,
   lineChartTitle,
   pieChartTitle,
-  formatValue = (value) => value.toString()
+  formatValue = (value) => value.toString(),
+  hasRealData = false,
+  isLoading = false
 }: PillarGraphsPaneProps) => {
+  // Helper function to render chart with no data fallback
+  const renderChartContent = (data: any[], component: React.ReactNode, fallbackMessage: string) => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-48">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      );
+    }
+    
+    if (!hasRealData || data.length === 0) {
+      return (
+        <div className="flex justify-center items-center h-48">
+          <p className="text-muted-foreground">{fallbackMessage}</p>
+        </div>
+      );
+    }
+    
+    return component;
+  };
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="space-y-4 p-4">
@@ -43,12 +68,16 @@ export const PillarGraphsPane = ({
         <Card className="p-4 shadow-lg">
           <h3 className={`text-base font-semibold text-${pillarColor} mb-3`}>{lineChartTitle}</h3>
           <div className="h-48">
-            <TrendLineChart 
-              data={lineChartData}
-              title={lineChartTitle}
-              color="hsl(var(--chart-1))"
-              formatValue={formatValue}
-            />
+            {renderChartContent(
+              lineChartData,
+              <TrendLineChart 
+                data={lineChartData}
+                title={lineChartTitle}
+                color="hsl(var(--chart-1))"
+                formatValue={formatValue}
+              />,
+              "No data found to create graph"
+            )}
           </div>
         </Card>
 
@@ -56,12 +85,16 @@ export const PillarGraphsPane = ({
         <Card className="p-4 shadow-lg">
           <h3 className={`text-base font-semibold text-${pillarColor} mb-3`}>{pieChartTitle}</h3>
           <div className="h-48">
-            <PieChartComponent 
-              data={pieChartData}
-              title={pieChartTitle}
-              showLegend={true}
-              height="h-full"
-            />
+            {renderChartContent(
+              pieChartData,
+              <PieChartComponent 
+                data={pieChartData}
+                title={pieChartTitle}
+                showLegend={true}
+                height="h-full"
+              />,
+              "No data found to create graph"
+            )}
           </div>
         </Card>
 

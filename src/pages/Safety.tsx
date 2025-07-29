@@ -133,6 +133,8 @@ export const Safety = () => {
       lineChartTitle={`Safety Incidents - 5 Month Trend ${hasRealData ? '' : '(No Data)'}`}
       pieChartTitle={`Safety Incident Types ${hasRealData ? '' : '(No Data)'}`}
       formatValue={(value) => value.toString()}
+      hasRealData={hasRealData}
+      isLoading={isChartLoading}
     />
   );
 
