@@ -107,22 +107,19 @@ export class SafetyTransformer implements PillarTransformer {
     if (typeof incidentCount === 'string') {
       const cleaned = incidentCount.trim().toLowerCase();
       
-      switch (cleaned) {
-        case '0': {
-          return 0;
-        }
-        case '1': {
-          return 1;
-        }
-        case '2 or more': {
-          return 2; // Use 2 as representative value for "2 or more"
-        }
-        default: {
-          // Try to parse as number if it's a different format
-          const parsed = parseInt(cleaned, 10);
-          return isNaN(parsed) ? 0 : parsed;
-        }
+      // Handle legacy "2 or more" format
+      if (cleaned === '2 or more') {
+        return 2;
       }
+      
+      // Handle "10 or more" format
+      if (cleaned === '10 or more') {
+        return 10;
+      }
+      
+      // Try to parse as regular number (0, 1, 2, 3, etc.)
+      const parsed = parseInt(cleaned, 10);
+      return isNaN(parsed) ? 0 : parsed;
     }
     
     // Default to 0 for any other type
