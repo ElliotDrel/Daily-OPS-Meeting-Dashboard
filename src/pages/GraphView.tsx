@@ -4,122 +4,163 @@ import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CheckCircle, BarChart3, DollarSign, Activity } from "lucide-react";
-
-// Fake data for charts
-const lineChartData = [
-  { month: 'Jan', value: 4200, target: 4000 },
-  { month: 'Feb', value: 3800, target: 4000 },
-  { month: 'Mar', value: 4500, target: 4000 },
-  { month: 'Apr', value: 4800, target: 4000 },
-  { month: 'May', value: 4300, target: 4000 },
-  { month: 'Jun', value: 5100, target: 4000 }
-];
-
-const barChartData = [
-  { day: 'Mon', value: 85, target: 90 },
-  { day: 'Tue', value: 92, target: 90 },
-  { day: 'Wed', value: 78, target: 90 },
-  { day: 'Thu', value: 96, target: 90 },
-  { day: 'Fri', value: 88, target: 90 },
-  { day: 'Sat', value: 94, target: 90 },
-  { day: 'Sun', value: 82, target: 90 }
-];
-
-const pieChartData = [
-  { name: 'Manufacturing', value: 45, color: '#3b82f6' },
-  { name: 'Assembly', value: 25, color: '#10b981' },
-  { name: 'Quality Control', value: 15, color: '#f59e0b' },
-  { name: 'Packaging', value: 10, color: '#ef4444' },
-  { name: 'Shipping', value: 5, color: '#8b5cf6' }
-];
+import { useChartData } from "@/hooks/useChartData";
 
 export const GraphView = () => {
+  // Get real chart data for different pillars
+  const {
+    lineData: safetyLineData,
+    pieData: safetyPieData,
+    isLoading: safetyLoading,
+    hasRealData: safetyHasData
+  } = useChartData('safety');
+
+  const {
+    lineData: qualityLineData,
+    pieData: qualityPieData,
+    isLoading: qualityLoading,
+    hasRealData: qualityHasData
+  } = useChartData('quality');
+
+  // Helper function to render chart with no data fallback
+  const renderChart = (data: any[], hasData: boolean, isLoading: boolean, fallbackMessage: string) => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-48">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      );
+    }
+    
+    if (!hasData || data.length === 0) {
+      return (
+        <div className="flex justify-center items-center h-48">
+          <p className="text-muted-foreground">{fallbackMessage}</p>
+        </div>
+      );
+    }
+    
+    return data;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-main p-6">
       <div className="container mx-auto space-y-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Graph View</h1>
-          <p className="text-muted-foreground">Visual analytics and chart dashboard</p>
+          <p className="text-muted-foreground">Visual analytics and chart dashboard (Real Data)</p>
         </div>
 
         {/* Charts Content */}
         <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              {/* Line Chart */}
+              {/* Safety Line Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Revenue Trend</CardTitle>
-                  <p className="text-sm text-muted-foreground">Monthly revenue vs target (in thousands)</p>
+                  <CardTitle className="text-foreground">Safety Incidents - 5 Month Trend</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {safetyHasData ? 'Real data from safety responses' : 'No data available'}
+                  </p>
                 </CardHeader>
                 <CardContent>
-                  <TrendLineChart
-                    data={lineChartData}
-                    title="Revenue Trend"
-                    color="hsl(var(--primary))"
-                    formatValue={(value) => `$${value}k`}
-                  />
+                  {renderChart(safetyLineData, safetyHasData, safetyLoading, "No safety data found to create graph") === safetyLineData ? (
+                    <TrendLineChart
+                      data={safetyLineData}
+                      title="Safety Incidents"
+                      color="hsl(var(--chart-1))"
+                      formatValue={(value) => value.toString()}
+                    />
+                  ) : renderChart(safetyLineData, safetyHasData, safetyLoading, "No safety data found to create graph")}
                 </CardContent>
               </Card>
 
-              {/* Bar Chart */}
+              {/* Quality Line Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Weekly Performance</CardTitle>
-                  <p className="text-sm text-muted-foreground">Daily efficiency percentage</p>
+                  <CardTitle className="text-foreground">Quality Performance - 5 Month Trend</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {qualityHasData ? 'Real data from quality responses' : 'No data available'}
+                  </p>
                 </CardHeader>
                 <CardContent>
-                  <SimpleBarChart
-                    data={barChartData}
-                    title="Weekly Performance"
-                    
-                  />
+                  {renderChart(qualityLineData, qualityHasData, qualityLoading, "No quality data found to create graph") === qualityLineData ? (
+                    <TrendLineChart
+                      data={qualityLineData}
+                      title="Quality Performance"
+                      color="hsl(var(--chart-2))"
+                      formatValue={(value) => `${value}%`}
+                    />
+                  ) : renderChart(qualityLineData, qualityHasData, qualityLoading, "No quality data found to create graph")}
                 </CardContent>
               </Card>
             </div>
 
-            {/* Chart Comparison Row */}
+            {/* Pie Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              {/* Pie Chart */}
+              {/* Safety Pie Chart */}
               <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Department Workload (Pie)</CardTitle>
-                  <p className="text-sm text-muted-foreground">Production capacity by department</p>
+                  <CardTitle className="text-foreground">Safety Incident Types</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {safetyHasData ? 'Distribution from real data' : 'No data available'}
+                  </p>
                 </CardHeader>
                 <CardContent>
-                  <PieChartComponent
-                    data={pieChartData}
-                    title="Department Distribution"
-                    showLegend={true}
-                  />
+                  {renderChart(safetyPieData, safetyHasData, safetyLoading, "No safety data found to create graph") === safetyPieData ? (
+                    <PieChartComponent
+                      data={safetyPieData}
+                      title="Safety Incident Types"
+                      showLegend={true}
+                    />
+                  ) : renderChart(safetyPieData, safetyHasData, safetyLoading, "No safety data found to create graph")}
+                </CardContent>
+              </Card>
+
+              {/* Quality Pie Chart */}
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-foreground">Quality Issue Types</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {qualityHasData ? 'Distribution from real data' : 'No data available'}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  {renderChart(qualityPieData, qualityHasData, qualityLoading, "No quality data found to create graph") === qualityPieData ? (
+                    <PieChartComponent
+                      data={qualityPieData}
+                      title="Quality Issue Types"
+                      showLegend={true}
+                    />
+                  ) : renderChart(qualityPieData, qualityHasData, qualityLoading, "No quality data found to create graph")}
                 </CardContent>
               </Card>
             </div>
 
-            {/* Stats Cards */}
+            {/* Data Status Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatCard
-                value="92.4%"
-                label="Overall Efficiency"
+                value={safetyHasData ? "Active" : "No Data"}
+                label="Safety Data Status"
                 icon={<Activity className="w-5 h-5 text-white" />}
-                iconBg="bg-primary"
+                iconBg={safetyHasData ? "bg-status-good" : "bg-status-issue"}
               />
               <StatCard
-                value="$4.7M"
-                label="Monthly Revenue"
-                icon={<DollarSign className="w-5 h-5 text-white" />}
-                iconBg="bg-chart-orange"
-              />
-              <StatCard
-                value="1,247"
-                label="Units Produced"
-                icon={<BarChart3 className="w-5 h-5 text-white" />}
-                iconBg="bg-chart-green"
-              />
-              <StatCard
-                value="98.2%"
-                label="Quality Score"
+                value={qualityHasData ? "Active" : "No Data"}
+                label="Quality Data Status"
                 icon={<CheckCircle className="w-5 h-5 text-white" />}
-                iconBg="bg-chart-blue"
+                iconBg={qualityHasData ? "bg-status-good" : "bg-status-issue"}
+              />
+              <StatCard
+                value="0"
+                label="Cost Data Points"
+                icon={<DollarSign className="w-5 h-5 text-white" />}
+                iconBg="bg-status-issue"
+              />
+              <StatCard
+                value="0"
+                label="Production Data Points"
+                icon={<BarChart3 className="w-5 h-5 text-white" />}
+                iconBg="bg-status-issue"
               />
             </div>
         </div>
