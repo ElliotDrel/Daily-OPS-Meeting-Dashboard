@@ -24,7 +24,7 @@ export const Header = () => {
 
   const moreViewsItems = [
     { value: "/cost", label: "Cost" },
-    { value: "/graph-view", label: "Graph View" }
+    { value: "/graph-view", label: "Admin Graph View" }
   ];
 
   const isMoreViewsActive = moreViewsItems.some(item => item.value === currentPath);
@@ -81,7 +81,7 @@ export const Header = () => {
                       : 'text-muted-foreground hover:text-navy-foreground'
                   }`}
                 >
-                  More Views
+                  More Pages
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
               </DropdownMenuTrigger>
