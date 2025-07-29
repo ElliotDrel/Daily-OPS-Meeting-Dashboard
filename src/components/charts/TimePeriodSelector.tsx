@@ -10,28 +10,28 @@ export interface TimePeriodOption {
 export const TIME_PERIOD_OPTIONS: TimePeriodOption[] = [
   { label: "1 Week", value: "1w", days: 7, months: 0.25 },
   { label: "1 Month", value: "1m", days: 30, months: 1 },
-  { label: "2 Months", value: "2m", days: 60, months: 2 },
   { label: "3 Months", value: "3m", days: 90, months: 3 },
-  { label: "4 Months", value: "4m", days: 120, months: 4 },
-  { label: "5 Months", value: "5m", days: 150, months: 5 },
   { label: "6 Months", value: "6m", days: 180, months: 6 },
-  { label: "1 Year", value: "1y", days: 365, months: 12 },
 ];
 
 interface TimePeriodSelectorProps {
   selectedPeriod: string;
   onPeriodChange: (period: string) => void;
   className?: string;
+  showLabel?: boolean;
 }
 
 export const TimePeriodSelector = ({ 
   selectedPeriod, 
   onPeriodChange, 
-  className = "" 
+  className = "",
+  showLabel = true
 }: TimePeriodSelectorProps) => {
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <span className="text-sm font-medium text-muted-foreground">Time Period:</span>
+      {showLabel && (
+        <span className="text-sm font-medium text-muted-foreground">Time Period:</span>
+      )}
       <Select value={selectedPeriod} onValueChange={onPeriodChange}>
         <SelectTrigger className="w-32">
           <SelectValue placeholder="Select period" />
@@ -50,5 +50,5 @@ export const TimePeriodSelector = ({
 
 export const getTimePeriodConfig = (periodValue: string): TimePeriodOption => {
   const option = TIME_PERIOD_OPTIONS.find(opt => opt.value === periodValue);
-  return option || TIME_PERIOD_OPTIONS[4]; // Default to 5 months
+  return option || TIME_PERIOD_OPTIONS[1]; // Default to 1 month
 };
