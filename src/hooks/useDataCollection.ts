@@ -32,10 +32,15 @@ export const useDataCollection = (
   const [submissionState, setSubmissionState] = useState<FormSubmissionState>('idle');
 
   // Load questions for this pillar
-  const { data: questions = [], isLoading: questionsLoading } = useQuery({
+  const { 
+    data: questions = [], 
+    isLoading: questionsLoading,
+    error: questionsError 
+  } = useQuery({
     queryKey: ['pillar-questions', pillar],
     queryFn: () => getQuestionsForPillar(pillar),
     staleTime: 5 * 60 * 1000, // Cache questions for 5 minutes
+    retry: 2, // Retry failed requests twice
   });
 
   // Load existing response
@@ -62,6 +67,16 @@ export const useDataCollection = (
     return 'collect';
   }, [isLoading, questions.length, hasExistingData]);
 
+  // Handle questions loading error
+  useEffect(() => {
+    if (questionsError) {
+      setErrors([{
+        field: 'general',
+        message: `Failed to load questions: ${questionsError.message}`
+      }]);
+    }
+  }, [questionsError]);
+
   // Initialize form data when existing response loads
   useEffect(() => {
     if (existingResponse) {
@@ -69,7 +84,7 @@ export const useDataCollection = (
       setErrors([]);
     } else {
       setFormData({});
-      setErrors([]);
+      // Don't clear errors here - keep question loading errors visible
     }
   }, [existingResponse]);
 

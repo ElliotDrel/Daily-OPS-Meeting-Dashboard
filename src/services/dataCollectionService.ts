@@ -70,14 +70,15 @@ export const getQuestionsForPillar = async (pillar: string): Promise<PillarQuest
       .order('order_index', { ascending: true });
 
     if (error) {
-      console.error('Error fetching questions:', error);
-      throw error;
+      console.error('Error fetching questions from database:', error);
+      throw new Error(`Failed to load questions for ${pillar}: ${error.message}`);
     }
 
+    // Return empty array if no questions found (this is valid - some pillars may not have questions configured yet)
     return (data || []).map(transformQuestion);
   } catch (error) {
     console.error('Error in getQuestionsForPillar:', error);
-    throw new Error('Failed to load questions');
+    throw error; // Re-throw to let the UI handle the error state
   }
 };
 
@@ -95,12 +96,23 @@ export const getVisibleQuestions = (
     const { dependsOn, showWhen } = question.conditional;
     const dependentValue = formData[dependsOn];
 
-    // For multiselect dependencies, check if the value is in the array
+    // For multiselect dependencies (user selected multiple values)
     if (Array.isArray(dependentValue)) {
+      // If showWhen is an array, check if any selected value matches any trigger value
+      if (Array.isArray(showWhen)) {
+        return dependentValue.some(val => showWhen.includes(val));
+      }
+      // If showWhen is a single value, check if it's in the selected values
       return dependentValue.includes(showWhen as string);
     }
 
-    // For single value dependencies, check direct match
+    // For single value dependencies (user selected one value)
+    // If showWhen is an array (multiple trigger values), check if user's value is in it
+    if (Array.isArray(showWhen)) {
+      return showWhen.includes(dependentValue);
+    }
+
+    // For single value to single value match
     return dependentValue === showWhen;
   });
 };

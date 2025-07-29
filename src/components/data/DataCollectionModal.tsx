@@ -106,11 +106,25 @@ export const DataCollectionModal = ({
         )}
 
         {/* No Questions State */}
-        {!isLoading && visibleQuestions.length === 0 && (
+        {!isLoading && visibleQuestions.length === 0 && generalErrors.length === 0 && (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               No questions are configured for the {pillar} pillar.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Database Connection Error State */}
+        {!isLoading && generalErrors.length > 0 && visibleQuestions.length === 0 && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {generalErrors[0].message}
+              <br />
+              <span className="text-sm mt-2 block">
+                Please check your database connection or contact support.
+              </span>
             </AlertDescription>
           </Alert>
         )}

@@ -292,6 +292,18 @@ export const PILLAR_QUESTIONS: Record<string, PillarQuestion[]> = {
       required: true,
       options: ['0', '1', '2 or more'],
       order: 1
+    },
+    {
+      id: 'safety-incident-description',
+      pillar: 'safety',
+      text: 'Please describe the safety incident(s):',
+      type: 'textarea',
+      required: true,
+      order: 2,
+      conditional: {
+        dependsOn: 'safety-incidents-count',
+        showWhen: ['1', '2 or more']
+      }
     }
   ],
 
@@ -327,12 +339,23 @@ export const getVisibleQuestions = (pillar: string, formData: Record<string, str
     const { dependsOn, showWhen } = question.conditional;
     const dependentValue = formData[dependsOn];
     
-    // For multiselect dependencies, check if the value is in the array
+    // For multiselect dependencies (user selected multiple values)
     if (Array.isArray(dependentValue)) {
+      // If showWhen is an array, check if any selected value matches any trigger value
+      if (Array.isArray(showWhen)) {
+        return dependentValue.some(val => showWhen.includes(val));
+      }
+      // If showWhen is a single value, check if it's in the selected values
       return dependentValue.includes(showWhen);
     }
     
-    // For single value dependencies, check direct match
+    // For single value dependencies (user selected one value)
+    // If showWhen is an array (multiple trigger values), check if user's value is in it
+    if (Array.isArray(showWhen)) {
+      return showWhen.includes(dependentValue);
+    }
+    
+    // For single value to single value match
     return dependentValue === showWhen;
   });
 };
