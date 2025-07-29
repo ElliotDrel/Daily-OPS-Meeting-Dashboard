@@ -1,14 +1,18 @@
+import { useState, useEffect } from "react";
 import { PillarLayout } from "@/components/pillar/PillarLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingDown, Package, Clock } from "lucide-react";
-import { dashboardData, costData } from "@/data/mockData";
+import { dashboardData, MeetingNote } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
+import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
 
 
 const costMetrics = [
@@ -47,6 +51,9 @@ const lowYieldEvents = [
 
 export const Cost = () => {
   const { selectedDate } = useDate();
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("5m");
+  const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
+  
   const { 
     meetingNote, 
     actionItems, 
@@ -63,6 +70,19 @@ export const Cost = () => {
     isLastRecordedLoading,
     isLastRecordedActionItemsLoading
   } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
+
+  const {
+    lineData,
+    pieData,
+    isLoading: isChartLoading,
+    isError: isChartError,
+    hasRealData,
+    dataStatus,
+    refetch: refetchChartData
+  } = useChartData('cost', { 
+    months: timePeriodConfig.months,
+    days: timePeriodConfig.days 
+  });
 
   if (isLoading) {
     return (
@@ -85,13 +105,17 @@ export const Cost = () => {
     <PillarGraphsPane
       pillarName="Cost"
       pillarColor="cost"
-      
-      lineChartData={costData.lineChart}
-      pieChartData={costData.donutData}
+      lineChartData={lineData}
+      pieChartData={pieData}
       metrics={costMetrics}
-      lineChartTitle="Cost Variance - 5 Month Trend"
-      pieChartTitle="Cost Analysis Overview"
+      lineChartTitle={`Cost Variance - ${timePeriodConfig.label} Trend ${hasRealData ? '' : '(No Data)'}`}
+      pieChartTitle={`Cost Analysis Overview ${hasRealData ? '' : '(No Data)'}`}
       formatValue={(value) => `$${(value / 1000).toFixed(0)}K`}
+      hasRealData={hasRealData}
+      isLoading={isChartLoading}
+      selectedTimePeriod={selectedTimePeriod}
+      onTimePeriodChange={setSelectedTimePeriod}
+      chartType="line"
     />
   );
 

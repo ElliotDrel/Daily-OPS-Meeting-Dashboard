@@ -35,7 +35,7 @@ export const GraphView = () => {
   });
 
   // Helper function to render chart with no data fallback
-  const renderChart = (data: any[], hasData: boolean, isLoading: boolean, fallbackMessage: string) => {
+  const renderChart = (data: unknown[], hasData: boolean, isLoading: boolean, fallbackMessage: string) => {
     if (isLoading) {
       return (
         <div className="flex justify-center items-center h-48">

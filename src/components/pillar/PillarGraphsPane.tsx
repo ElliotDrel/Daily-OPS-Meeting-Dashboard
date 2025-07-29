@@ -49,7 +49,7 @@ export const PillarGraphsPane = ({
   chartType = 'line'
 }: PillarGraphsPaneProps) => {
   // Helper function to render chart with no data fallback
-  const renderChartContent = (data: any[], component: React.ReactNode, fallbackMessage: string) => {
+  const renderChartContent = (data: unknown[], component: React.ReactNode, fallbackMessage: string) => {
     if (isLoading) {
       return (
         <div className="flex justify-center items-center h-48">

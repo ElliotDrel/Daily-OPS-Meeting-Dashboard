@@ -29,7 +29,7 @@ export const IncidentTable = ({ incidents, pillar, onIncidentClick }: IncidentTa
       <h4 className="text-sm font-medium text-muted-foreground mb-3">Recent Incidents</h4>
       
       <div className="space-y-2">
-        {incidents.slice(0, 5).map((incident) => (
+        {(incidents || []).slice(0, 5).map((incident) => (
           <div
             key={incident.id}
             className="flex items-center space-x-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
@@ -52,7 +52,7 @@ export const IncidentTable = ({ incidents, pillar, onIncidentClick }: IncidentTa
           </div>
         ))}
         
-        {incidents.length === 0 && (
+        {(incidents || []).length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">
             No recent incidents
           </p>

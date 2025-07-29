@@ -1,14 +1,18 @@
+import { useState, useEffect } from "react";
 import { PillarLayout } from "@/components/pillar/PillarLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mail, X, Wrench, AlertCircle, CheckCircle } from "lucide-react";
-import { dashboardData, qualityData } from "@/data/mockData";
+import { dashboardData, MeetingNote } from "@/data/mockData";
 import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { ActionItemsAndNotesSection } from "@/components/dashboard/ActionItemsAndNotesSection";
+import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUtils";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 import { usePillarData } from "@/hooks/usePillarData";
+import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
 
 
 const qualityMetrics = [
@@ -62,6 +66,9 @@ const correctiveActions = [
 
 export const Quality = () => {
   const { selectedDate } = useDate();
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("5m");
+  const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
+  
   const { 
     meetingNote, 
     actionItems, 
@@ -78,6 +85,19 @@ export const Quality = () => {
     isLastRecordedLoading,
     isLastRecordedActionItemsLoading
   } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
+
+  const {
+    lineData,
+    pieData,
+    isLoading: isChartLoading,
+    isError: isChartError,
+    hasRealData,
+    dataStatus,
+    refetch: refetchChartData
+  } = useChartData('quality', { 
+    months: timePeriodConfig.months,
+    days: timePeriodConfig.days 
+  });
   if (isLoading) {
     return (
       <PillarLayout
@@ -97,12 +117,17 @@ export const Quality = () => {
     <PillarGraphsPane
       pillarName="Quality"
       pillarColor="quality"
-      lineChartData={qualityData.lineChart}
-      pieChartData={qualityData.donutData}
+      lineChartData={lineData}
+      pieChartData={pieData}
       metrics={qualityMetrics}
-      lineChartTitle="Quality Performance - 5 Month Trend"
-      pieChartTitle="Quality Metrics Distribution"
+      lineChartTitle={`Quality Performance - ${timePeriodConfig.label} Trend ${hasRealData ? '' : '(No Data)'}`}
+      pieChartTitle={`Quality Metrics Distribution ${hasRealData ? '' : '(No Data)'}`}
       formatValue={(value) => `${value}%`}
+      hasRealData={hasRealData}
+      isLoading={isChartLoading}
+      selectedTimePeriod={selectedTimePeriod}
+      onTimePeriodChange={setSelectedTimePeriod}
+      chartType="line"
     />
   );
 
