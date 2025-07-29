@@ -76,7 +76,7 @@ export const DataCollectionModal = ({
 
   // Handle close with unsaved changes warning
   const handleClose = () => {
-    // TODO: Add unsaved changes warning in future iteration
+    // Future: Could add unsaved changes warning
     onClose();
   };
 
