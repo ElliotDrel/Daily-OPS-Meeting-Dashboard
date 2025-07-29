@@ -54,8 +54,8 @@ export const TrendLineChart = ({ data, title, color, formatValue = (v) => v.toSt
             dataKey="value" 
             stroke={color} 
             strokeWidth={3}
-            dot={{ fill: color, strokeWidth: 2, r: 5 }}
-            activeDot={{ r: 7, fill: color }}
+            dot={{ fill: "black", stroke: "black", strokeWidth: 2, r: 5 }}
+            activeDot={{ r: 7, fill: "black", stroke: "black" }}
             name="value"
           />
         </LineChart>
