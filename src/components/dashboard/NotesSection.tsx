@@ -311,7 +311,7 @@ export const NotesSection = ({
               onSave={handleManualSave}
             />
           ) : (
-            <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm">
+            <div className="flex items-center justify-center py-4 text-muted-foreground text-sm">
               <FileText className="w-24 h-24 mr-4 opacity-50" />
               <p className="max-w-xs">No meeting notes yet. Use the input below to create your first note.</p>
             </div>
