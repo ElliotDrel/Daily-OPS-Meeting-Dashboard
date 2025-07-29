@@ -64,7 +64,7 @@ const groupResponsesByMonth = (responses: PillarResponse[]): Map<string, PillarR
  */
 export const aggregationUtils: AggregationFunctions = {
   /**
-   * Aggregate daily responses into monthly averages for line charts
+   * Aggregate daily responses into monthly totals for line charts
    * Only includes months that have actual data
    */
   aggregateToMonthly: (
@@ -82,10 +82,10 @@ export const aggregationUtils: AggregationFunctions = {
     // Sort by chronological order
     const monthEntries = Array.from(monthGroups.entries())
       .map(([month, monthResponses]) => {
-        // Calculate average value for the month
+        // Calculate total value for the month (sum of all incidents)
         const values = monthResponses.map(valueExtractor).filter(v => !isNaN(v));
-        const average = values.length > 0 
-          ? values.reduce((sum, val) => sum + val, 0) / values.length 
+        const total = values.length > 0 
+          ? values.reduce((sum, val) => sum + val, 0)
           : 0;
         
         // Get month index for sorting
@@ -96,7 +96,7 @@ export const aggregationUtils: AggregationFunctions = {
           monthIndex,
           data: {
             month,
-            value: Math.round(average * 100) / 100,
+            value: total, // Show total incidents, not average
             target: 0 // Will be set by the service using target configuration
           }
         };
@@ -159,10 +159,10 @@ export const aggregationUtils: AggregationFunctions = {
     // Sort by date to maintain chronological order
     const dateEntries = Array.from(dateGroups.entries())
       .map(([dateKey, dayResponses]) => {
-        // Calculate average value for the day
+        // Calculate total value for the day (sum of all incidents)
         const values = dayResponses.map(valueExtractor).filter(v => !isNaN(v));
-        const average = values.length > 0 
-          ? values.reduce((sum, val) => sum + val, 0) / values.length 
+        const total = values.length > 0 
+          ? values.reduce((sum, val) => sum + val, 0)
           : 0;
         
         // Parse date for sorting
@@ -175,7 +175,7 @@ export const aggregationUtils: AggregationFunctions = {
           sortDate,
           data: {
             month: dateKey,
-            value: Math.round(average * 100) / 100,
+            value: total, // Show total incidents, not average
             target: 0 // Will be set by the service using target configuration
           }
         };
