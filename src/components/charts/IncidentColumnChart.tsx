@@ -24,7 +24,7 @@ export const IncidentColumnChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <BarChart 
           data={data} 
-          margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 10, right: 30, left: 10, bottom: 5 }}
           barCategoryGap="20%"
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -41,6 +41,7 @@ export const IncidentColumnChart = ({
             fontSize={12}
             fill="#6b7280"
             tickFormatter={formatValue}
+            width={30}
           />
           <Tooltip 
             contentStyle={{
