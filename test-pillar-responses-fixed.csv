@@ -1,0 +1,71 @@
+id,user_id,pillar,response_date,responses,created_at,updated_at
+550e8400-e29b-41d4-a716-446655440001,default-user,safety,2025-06-25,"{""safety-incidents-count"": ""0""}",2025-06-25 08:00:00+00,2025-06-25 08:00:00+00
+550e8400-e29b-41d4-a716-446655440002,default-user,safety,2025-06-26,"{""safety-incidents-count"": ""0""}",2025-06-26 08:00:00+00,2025-06-26 08:00:00+00
+550e8400-e29b-41d4-a716-446655440003,default-user,safety,2025-06-27,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Minor cut on hand while handling equipment""}",2025-06-27 08:00:00+00,2025-06-27 08:00:00+00
+550e8400-e29b-41d4-a716-446655440004,default-user,safety,2025-06-28,"{""safety-incidents-count"": ""0""}",2025-06-28 08:00:00+00,2025-06-28 08:00:00+00
+550e8400-e29b-41d4-a716-446655440005,default-user,safety,2025-06-29,"{""safety-incidents-count"": ""0""}",2025-06-29 08:00:00+00,2025-06-29 08:00:00+00
+550e8400-e29b-41d4-a716-446655440006,default-user,safety,2025-06-30,"{""safety-incidents-count"": ""0""}",2025-06-30 08:00:00+00,2025-06-30 08:00:00+00
+550e8400-e29b-41d4-a716-446655440007,default-user,safety,2025-07-01,"{""safety-incidents-count"": ""0""}",2025-07-01 08:00:00+00,2025-07-01 08:00:00+00
+550e8400-e29b-41d4-a716-446655440008,default-user,safety,2025-07-02,"{""safety-incidents-count"": ""2"", ""safety-incident-1-description"": ""Employee slipped on wet floor"", ""safety-incident-2-description"": ""Equipment malfunction caused minor injury""}",2025-07-02 08:00:00+00,2025-07-02 08:00:00+00
+550e8400-e29b-41d4-a716-446655440009,default-user,safety,2025-07-03,"{""safety-incidents-count"": ""0""}",2025-07-03 08:00:00+00,2025-07-03 08:00:00+00
+550e8400-e29b-41d4-a716-446655440010,default-user,safety,2025-07-04,"{""safety-incidents-count"": ""0""}",2025-07-04 08:00:00+00,2025-07-04 08:00:00+00
+550e8400-e29b-41d4-a716-446655440011,default-user,safety,2025-07-05,"{""safety-incidents-count"": ""0""}",2025-07-05 08:00:00+00,2025-07-05 08:00:00+00
+550e8400-e29b-41d4-a716-446655440012,default-user,safety,2025-07-06,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Near miss with forklift in warehouse""}",2025-07-06 08:00:00+00,2025-07-06 08:00:00+00
+550e8400-e29b-41d4-a716-446655440013,default-user,safety,2025-07-07,"{""safety-incidents-count"": ""0""}",2025-07-07 08:00:00+00,2025-07-07 08:00:00+00
+550e8400-e29b-41d4-a716-446655440014,default-user,safety,2025-07-08,"{""safety-incidents-count"": ""0""}",2025-07-08 08:00:00+00,2025-07-08 08:00:00+00
+550e8400-e29b-41d4-a716-446655440015,default-user,safety,2025-07-09,"{""safety-incidents-count"": ""0""}",2025-07-09 08:00:00+00,2025-07-09 08:00:00+00
+550e8400-e29b-41d4-a716-446655440016,default-user,safety,2025-07-10,"{""safety-incidents-count"": ""0""}",2025-07-10 08:00:00+00,2025-07-10 08:00:00+00
+550e8400-e29b-41d4-a716-446655440017,default-user,safety,2025-07-11,"{""safety-incidents-count"": ""0""}",2025-07-11 08:00:00+00,2025-07-11 08:00:00+00
+550e8400-e29b-41d4-a716-446655440018,default-user,safety,2025-07-12,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Employee hit head on low beam""}",2025-07-12 08:00:00+00,2025-07-12 08:00:00+00
+550e8400-e29b-41d4-a716-446655440019,default-user,safety,2025-07-13,"{""safety-incidents-count"": ""0""}",2025-07-13 08:00:00+00,2025-07-13 08:00:00+00
+550e8400-e29b-41d4-a716-446655440020,default-user,safety,2025-07-14,"{""safety-incidents-count"": ""0""}",2025-07-14 08:00:00+00,2025-07-14 08:00:00+00
+550e8400-e29b-41d4-a716-446655440021,default-user,safety,2025-07-15,"{""safety-incidents-count"": ""0""}",2025-07-15 08:00:00+00,2025-07-15 08:00:00+00
+550e8400-e29b-41d4-a716-446655440022,default-user,safety,2025-07-16,"{""safety-incidents-count"": ""0""}",2025-07-16 08:00:00+00,2025-07-16 08:00:00+00
+550e8400-e29b-41d4-a716-446655440023,default-user,safety,2025-07-17,"{""safety-incidents-count"": ""0""}",2025-07-17 08:00:00+00,2025-07-17 08:00:00+00
+550e8400-e29b-41d4-a716-446655440024,default-user,safety,2025-07-18,"{""safety-incidents-count"": ""0""}",2025-07-18 08:00:00+00,2025-07-18 08:00:00+00
+550e8400-e29b-41d4-a716-446655440025,default-user,safety,2025-07-19,"{""safety-incidents-count"": ""3"", ""safety-incident-1-description"": ""Chemical spill in lab area"", ""safety-incident-2-description"": ""Worker strained back lifting heavy box"", ""safety-incident-3-description"": ""Electrical short circuit in Panel B""}",2025-07-19 08:00:00+00,2025-07-19 08:00:00+00
+550e8400-e29b-41d4-a716-446655440026,default-user,safety,2025-07-20,"{""safety-incidents-count"": ""0""}",2025-07-20 08:00:00+00,2025-07-20 08:00:00+00
+550e8400-e29b-41d4-a716-446655440027,default-user,safety,2025-07-21,"{""safety-incidents-count"": ""0""}",2025-07-21 08:00:00+00,2025-07-21 08:00:00+00
+550e8400-e29b-41d4-a716-446655440028,default-user,safety,2025-07-22,"{""safety-incidents-count"": ""0""}",2025-07-22 08:00:00+00,2025-07-22 08:00:00+00
+550e8400-e29b-41d4-a716-446655440029,default-user,safety,2025-07-23,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Worker got oil on hands, no injury""}",2025-07-23 08:00:00+00,2025-07-23 08:00:00+00
+550e8400-e29b-41d4-a716-446655440030,default-user,safety,2025-07-24,"{""safety-incidents-count"": ""0""}",2025-07-24 08:00:00+00,2025-07-24 08:00:00+00
+550e8400-e29b-41d4-a716-446655440031,default-user,safety,2025-05-01,"{""safety-incidents-count"": ""0""}",2025-05-01 08:00:00+00,2025-05-01 08:00:00+00
+550e8400-e29b-41d4-a716-446655440032,default-user,safety,2025-05-02,"{""safety-incidents-count"": ""0""}",2025-05-02 08:00:00+00,2025-05-02 08:00:00+00
+550e8400-e29b-41d4-a716-446655440033,default-user,safety,2025-05-03,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Employee tripped over cable""}",2025-05-03 08:00:00+00,2025-05-03 08:00:00+00
+550e8400-e29b-41d4-a716-446655440034,default-user,safety,2025-05-04,"{""safety-incidents-count"": ""0""}",2025-05-04 08:00:00+00,2025-05-04 08:00:00+00
+550e8400-e29b-41d4-a716-446655440035,default-user,safety,2025-05-05,"{""safety-incidents-count"": ""0""}",2025-05-05 08:00:00+00,2025-05-05 08:00:00+00
+550e8400-e29b-41d4-a716-446655440036,default-user,safety,2025-05-06,"{""safety-incidents-count"": ""0""}",2025-05-06 08:00:00+00,2025-05-06 08:00:00+00
+550e8400-e29b-41d4-a716-446655440037,default-user,safety,2025-05-07,"{""safety-incidents-count"": ""0""}",2025-05-07 08:00:00+00,2025-05-07 08:00:00+00
+550e8400-e29b-41d4-a716-446655440038,default-user,safety,2025-05-08,"{""safety-incidents-count"": ""2"", ""safety-incident-1-description"": ""Fire drill evacuation issue"", ""safety-incident-2-description"": ""Ladder fell in storage room""}",2025-05-08 08:00:00+00,2025-05-08 08:00:00+00
+550e8400-e29b-41d4-a716-446655440039,default-user,safety,2025-05-09,"{""safety-incidents-count"": ""0""}",2025-05-09 08:00:00+00,2025-05-09 08:00:00+00
+550e8400-e29b-41d4-a716-446655440040,default-user,safety,2025-05-10,"{""safety-incidents-count"": ""0""}",2025-05-05 08:00:00+00,2025-05-10 08:00:00+00
+550e8400-e29b-41d4-a716-446655440041,default-user,safety,2025-05-11,"{""safety-incidents-count"": ""0""}",2025-05-11 08:00:00+00,2025-05-11 08:00:00+00
+550e8400-e29b-41d4-a716-446655440042,default-user,safety,2025-05-12,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Glass broke in break room""}",2025-05-12 08:00:00+00,2025-05-12 08:00:00+00
+550e8400-e29b-41d4-a716-446655440043,default-user,safety,2025-05-13,"{""safety-incidents-count"": ""0""}",2025-05-13 08:00:00+00,2025-05-13 08:00:00+00
+550e8400-e29b-41d4-a716-446655440044,default-user,safety,2025-05-14,"{""safety-incidents-count"": ""0""}",2025-05-14 08:00:00+00,2025-05-14 08:00:00+00
+550e8400-e29b-41d4-a716-446655440045,default-user,safety,2025-05-15,"{""safety-incidents-count"": ""0""}",2025-05-15 08:00:00+00,2025-05-15 08:00:00+00
+550e8400-e29b-41d4-a716-446655440046,default-user,safety,2025-05-16,"{""safety-incidents-count"": ""0""}",2025-05-16 08:00:00+00,2025-05-16 08:00:00+00
+550e8400-e29b-41d4-a716-446655440047,default-user,safety,2025-05-17,"{""safety-incidents-count"": ""0""}",2025-05-17 08:00:00+00,2025-05-17 08:00:00+00
+550e8400-e29b-41d4-a716-446655440048,default-user,safety,2025-05-18,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Door slammed on employee finger""}",2025-05-18 08:00:00+00,2025-05-18 08:00:00+00
+550e8400-e29b-41d4-a716-446655440049,default-user,safety,2025-05-19,"{""safety-incidents-count"": ""0""}",2025-05-19 08:00:00+00,2025-05-19 08:00:00+00
+550e8400-e29b-41d4-a716-446655440050,default-user,safety,2025-05-20,"{""safety-incidents-count"": ""0""}",2025-05-20 08:00:00+00,2025-05-20 08:00:00+00
+550e8400-e29b-41d4-a716-446655440051,default-user,safety,2025-04-21,"{""safety-incidents-count"": ""0""}",2025-04-21 08:00:00+00,2025-04-21 08:00:00+00
+550e8400-e29b-41d4-a716-446655440052,default-user,safety,2025-04-22,"{""safety-incidents-count"": ""0""}",2025-04-22 08:00:00+00,2025-04-22 08:00:00+00
+550e8400-e29b-41d4-a716-446655440053,default-user,safety,2025-04-23,"{""safety-incidents-count"": ""0""}",2025-04-23 08:00:00+00,2025-04-23 08:00:00+00
+550e8400-e29b-41d4-a716-446655440054,default-user,safety,2025-04-24,"{""safety-incidents-count"": ""0""}",2025-04-24 08:00:00+00,2025-04-24 08:00:00+00
+550e8400-e29b-41d4-a716-446655440055,default-user,safety,2025-04-25,"{""safety-incidents-count"": ""4"", ""safety-incident-1-description"": ""Multiple safety violations found during audit"", ""safety-incident-2-description"": ""Chemical exposure in lab"", ""safety-incident-3-description"": ""Worker fell from height"", ""safety-incident-4-description"": ""Equipment failure caused injury""}",2025-04-25 08:00:00+00,2025-04-25 08:00:00+00
+550e8400-e29b-41d4-a716-446655440056,default-user,safety,2025-04-26,"{""safety-incidents-count"": ""0""}",2025-04-26 08:00:00+00,2025-04-26 08:00:00+00
+550e8400-e29b-41d4-a716-446655440057,default-user,safety,2025-04-27,"{""safety-incidents-count"": ""0""}",2025-04-27 08:00:00+00,2025-04-27 08:00:00+00
+550e8400-e29b-41d4-a716-446655440058,default-user,safety,2025-04-28,"{""safety-incidents-count"": ""0""}",2025-04-28 08:00:00+00,2025-04-28 08:00:00+00
+550e8400-e29b-41d4-a716-446655440059,default-user,safety,2025-04-29,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Smoke detected in electrical room""}",2025-04-29 08:00:00+00,2025-04-29 08:00:00+00
+550e8400-e29b-41d4-a716-446655440060,default-user,safety,2025-04-30,"{""safety-incidents-count"": ""0""}",2025-04-30 08:00:00+00,2025-04-30 08:00:00+00
+550e8400-e29b-41d4-a716-446655440061,default-user,safety,2025-03-01,"{""safety-incidents-count"": ""0""}",2025-03-01 08:00:00+00,2025-03-01 08:00:00+00
+550e8400-e29b-41d4-a716-446655440062,default-user,safety,2025-03-02,"{""safety-incidents-count"": ""0""}",2025-03-02 08:00:00+00,2025-03-02 08:00:00+00
+550e8400-e29b-41d4-a716-446655440063,default-user,safety,2025-03-03,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""Water leak created slip hazard""}",2025-03-03 08:00:00+00,2025-03-03 08:00:00+00
+550e8400-e29b-41d4-a716-446655440064,default-user,safety,2025-03-04,"{""safety-incidents-count"": ""0""}",2025-03-04 08:00:00+00,2025-03-04 08:00:00+00
+550e8400-e29b-41d4-a716-446655440065,default-user,safety,2025-03-05,"{""safety-incidents-count"": ""0""}",2025-03-05 08:00:00+00,2025-03-05 08:00:00+00
+550e8400-e29b-41d4-a716-446655440066,default-user,safety,2025-03-06,"{""safety-incidents-count"": ""0""}",2025-03-06 08:00:00+00,2025-03-06 08:00:00+00
+550e8400-e29b-41d4-a716-446655440067,default-user,safety,2025-03-07,"{""safety-incidents-count"": ""0""}",2025-03-07 08:00:00+00,2025-03-07 08:00:00+00
+550e8400-e29b-41d4-a716-446655440068,default-user,safety,2025-03-08,"{""safety-incidents-count"": ""2"", ""safety-incident-1-description"": ""Tool fell from work bench"", ""safety-incident-2-description"": ""Worker got minor burn from hot surface""}",2025-03-08 08:00:00+00,2025-03-08 08:00:00+00
+550e8400-e29b-41d4-a716-446655440069,default-user,safety,2025-03-09,"{""safety-incidents-count"": ""0""}",2025-03-09 08:00:00+00,2025-03-09 08:00:00+00
+550e8400-e29b-41d4-a716-446655440070,default-user,safety,2025-03-10,"{""safety-incidents-count"": ""0""}",2025-03-10 08:00:00+00,2025-03-10 08:00:00+00
