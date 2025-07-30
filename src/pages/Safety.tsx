@@ -73,7 +73,7 @@ const safetyActions = [
 
 export const Safety = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("week");
   const { 
     meetingNote, 
     actionItems, 
@@ -104,7 +104,8 @@ export const Safety = () => {
     dataStatus,
     refetch: refetchChartData
   } = useChartDataWithStrategy('safety', { 
-    strategyName: selectedTimePeriod
+    strategyName: selectedTimePeriod,
+    selectedDate: selectedDate
   });
 
   const invalidateChartData = useInvalidateChartData();

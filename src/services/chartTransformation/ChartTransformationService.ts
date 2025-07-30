@@ -111,8 +111,8 @@ class ChartTransformationService implements IChartTransformationService {
   /**
    * Get line chart data for a pillar using time period strategies
    */
-  async getLineChartDataWithStrategy(pillar: PillarName, strategyName: string = 'month'): Promise<LineChartData[]> {
-    const cacheKey = `${pillar}-strategy-${strategyName}`;
+  async getLineChartDataWithStrategy(pillar: PillarName, strategyName: string = 'month', selectedDate?: string): Promise<LineChartData[]> {
+    const cacheKey = `${pillar}-strategy-${strategyName}-${selectedDate || 'today'}`;
     
     // Check cache first
     const cached = this.lineChartCache.get(cacheKey);
@@ -133,26 +133,33 @@ class ChartTransformationService implements IChartTransformationService {
         throw new ChartTransformationError(`No transformer registered for pillar: ${pillar}`, pillar, 'line');
       }
 
-      // Calculate date range for data fetching
-      const dateRange = strategy.calculateDateRange();
-      const daysDiff = Math.ceil((dateRange.endDate.getTime() - dateRange.startDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      // Get responses from database
-      const responses = await this.getResponsesForPillar(pillar, daysDiff + 5); // Add buffer for timezone/edge cases
+      // Parse selected date or use today
+      const referenceDate = selectedDate ? new Date(selectedDate) : undefined;
+      console.log(`[ChartTransformationService] Using reference date: ${referenceDate ? referenceDate.toISOString().split('T')[0] : 'today'}`);
 
-      // Check if we have sufficient data
-      if (responses.length < DEFAULT_CONFIG.minDataPointsForLine) {
+      // Calculate date range for data fetching
+      const dateRange = strategy.calculateDateRange(referenceDate);
+      
+      // Get responses from database using actual date range (not just "last N days")
+      const responses = await this.getResponsesForDateRange(pillar, dateRange.startDate, dateRange.endDate);
+
+      // Check if we have sufficient data (strategy-specific requirements)
+      const minRequired = this.getMinDataPointsForStrategy(strategyName);
+      if (responses.length < minRequired) {
         throw new InsufficientDataError(
           pillar, 
           'line', 
           responses.length, 
-          DEFAULT_CONFIG.minDataPointsForLine
+          minRequired
         );
       }
 
       // Use strategy to aggregate data
       const valueExtractor = transformer.getValueExtractor();
-      let chartData = strategy.aggregateToChartData(responses, valueExtractor);
+      console.log(`[ChartTransformationService] Using strategy ${strategyName} with ${responses.length} responses`);
+      console.log(`[ChartTransformationService] Date range: ${dateRange.startDate.toISOString().split('T')[0]} to ${dateRange.endDate.toISOString().split('T')[0]}`);
+      let chartData = strategy.aggregateToChartData(responses, valueExtractor, referenceDate);
+      console.log(`[ChartTransformationService] Strategy generated ${chartData.length} chart points:`, chartData);
 
       // Apply targets to chart data using pillar-specific configuration
       chartData = this.applyTargetsToLineChart(chartData, pillar);
@@ -347,6 +354,65 @@ class ChartTransformationService implements IChartTransformationService {
       createdAt: dbResponse.created_at,
       updatedAt: dbResponse.updated_at
     }));
+  }
+
+  /**
+   * Get responses for a pillar within a specific date range
+   */
+  private async getResponsesForDateRange(
+    pillar: PillarName, 
+    startDate: Date, 
+    endDate: Date
+  ): Promise<PillarResponse[]> {
+    const startDateStr = startDate.toISOString().split('T')[0];
+    const endDateStr = endDate.toISOString().split('T')[0];
+    
+    console.log(`[ChartTransformationService] Fetching ${pillar} responses from ${startDateStr} to ${endDateStr}`);
+    
+    const { data, error } = await supabase
+      .from('pillar_responses')
+      .select('*')
+      .eq('pillar', pillar)
+      .gte('response_date', startDateStr)
+      .lte('response_date', endDateStr)
+      .order('response_date', { ascending: true });
+
+    if (error) {
+      throw new Error(`Database error fetching ${pillar} responses: ${error.message}`);
+    }
+
+    console.log(`[ChartTransformationService] Found ${(data || []).length} responses from database`);
+    if (data && data.length > 0) {
+      console.log(`[ChartTransformationService] Sample response:`, data[0]);
+    }
+
+    // Transform database format to app format
+    return (data || []).map(dbResponse => ({
+      id: dbResponse.id,
+      userId: dbResponse.user_id,
+      pillar: dbResponse.pillar,
+      responseDate: dbResponse.response_date,
+      responses: dbResponse.responses,
+      createdAt: dbResponse.created_at,
+      updatedAt: dbResponse.updated_at
+    }));
+  }
+
+  /**
+   * Get minimum data points required for a specific strategy
+   */
+  private getMinDataPointsForStrategy(strategyName: string): number {
+    switch (strategyName) {
+      case 'week':
+        return 1; // Week view can work with just 1 data point
+      case 'month':
+        return 3; // Month view needs at least a few weeks
+      case '3month':
+      case '6month':
+        return 5; // Multi-month views need more data points
+      default:
+        return DEFAULT_CONFIG.minDataPointsForLine; // Default requirement
+    }
   }
 
   /**

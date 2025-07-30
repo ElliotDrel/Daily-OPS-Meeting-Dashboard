@@ -21,6 +21,7 @@ interface UseChartDataWithStrategyOptions {
   enabled?: boolean;           // Whether to fetch data (default: true)
   strategyName?: string;      // Strategy name for time period logic (default: 'month')
   days?: number;              // Number of days for pie charts (default: 30)
+  selectedDate?: string;      // Selected date for time period calculation (YYYY-MM-DD format)
 }
 
 interface ChartDataResult {
@@ -133,14 +134,15 @@ export const useChartDataWithStrategy = (
   const {
     enabled = true,
     strategyName = 'month',
-    days = 30
+    days = 30,
+    selectedDate
   } = options;
 
   // Query for line chart data using strategy
   const lineQuery = useQuery({
-    queryKey: ['chart-line-data-strategy', pillar, strategyName],
+    queryKey: ['chart-line-data-strategy', pillar, strategyName, selectedDate],
     queryFn: async () => {
-      return await chartTransformationService.getLineChartDataWithStrategy(pillar, strategyName);
+      return await chartTransformationService.getLineChartDataWithStrategy(pillar, strategyName, selectedDate);
     },
     enabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
