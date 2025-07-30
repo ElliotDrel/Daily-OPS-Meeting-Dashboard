@@ -1,0 +1,730 @@
+ ✻ Welcome to Claude Code!
+
+   /help for help, /status for your current setup
+
+   cwd: C:\Users\2supe\All Coding\Daily OPS Meeting Dashboard\Daily-OPS-Meeting-Dashboard
+
+> tell me how the logic and code works for the collect and 
+  edit data features, speiciclay on the saftey pillar. tell 
+  me everything about it. what files and everything else i 
+  shoudl know
+
+● I'll analyze the safety pillar's data collection and
+  editing features by examining the codebase structure and
+  implementation.
+
+● Update Todos
+  ⎿  ☐ Examine safety pillar page structure and layout       
+     ☐ Analyze data collection components and forms
+     ☐ Review data editing functionality and state management
+     ☐ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Update Todos
+  ⎿  ☐ Examine safety pillar page structure and layout       
+     ☐ Analyze data collection components and forms
+     ☐ Review data editing functionality and state management
+     ☐ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Read(src\pages\Safety.tsx)
+  ⎿  Read 235 lines (ctrl+r to expand)
+
+● Search(pattern: "**/components/pillar/**")
+  ⎿  Found 2 files (ctrl+r to expand)
+
+● Search(pattern: "**/PillarLayout*")
+  ⎿  Found 1 file (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Examine safety pillar page structure and layout       
+     ☐ Analyze data collection components and forms
+     ☐ Review data editing functionality and state management
+     ☐ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Read(src\components\dashboard\ActionItemsAndNotesSection.ts
+      x)
+  ⎿  Read 92 lines (ctrl+r to expand)
+
+● Read(src\hooks\usePillarData.ts)
+  ⎿  Read 319 lines (ctrl+r to expand)
+
+● Read(src\components\pillar\PillarLayout.tsx)
+  ⎿  Read 247 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Examine safety pillar page structure and layout       
+     ☒ Analyze data collection components and forms
+     ☐ Review data editing functionality and state management
+     ☐ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Read(src\components\dashboard\NotesSection.tsx)
+  ⎿  Read 449 lines (ctrl+r to expand)
+
+● Read(src\components\dashboard\ActionItemsSection.tsx)
+  ⎿  Read 300 lines (ctrl+r to expand)
+
+● Read(src\components\data\DataCollectionButton.tsx)
+  ⎿  Read 117 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Examine safety pillar page structure and layout       
+     ☒ Analyze data collection components and forms
+     ☒ Review data editing functionality and state management
+     ☐ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Read(src\data\mockData.ts)
+  ⎿  Read 129 lines (ctrl+r to expand)
+
+● Search(pattern: "**/lib/supabase*")
+  ⎿  Found 10 files (ctrl+r to expand)
+
+● Search(pattern: "**/components/data/**")
+  ⎿  Found 3 files (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Examine safety pillar page structure and layout       
+     ☒ Analyze data collection components and forms
+     ☒ Review data editing functionality and state management
+     ☒ Examine mock data structure and interfaces
+     ☐ Document the complete data flow and architecture
+
+● Read(src\components\data\DataCollectionModal.tsx)
+  ⎿  Read 225 lines (ctrl+r to expand)
+
+● Read(src\lib\supabase.ts)
+  ⎿  Read 10 lines (ctrl+r to expand)
+
+● Update Todos
+  ⎿  ☒ Examine safety pillar page structure and layout       
+     ☒ Analyze data collection components and forms
+     ☒ Review data editing functionality and state management
+     ☒ Examine mock data structure and interfaces
+     ☒ Document the complete data flow and architecture
+
+● Safety Pillar: Data Collection & Editing Architecture
+
+  Overview
+
+  The Safety pillar implements a comprehensive data
+  collection and editing system with real-time updates,
+  historical data display, and form-based data entry. Here's
+  the complete architecture:
+
+  Core Components & Files
+
+  Main Page Structure
+
+  File: src/pages/Safety.tsx:74-235
+
+  The Safety page uses PillarLayout with three main sections:
+  - Calendar navigation (left column)
+  - Charts/graphs (middle column)
+  - Notes & Action Items (right column)
+
+  Key features:
+  - Real-time date selection with calendar navigation
+  - Chart data using strategy-based transformations
+  - Integrated data collection via DataCollectionButton
+
+  Data Collection System
+
+  1. Data Collection Button
+
+  File: src/components/data/DataCollectionButton.tsx:12-117
+
+  Context-aware button with four states:
+  - collect - Shows "Collect Data" for new entries
+  - edit - Shows "Edit Data" when data exists for selected
+  date
+  - no-questions - Disabled when no questions configured
+  - loading - Shows loading spinner during data fetch
+
+  2. Data Collection Modal
+
+  File: src/components/data/DataCollectionModal.tsx:22-225
+
+  Dynamic form modal that:
+  - Renders questions based on pillar configuration
+  - Handles form validation and conditional logic
+  - Shows existing data for editing
+  - Provides real-time save feedback
+  - Supports form fields via FieldRenderer
+
+  Data Management & State
+
+  1. Pillar Data Hook
+
+  File: src/hooks/usePillarData.ts:29-319
+
+  Core hook managing:
+  - Meeting Notes: Single note per day with bullet-point
+  format
+  - Action Items: Multiple items per day with full CRUD
+  operations
+  - Historical Data: Yesterday's and last recorded data
+  - Real-time Subscriptions: Postgres triggers for live
+  updates
+
+  Key mutations:
+  - upsertNoteMutation (lines 171-215): Create/update notes
+  - createItemMutation (lines 234-258): Add action items
+  - updateItemMutation (lines 261-279): Modify action items
+  - deleteItemMutation (lines 282-295): Remove items
+
+  2. Database Schema
+
+  Connection: src/lib/supabase.ts:1-10
+
+  Uses Supabase with two main tables:
+  - meeting_notes: Stores daily key points as text
+  - action_items: Stores structured action data with
+  assignee, priority, status, due_date
+
+  User Interface Components
+
+  1. Notes Section
+
+  File: src/components/dashboard/NotesSection.tsx:118-448
+
+  Features:
+  - BulletTextArea for formatted note entry
+  - Real-time auto-save with 1-second debounce
+  - Historical display showing yesterday's and last recorded
+  notes
+  - Edit mode with confirmation for cross-date editing
+  - Tooltip warnings for read-only historical data
+
+  2. Action Items Section
+
+  File:
+  src/components/dashboard/ActionItemsSection.tsx:103-299
+
+  Features:
+  - CRUD operations via modal dialogs
+  - Status tracking (Open, In Progress, Completed)
+  - Priority levels (High, Medium, Low) with color coding
+  - Historical display with yesterday's and last recorded
+  items
+  - Interactive cards showing assignee, priority, due date,
+  status
+
+  3. Combined Section
+
+  File: src/components/dashboard/ActionItemsAndNotesSection.t
+  sx:30-92
+
+  Wrapper component that:
+  - Combines Notes and Action Items in card layout
+  - Manages loading states for current, yesterday, and
+  historical data
+  - Passes data and callbacks to child components
+
+  Data Flow Architecture
+
+  Collection Flow
+
+  1. User clicks "Collect Data" button →
+  DataCollectionButton.tsx:66-70
+  2. Modal opens with questions → DataCollectionModal.tsx:84
+  3. Form renders dynamic fields → FieldRenderer components
+  4. Data submitted to Supabase → useDataCollection hook
+  5. Real-time updates trigger → usePillarData.ts:142-168
+  6. UI refreshes automatically → TanStack Query invalidation
+
+  Editing Flow
+
+  1. User interacts with notes/items → Click handlers in
+  sections
+  2. Local state updates → Component state management
+  3. Debounced save (notes) → NotesSection.tsx:213-231
+  4. Immediate save (items) → Modal dialog submission
+  5. Database sync → Supabase mutations
+  6. Real-time broadcast → Postgres change events
+
+  Historical Data Display
+
+  1. Date selection triggers queries →
+  usePillarData.ts:62-107
+  2. Display logic determines visibility →
+  useNotesDisplayLogic & useActionItemsDisplayLogic hooks
+  3. Read-only cards render → YesterdayNotesCard,
+  HistoricalNotesCard
+  4. Tooltips explain limitations → useDelayedTooltip hook
+
+  Key Features
+
+  Real-time Collaboration
+
+  - Postgres subscriptions for live updates across users
+  - TanStack Query for optimistic updates and caching
+  - Automatic invalidation when data changes
+
+  Data Validation
+
+  - Form-level validation in data collection modal
+  - Field-specific errors displayed inline
+  - Required field enforcement before submission
+
+  Cross-date Editing
+
+  - Confirmation dialogs when editing historical data
+  - Date comparison logic to prevent accidental edits
+  - Visual indicators for data age and editability
+
+  Performance Optimization
+
+  - Debounced saves for text areas (1-second delay)
+  - Query caching via TanStack Query
+  - Conditional rendering based on data availability
+
+  This architecture provides a robust, user-friendly system
+  for daily operations data collection with strong data
+  integrity and real-time collaboration features.
+
+> I want to rework the way the collect data feature works. I 
+  included a quick snapshot of the way the code currently 
+  works. If you need more info, go through the codebase file 
+  by file and create a comprehensive report for yourself.
+
+  I need you to ask me questions to help better develop my 
+  idea and fully determine what I want. Keep asking me 
+  questions until you have enough info to create a detailed 
+  overview on what I want to give to the dev to build.
+
+  my ideas: I'll be giving them to a dev to make these 
+  changes, so make sure you clearly articulate wha tneeds to 
+  be done. But my ideas are, I want to rework the way the 
+  collecting data works. And as of right now, it currently 
+  works where when the user selects how many incidents 
+  happened the previous day, and then it asks them what the 
+  incident was. So I want to rework it so that instead of 
+  asking them and just giving them a text box to fill in, I 
+  want it to be a multiple... For each incident, I want it to
+   be like a drop-down to select an option, where in that 
+  drop-down, they can choose out of the preset incidents, and
+   we'll talk about how we determine those preset incidents. 
+  Or they can click Create New Incident, which will be the 
+  last option in the drop-down. And if they say, Create New 
+  Incident, or actually not Create New Incident, say Other 
+  Incident, it will open them a text box to type up a new 
+  incident. And then what will happen is every single time 
+  they type up a new incident, that will become one of the 
+  prefilled values. So basically, at the beginning... So 
+  also, we need to be saving those in the database in some 
+  way, shape, or form. So I was thinking that we could 
+  pull... So the database will be... Currently, the database 
+  is just saving... the info like this: 
+  550e8400-e29b-41d4-a716-446655440012,default-user,safety,20
+  25-07-06,"{""safety-incidents-count"": ""1"", 
+  ""safety-incident-1-description"": ""Near miss with 
+  forklift in warehouse""}",2025-07-06 08:00:00+00,2025-07-06
+   08:00:00+00.  So as you can see, the actual different 
+  values are saved. So I was thinking that technically, we 
+  might be able to regenerate the preselected values from 
+  scratch every single time, so we don't have to save the 
+  prefilled values somewhere. But I don't know what the best 
+  way to do that is, but I don't want to save them in some 
+  capacity somewhere. I don't want to change the way the 
+  database is. I don't want to change anything in the 
+  database. I want everything to be exactly the same. So this
+   is just going to have to be a modification of the actual 
+  front-end code on how we show things.
+
+● Great! I can see you want to enhance the incident reporting
+   with smart dropdown menus that learn from previous
+  entries. Let me ask some clarifying questions to make sure
+  I understand your vision completely:
+
+  Data Source & Generation
+
+  1. Incident History Scope: When generating the preset
+  options from the database, should we:
+    - Pull from ALL historical safety incidents across all
+  dates?
+    - Only from the last X days/months?
+    - Only from the current user's previous entries?
+    - Or from all users' entries?
+  2. Data Processing: Since the incidents are stored in the
+  JSON as "safety-incident-1-description": "Near miss with 
+  forklift in warehouse", should we:
+    - Extract all unique incident descriptions exactly as
+  written?
+    - Do any text processing (like trimming, case
+  normalization)?
+    - Group similar incidents together somehow?
+
+  User Experience & Behavior
+
+  3. Dropdown Population: When a user opens the dropdown,
+  should the preset incidents be:
+    - Sorted alphabetically?
+    - Sorted by most recently used?
+    - Sorted by frequency of use?
+    - Some other ordering?
+  4. "Other Incident" Flow: When they select "Other
+  Incident":
+    - Does the text box appear inline in the form?
+    - Does it open a modal/popup?
+    - Should it have any validation or character limits?
+  5. Multiple Incidents: If they select "3 incidents
+  occurred", do they get:
+    - 3 separate dropdowns, each with the same preset
+  options?
+    - The same dropdown but after selecting one incident,
+  does that option get removed from subsequent dropdowns?
+    - Any other specific behavior?
+
+  Technical Implementation
+
+  6. Performance: Since you want to query the database each
+  time to generate presets:
+    - Should this happen when the modal first opens?
+    - When they click on each dropdown?
+    - Should we cache the results during the session?
+  7. Fallback Behavior: What should happen if:
+    - The database query fails?
+    - No historical incidents exist yet?
+    - The query is taking too long?
+  8. Current vs New: For the text box that appears for "Other
+   Incident":
+    - Should it look/behave exactly like the current text
+  input?
+    - Any different placeholder text or styling?
+
+  Let me know your thoughts on these points so I can create a
+   comprehensive specification for your developer!
+
+> For question 1. Yes. Let's say all... Yeah, let's do all 
+  time. For question 2. Yes, extract each unique description 
+  exactly as written, but when you're showing them, only show
+   the first 20 characters. And when the user is typing, only
+   let them type in 20 characters. And when they hit 20 
+  characters in that text box, be like... First of all, make 
+  a... You know, highlight it red, make a pop-up, and be 
+  like, you can only put 20 characters max, and then also in 
+  the instructions when you say... In the instructions above 
+  the text box, when you tell them, tell them that they can 
+  only write 20 characters, and tell them that they need to 
+  be very clear with what they actually write in this as a 
+  description to make it... Yeah, just tell them to be very 
+  clear. And then finally, for the character number, make 
+  sure you set that as a variable in the file, so that if I 
+  ever want to change it, I can very easily change it without
+   having to change it in multiple places. also add a 
+  charecter conter in the bottom right under the text box 
+  small. For question 3. Yes, let's sort the dropdown by most
+   recently used, and you can get that information by just...
+   By doing a quick search in the database and looking in 
+  what order and getting in the order that, you know, you 
+  pull the data in the database, which you should be pulling 
+  the data... If you pull the data from the database by date,
+   you should know that. For question 4. It should be part of
+   the pop-up card element. It should just add on as another 
+  section. So they'll select other and... If they select a 
+  preset one, then the dropdown value will just show that as 
+  the preset. It'll just show that one, right? And then if 
+  they select other, then it'll... You know, the dropdown 
+  will say other incident. And then underneath, there will be
+   a text box will pop up that is required.Yes, correct, and 
+  just like it does now, it's just instead of having a text 
+  box there, it'll be a dropdown, and it'll say, you know, 
+  for incident one, select it for incident two, and so on. 
+  And for question six, don't make any changes to querying 
+  the database. You should just be using the, it is already 
+  querying the database for that information to determine, 
+  first of all, to show the collect button or the collect 
+  data button or the edit data button, and it also, and same,
+   it's also querying it when you click the edit data button 
+  to know what data to like pre-fill. So on just based on 
+  the, just don't make any additional queries, just work with
+   the current queries that you have. Unless you think that 
+  is going to be an issue, please let me know, otherwise make
+   no changes. for quesiton 7  If the database fails, then 
+  just show that, you know, no data was able to be pulled 
+  just like in the rest of the site. For question 8, yes, it 
+  should look exactly like the current textbox, except 
+  smaller since it's only going to be taking 20 characters, 
+  so it can just be one row in width, horizontally. And no 
+  other changes to it.
+
+✻ Thinking…
+
+  Okay, let me summarize what the user wants:
+
+  1. Data Source: Pull from all historical safety incidents 
+  across all time
+  2. Data Processing: Extract unique descriptions exactly as 
+  written, show only first 20 chars in dropdown, limit new 
+  entries to 20 chars max
+  3. Dropdown Sorting: Most recently used (based on date 
+  order from database)
+  4. "Other Incident" Flow: Inline text box appears under 
+  dropdown when "Other Incident" selected
+  5. Multiple Incidents: 3 separate dropdowns if 3 incidents,
+   each with same preset options
+  6. Performance: Use existing queries, don't add new ones
+  7. Fallback: Show standard "no data" message if query fails
+  8. Text Box: Same as current but smaller, 20 char limit, 
+  with character counter
+
+  I need to ask a few more clarifying questions to make sure 
+  I have all the details for the comprehensive spec:
+
+  - How to handle the "Other Incident" option in the dropdown
+   - where exactly does it appear?
+  - What happens to duplicates when showing in dropdown?
+  - Should the character limit validation be real-time or on 
+  submit?
+  - What specific instructions should appear above the text 
+  box?
+  - How should the dropdown be styled/sized?
+  - Should there be any visual indication that an option was 
+  selected vs typed?
+
+● Perfect! That clarifies a lot. I have a few final questions
+   to nail down the exact implementation details:
+
+  Dropdown Behavior & Styling
+
+  1. "Other Incident" Position: In the dropdown, should
+  "Other Incident" appear:
+    - At the very bottom of the list (after all preset
+  incidents)?
+    - At the top?
+    - Separated with a divider line?
+  2. Duplicate Handling: If the same incident description
+  appears multiple times in the database, should we:
+    - Show it only once in the dropdown?
+    - Show it multiple times?
+    - Show it once but maybe with a count indicator?
+  3. Dropdown Sizing: Should the dropdown:
+    - Have a max height with scrolling if there are many
+  options?
+    - Show all options regardless of length?
+    - Have a specific width to match the 20-character
+  display?
+
+  Text Input Validation & Instructions
+
+  4. Character Limit Enforcement: Should the validation:
+    - Prevent typing after 20 characters (hard stop)?
+    - Allow typing but show the red highlight/popup
+  immediately?
+    - Only validate when they try to submit/move to next
+  field?
+  5. Instruction Text: What exactly should the instruction
+  text say above the text box? Something like:
+    - "Describe the incident clearly in 20 characters or
+  less"?
+    - Or do you have specific wording in mind?
+  6. Character Counter: Should it show:
+    - "15/20" format?
+    - Just "5 remaining"?
+    - Turn red when at/near limit?
+
+  Data Extraction Logic
+
+  7. JSON Field Pattern: Since incidents are stored as
+  "safety-incident-1-description",
+  "safety-incident-2-description", etc., should we:
+    - Extract any field that ends with -description?
+    - Only extract fields that match the exact pattern
+  safety-incident-{number}-description?
+    - What about other pillars - would they follow the same
+  pattern like quality-incident-1-description?
+  8. Current Data Pre-filling: When editing existing data, if
+   they previously entered "Near miss with forklift in
+  warehouse" (longer than 20 chars), should we:
+    - Truncate it to 20 chars in the dropdown?
+    - Show the full text somehow?
+    - Handle this as a special case?
+
+  These details will help me create a rock-solid
+  specification for your developer!
+
+> For Question 1, it should appear at the very bottom of the 
+  list. For Question 2, dont worry about that, that wont 
+  happen. For question three, yes, it should have a max 
+  height, and the user should have to scroll to see all of 
+  the different options. And it should be just wide enough to
+   fit the widest option. For question four, allow typing but
+   show the red highlight and pop up and say you can only do 
+  20 questions, and do not let them click the submit button 
+  at the bottom. And if they try to click it, make a re-pop 
+  up the error and re-pop the error to make it to remind them
+   that they can't submit until they fix that issue. For 
+  question five, yep, that's perfect. For question six, yes, 
+  that's perfect. The 15 slash 20 format is perfect. For 
+  question seven, do what you think is best based on the CSV 
+  file because that is exactly how the data is being stored. 
+  For question eight, don't worry about this, this will never
+   happen.
+
+✻ Thinking…
+
+  Great! Now I have all the details I need to create a 
+  comprehensive specification. Let me organize all the 
+  information from both the original request and the 
+  follow-up questions to create a detailed development guide.
+
+  Let me summarize what needs to be done:
+
+  1. Replace the current text input for incident descriptions
+   with a dropdown system
+  2. The dropdown should be populated from historical data in
+   the database
+  3. Include an "Other Incident" option that reveals a text 
+  input
+  4. Implement character limits and validation
+  5. Sort by most recently used
+  6. Use existing database queries, no new ones
+  7. Handle multiple incidents with separate dropdowns
+
+  I should create a clear, detailed specification that a 
+  developer can follow step by step.
+
+● Perfect! I now have all the information needed. Here's the
+  comprehensive specification for your developer:
+
+  Data Collection Enhancement: Smart Incident Dropdown System
+
+  Overview
+
+  Transform the current incident description text inputs into
+   smart dropdowns that learn from historical data, with an
+  "Other Incident" option for new entries.
+
+  Current State
+
+  - Users select incident count, then fill text boxes for
+  each incident description
+  - Data stored in JSON format:
+  "safety-incident-1-description": "Near miss with forklift 
+  in warehouse"
+  - Uses existing database queries for data collection modal
+
+  Required Changes
+
+  1. Dropdown Implementation
+
+  Replace Text Input With Dropdown:
+  - Convert each safety-incident-{number}-description text
+  input to a dropdown
+  - Maintain same positioning and layout within the data
+  collection modal
+
+  Dropdown Options:
+  - Populate from historical incident descriptions extracted
+  from database JSON
+  - Extract all unique values matching pattern:
+  {pillar}-incident-{number}-description
+  - Display only first 20 characters of each description in
+  dropdown options
+  - Sort options by most recently used (based on database
+  date order)
+  - Add "Other Incident" as the last option at bottom of list
+
+  Dropdown Styling:
+  - Max height with scrolling if many options
+  - Width: auto-size to fit the widest option
+  - Standard dropdown component styling
+
+  2. "Other Incident" Flow
+
+  When "Other Incident" Selected:
+  - Dropdown shows "Other Incident" as selected value
+  - Text input appears directly below the dropdown (same
+  section, not modal)
+  - Text input is required and must be filled to proceed
+
+  Text Input Specifications:
+  - Single-row input (one line height)
+  - 20 character maximum limit (store as variable: const 
+  MAX_INCIDENT_CHARS = 20)
+  - Live character counter in bottom-right: "15/20" format
+  - Character counter turns red when at/near limit
+
+  3. Validation & Error Handling
+
+  Character Limit Enforcement:
+  - Allow typing but highlight red when 20 characters reached
+  - Show popup error: "You can only put 20 characters max"
+  - Disable submit button while over character limit
+  - Re-show error popup if user tries to submit while over
+  limit
+
+  Instructions:
+  - Add instruction text above text input: "Describe the
+  incident clearly in 20 characters or less"
+
+  4. Data Extraction Logic
+
+  Historical Data Processing:
+  - Use existing database queries (no new queries)
+  - Extract from JSON fields matching pattern:
+  {pillar}-incident-{number}-description
+  - Get unique descriptions exactly as written
+  - Sort by most recent usage (database date order)
+
+  Fallback Behavior:
+  - If database query fails: show standard "no data
+  available" message
+  - If no historical incidents exist: dropdown shows only
+  "Other Incident" option
+
+  5. Multiple Incidents Handling
+
+  Separate Dropdowns:
+  - Each incident gets its own dropdown with same preset
+  options
+  - Incident 1: dropdown + potential text input
+  - Incident 2: dropdown + potential text input
+  - etc.
+
+  Independent Behavior:
+  - Each dropdown operates independently
+  - Same preset options available in all dropdowns
+  - Each can have "Other Incident" selected with separate
+  text inputs
+
+  Files Likely Requiring Changes
+
+  1. Data Collection Modal Components - Replace text inputs
+  with dropdown logic
+  2. Field Renderer Components - Handle new dropdown +
+  conditional text input
+  3. Data Collection Hooks - Extract and process historical
+  incident data
+  4. Form Validation Logic - Add character limit validation
+
+  Technical Notes
+
+  - No Database Schema Changes - Work entirely with existing
+  JSON structure
+  - Character Limit Variable - Store MAX_INCIDENT_CHARS = 20
+  as configurable constant
+  - Existing Query Usage - Leverage current data fetching,
+  don't add new queries
+  - Backward Compatibility - Ensure existing data continues
+  to work seamlessly
+
+  Success Criteria
+
+  1. Users see dropdown with historical incidents (first 20
+  chars displayed)
+  2. "Other Incident" option allows new text entry with
+  20-char limit
+  3. New incidents automatically appear in future dropdown
+  lists
+  4. All validation and error messaging works as specified
+  5. Multiple incident dropdowns work independently
+  6. No impact on existing database structure or queries
+
+  This enhancement will significantly improve user experience
+   by reducing repetitive typing while maintaining
+  flexibility for new incident types.
+
