@@ -40,7 +40,6 @@ export const TrendLineChart = ({ data, title, color, formatValue = (v) => v.toSt
               
               if (name === 'value') {
                 if (dataType === 'missing') return ['No data recorded', 'Status'];
-                if (dataType === 'future') return ['Future date', 'Status'];
               }
               
               return [formatValue(value), name === 'value' ? 'Actual' : 'Target'];

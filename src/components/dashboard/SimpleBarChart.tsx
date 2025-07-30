@@ -55,7 +55,6 @@ export const SimpleBarChart = ({ data, title, pillar }: SimpleBarChartProps) => 
               
               if (name === 'value') {
                 if (dataType === 'missing') return ['No data recorded', 'Status'];
-                if (dataType === 'future') return ['Future date', 'Status'];
               }
               
               return [value.toFixed(1), name === 'value' ? 'Actual' : 'Target'];

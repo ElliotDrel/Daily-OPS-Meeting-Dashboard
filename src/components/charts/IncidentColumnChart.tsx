@@ -55,7 +55,6 @@ export const IncidentColumnChart = ({
               const dataType = props.payload?.dataType;
               
               if (dataType === 'missing') return ['No data recorded', 'Status'];
-              if (dataType === 'future') return ['Future date', 'Status'];
               
               return [`${formatValue(value)} incident${value !== 1 ? 's' : ''}`, 'Count'];
             }}
