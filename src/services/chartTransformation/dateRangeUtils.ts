@@ -5,7 +5,6 @@ export interface DateInfo {
   date: Date;
   dateString: string; // YYYY-MM-DD format
   label: string; // Display label (e.g., "07/30", "Week 1", "Jul")
-  isFuture: boolean;
   isToday: boolean;
 }
 
@@ -57,14 +56,12 @@ export function calculateWeekViewDates(referenceDate: Date = new Date()): DateIn
     
     const dateString = formatDateString(currentDate);
     const label = formatDateLabel(currentDate);
-    const isFuture = currentDate > today;
     const isToday = currentDate.getTime() === today.getTime();
     
     dates.push({
       date: currentDate,
       dateString,
       label,
-      isFuture,
       isToday
     });
   }
