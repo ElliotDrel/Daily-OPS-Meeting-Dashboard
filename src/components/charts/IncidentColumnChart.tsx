@@ -34,6 +34,7 @@ export const IncidentColumnChart = ({
             tickLine={false}
             fontSize={12}
             fill="#6b7280"
+            interval={0}
           />
           <YAxis 
             axisLine={false}
