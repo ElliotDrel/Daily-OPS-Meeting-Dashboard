@@ -145,12 +145,14 @@ export abstract class BaseTimePeriodStrategy implements TimePeriodStrategy {
   protected createChartDataPoint(
     label: string, 
     value: number, 
-    target: number = 0
+    target: number = 0,
+    dataType: 'recorded' | 'missing' | 'future' = 'recorded'
   ): LineChartData {
     return {
       month: label,
       value: value,
-      target: target
+      target: target,
+      dataType: dataType
     };
   }
 }

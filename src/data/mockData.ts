@@ -26,6 +26,7 @@ export interface LineChartData {
   month: string;
   value: number;
   target: number;
+  dataType?: 'recorded' | 'missing' | 'future';
 }
 
 export interface DonutData {
