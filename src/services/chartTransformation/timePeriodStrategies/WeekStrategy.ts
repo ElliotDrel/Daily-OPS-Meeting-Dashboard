@@ -75,17 +75,26 @@ export class WeekStrategy extends BaseTimePeriodStrategy {
       
       // Calculate total value for this day
       let totalValue = 0;
+      let dataType: 'recorded' | 'missing' | 'future' = 'missing';
+      
       if (dayResponses.length > 0) {
         totalValue = this.calculateTotalValue(dayResponses, valueExtractor);
+        dataType = 'recorded';
       } else if (period.isFuture) {
         // Future dates show as empty/zero
         totalValue = 0;
+        dataType = 'future';
+      } else {
+        // Historical day with no data
+        totalValue = 0;
+        dataType = 'missing';
       }
       
       chartData.push(this.createChartDataPoint(
         period.label,
         totalValue,
-        0 // Target is always 0 for safety incidents
+        0, // Target is always 0 for safety incidents
+        dataType
       ));
       
       console.log(`[WeekStrategy] Created chart point: ${period.label} = ${totalValue}`);
