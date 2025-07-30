@@ -50,10 +50,16 @@ export const SimpleBarChart = ({ data, title, pillar }: SimpleBarChartProps) => 
               borderRadius: '8px',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}
-            formatter={(value: number, name: string) => [
-              value.toFixed(1), 
-              name === 'value' ? 'Actual' : 'Target'
-            ]}
+            formatter={(value: number, name: string, props: any) => {
+              const dataType = props.payload?.dataType;
+              
+              if (name === 'value') {
+                if (dataType === 'missing') return ['No data recorded', 'Status'];
+                if (dataType === 'future') return ['Future date', 'Status'];
+              }
+              
+              return [value.toFixed(1), name === 'value' ? 'Actual' : 'Target'];
+            }}
           />
           <Bar 
             dataKey="target" 

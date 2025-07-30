@@ -51,10 +51,14 @@ export const IncidentColumnChart = ({
               borderRadius: '8px',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}
-            formatter={(value: number) => [
-              `${formatValue(value)} incident${value !== 1 ? 's' : ''}`, 
-              'Count'
-            ]}
+            formatter={(value: number, name: string, props: any) => {
+              const dataType = props.payload?.dataType;
+              
+              if (dataType === 'missing') return ['No data recorded', 'Status'];
+              if (dataType === 'future') return ['Future date', 'Status'];
+              
+              return [`${formatValue(value)} incident${value !== 1 ? 's' : ''}`, 'Count'];
+            }}
             labelFormatter={(label) => `Date: ${label}`}
           />
           <Bar 
