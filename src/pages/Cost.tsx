@@ -11,8 +11,8 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
-import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
-import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
+import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
 const costMetrics = [
@@ -51,7 +51,7 @@ const lowYieldEvents = [
 
 export const Cost = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
   
   const { 
@@ -79,9 +79,8 @@ export const Cost = () => {
     hasRealData,
     dataStatus,
     refetch: refetchChartData
-  } = useChartData('cost', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('cost', { 
+    strategyName: selectedTimePeriod
   });
 
   if (isLoading) {

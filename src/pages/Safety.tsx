@@ -11,8 +11,8 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 import { usePillarData } from "@/hooks/usePillarData";
-import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
-import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
+import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
 const safetyMetrics = [
@@ -73,7 +73,7 @@ const safetyActions = [
 
 export const Safety = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
   const { 
     meetingNote, 
     actionItems, 
@@ -94,7 +94,7 @@ export const Safety = () => {
   // Get time period configuration
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
 
-  // Get chart data using new transformation service
+  // Get chart data using new strategy-based transformation service
   const {
     lineData,
     pieData,
@@ -103,9 +103,8 @@ export const Safety = () => {
     hasRealData,
     dataStatus,
     refetch: refetchChartData
-  } = useChartData('safety', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('safety', { 
+    strategyName: selectedTimePeriod
   });
 
   const invalidateChartData = useInvalidateChartData();

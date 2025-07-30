@@ -6,11 +6,11 @@ import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { PieChartComponent } from "@/components/charts/PieChart";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { CheckCircle, BarChart3, DollarSign, Activity } from "lucide-react";
-import { useChartData } from "@/hooks/useChartData";
-import { TimePeriodSelector, getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
+import { useChartDataWithStrategy } from "@/hooks/useChartData";
+import { TimePeriodSelector, getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 export const GraphView = () => {
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
 
   // Get real chart data for different pillars
@@ -19,9 +19,8 @@ export const GraphView = () => {
     pieData: safetyPieData,
     isLoading: safetyLoading,
     hasRealData: safetyHasData
-  } = useChartData('safety', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('safety', { 
+    strategyName: selectedTimePeriod
   });
 
   const {
@@ -29,9 +28,8 @@ export const GraphView = () => {
     pieData: qualityPieData,
     isLoading: qualityLoading,
     hasRealData: qualityHasData
-  } = useChartData('quality', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('quality', { 
+    strategyName: selectedTimePeriod
   });
 
   // Helper function to render chart with no data fallback

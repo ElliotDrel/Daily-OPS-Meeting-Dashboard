@@ -17,6 +17,7 @@ import {
   CACHE_CONFIG
 } from './types';
 import { validationUtils, dateUtils } from './aggregationUtils';
+import { strategyFactory } from './timePeriodStrategies';
 
 class ChartTransformationService implements IChartTransformationService {
   private transformers = new Map<PillarName, PillarTransformer>();
@@ -100,6 +101,80 @@ class ChartTransformationService implements IChartTransformationService {
       
       throw new ChartTransformationError(
         `Failed to get line chart data for ${pillar}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        pillar,
+        'line',
+        error instanceof Error ? error : undefined
+      );
+    }
+  }
+
+  /**
+   * Get line chart data for a pillar using time period strategies
+   */
+  async getLineChartDataWithStrategy(pillar: PillarName, strategyName: string = 'month'): Promise<LineChartData[]> {
+    const cacheKey = `${pillar}-strategy-${strategyName}`;
+    
+    // Check cache first
+    const cached = this.lineChartCache.get(cacheKey);
+    if (cached && this.isCacheValid(cached)) {
+      return cached.data;
+    }
+
+    try {
+      // Get the strategy
+      const strategy = strategyFactory.getStrategy(strategyName);
+      if (!strategy) {
+        throw new ChartTransformationError(`Strategy not found: ${strategyName}`, pillar, 'line');
+      }
+
+      // Get the transformer for value extraction
+      const transformer = this.transformers.get(pillar);
+      if (!transformer) {
+        throw new ChartTransformationError(`No transformer registered for pillar: ${pillar}`, pillar, 'line');
+      }
+
+      // Calculate date range for data fetching
+      const dateRange = strategy.calculateDateRange();
+      const daysDiff = Math.ceil((dateRange.endDate.getTime() - dateRange.startDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Get responses from database
+      const responses = await this.getResponsesForPillar(pillar, daysDiff + 5); // Add buffer for timezone/edge cases
+
+      // Check if we have sufficient data
+      if (responses.length < DEFAULT_CONFIG.minDataPointsForLine) {
+        throw new InsufficientDataError(
+          pillar, 
+          'line', 
+          responses.length, 
+          DEFAULT_CONFIG.minDataPointsForLine
+        );
+      }
+
+      // Use strategy to aggregate data
+      const valueExtractor = transformer.getValueExtractor();
+      let chartData = strategy.aggregateToChartData(responses, valueExtractor);
+
+      // Apply targets to chart data using pillar-specific configuration
+      chartData = this.applyTargetsToLineChart(chartData, pillar);
+
+      // Cache the result
+      this.lineChartCache.set(cacheKey, {
+        data: chartData,
+        timestamp: Date.now(),
+        pillar,
+        parameters: cacheKey
+      });
+
+      return chartData;
+
+    } catch (error) {
+      if (error instanceof InsufficientDataError) {
+        // Return empty array for insufficient data - caller should handle fallback
+        return [];
+      }
+      
+      throw new ChartTransformationError(
+        `Failed to get line chart data with strategy for ${pillar}: ${error instanceof Error ? error.message : 'Unknown error'}`,
         pillar,
         'line',
         error instanceof Error ? error : undefined

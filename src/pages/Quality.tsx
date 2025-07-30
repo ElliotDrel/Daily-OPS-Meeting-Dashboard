@@ -11,8 +11,8 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 import { usePillarData } from "@/hooks/usePillarData";
-import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
-import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
+import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
 const qualityMetrics = [
@@ -66,7 +66,7 @@ const correctiveActions = [
 
 export const Quality = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
   
   const { 
@@ -94,9 +94,8 @@ export const Quality = () => {
     hasRealData,
     dataStatus,
     refetch: refetchChartData
-  } = useChartData('quality', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('quality', { 
+    strategyName: selectedTimePeriod
   });
   if (isLoading) {
     return (

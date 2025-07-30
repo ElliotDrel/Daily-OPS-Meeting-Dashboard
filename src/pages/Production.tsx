@@ -11,8 +11,8 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { usePillarData } from "@/hooks/usePillarData";
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
-import { useChartData, useInvalidateChartData } from "@/hooks/useChartData";
-import { getTimePeriodConfig } from "@/components/charts/TimePeriodSelector";
+import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useChartData";
+import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
 const productionMetrics = [
@@ -59,7 +59,7 @@ const openProcesses = [
 
 export const Production = () => {
   const { selectedDate } = useDate();
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("1m");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("month");
   const timePeriodConfig = getTimePeriodConfig(selectedTimePeriod);
   
   const { 
@@ -87,9 +87,8 @@ export const Production = () => {
     hasRealData,
     dataStatus,
     refetch: refetchChartData
-  } = useChartData('production', { 
-    months: timePeriodConfig.months,
-    days: timePeriodConfig.days 
+  } = useChartDataWithStrategy('production', { 
+    strategyName: selectedTimePeriod
   });
 
   if (isLoading) {

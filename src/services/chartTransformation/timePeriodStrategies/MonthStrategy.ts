@@ -1,0 +1,106 @@
+// Month Strategy - Current month broken into calendar weeks
+// Shows weekly totals for each week in the current month
+
+import { PillarResponse } from '@/types/dataCollection';
+import { LineChartData } from '@/data/mockData';
+import { BaseTimePeriodStrategy } from './BaseStrategy';
+import { StrategyDateRange, STRATEGY_DISPLAY_MAP } from './types';
+import { calculateMonthViewWeeks, getTodayNormalized, isDateInRange } from '../dateRangeUtils';
+
+export class MonthStrategy extends BaseTimePeriodStrategy {
+  constructor() {
+    super('month');
+  }
+  
+  getStrategyName(): string {
+    return 'month';
+  }
+  
+  getDisplayInfo(): { label: string; description: string } {
+    return STRATEGY_DISPLAY_MAP.month;
+  }
+  
+  calculateDateRange(referenceDate?: Date): StrategyDateRange {
+    const today = referenceDate || getTodayNormalized();
+    const weeks = calculateMonthViewWeeks(today);
+    
+    if (weeks.length === 0) {
+      throw new Error('No weeks calculated for month view');
+    }
+    
+    const startDate = weeks[0].startDate;
+    const endDate = weeks[weeks.length - 1].endDate;
+    
+    const periods = weeks.map(week => ({
+      label: week.label,
+      startDate: week.startDate,
+      endDate: week.endDate,
+      isFuture: this.isWeekInFuture(week.dates, today)
+    }));
+    
+    return {
+      startDate,
+      endDate,
+      description: `Current month (${weeks.length} weeks)`,
+      periods
+    };
+  }
+  
+  aggregateToChartData(
+    responses: PillarResponse[], 
+    valueExtractor: (response: PillarResponse) => number,
+    referenceDate?: Date
+  ): LineChartData[] {
+    if (!this.canHandle(responses)) {
+      return [];
+    }
+    
+    const today = referenceDate || getTodayNormalized();
+    const dateRange = this.calculateDateRange(today);
+    const filteredResponses = this.filterResponsesByDateRange(responses, dateRange);
+    
+    // Group responses by date for easier lookup
+    const responsesByDate = this.groupResponsesByDate(filteredResponses);
+    
+    // Create chart data for each week
+    const chartData: LineChartData[] = [];
+    
+    dateRange.periods.forEach(period => {
+      // Get all responses that fall within this week's date range
+      const weekResponses: PillarResponse[] = [];
+      
+      // Check each response to see if it falls within this week
+      filteredResponses.forEach(response => {
+        const responseDate = new Date(response.responseDate);
+        if (isDateInRange(responseDate, period.startDate, period.endDate)) {
+          weekResponses.push(response);
+        }
+      });
+      
+      // Calculate total value for this week
+      let totalValue = 0;
+      if (weekResponses.length > 0) {
+        totalValue = this.calculateTotalValue(weekResponses, valueExtractor);
+      } else if (period.isFuture) {
+        // Future weeks show as empty/zero
+        totalValue = 0;
+      }
+      
+      chartData.push(this.createChartDataPoint(
+        period.label,
+        totalValue,
+        0 // Target is always 0 for safety incidents
+      ));
+    });
+    
+    return chartData;
+  }
+  
+  /**
+   * Check if a week contains any future dates
+   */
+  private isWeekInFuture(weekDates: Date[], referenceDate: Date): boolean {
+    // A week is considered "future" if all its dates are in the future
+    return weekDates.every(date => this.isFutureDate(date, referenceDate));
+  }
+}

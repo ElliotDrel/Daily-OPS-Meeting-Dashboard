@@ -166,6 +166,16 @@ export class SafetyTransformer implements PillarTransformer {
   }
 
   /**
+   * Get the value extractor function for safety incident count
+   */
+  getValueExtractor(): (response: PillarResponse) => number {
+    return (response: PillarResponse): number => {
+      const incidentCount = response.responses['safety-incidents-count'];
+      return this.convertIncidentCountToNumber(incidentCount);
+    };
+  }
+
+  /**
    * Get additional metrics for safety dashboard
    */
   async getAdditionalMetrics(responses: PillarResponse[]): Promise<{

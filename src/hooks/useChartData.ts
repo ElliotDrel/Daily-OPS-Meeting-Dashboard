@@ -17,6 +17,12 @@ interface UseChartDataOptions {
   days?: number;              // Number of days for pie charts (default: 30)
 }
 
+interface UseChartDataWithStrategyOptions {
+  enabled?: boolean;           // Whether to fetch data (default: true)
+  strategyName?: string;      // Strategy name for time period logic (default: 'month')
+  days?: number;              // Number of days for pie charts (default: 30)
+}
+
 interface ChartDataResult {
   lineData: LineChartData[];
   pieData: DonutData[];
@@ -86,6 +92,89 @@ export const useChartData = (
   // Query for data status
   const statusQuery = useQuery({
     queryKey: ['chart-data-status', pillar],
+    queryFn: () => chartTransformationService.getDataStatus(pillar),
+    enabled,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    cacheTime: 5 * 60 * 1000   // 5 minutes
+  });
+
+  // Determine if we have real data
+  const hasRealData = React.useMemo(() => {
+    if (!statusQuery.data) return false;
+    return statusQuery.data.hasLineData && statusQuery.data.hasPieData;
+  }, [statusQuery.data]);
+
+  // Handle refetch for all queries
+  const refetch = () => {
+    lineQuery.refetch();
+    pieQuery.refetch();
+    statusQuery.refetch();
+  };
+
+  return {
+    lineData: lineQuery.data || [],
+    pieData: pieQuery.data || [],
+    isLoading: lineQuery.isLoading || pieQuery.isLoading || statusQuery.isLoading,
+    isError: lineQuery.isError || pieQuery.isError || statusQuery.isError,
+    error: lineQuery.error || pieQuery.error || statusQuery.error || null,
+    hasRealData,
+    dataStatus: statusQuery.data || null,
+    refetch
+  };
+};
+
+/**
+ * Hook for getting chart data for a pillar using time period strategies - shows real data only
+ */
+export const useChartDataWithStrategy = (
+  pillar: PillarName, 
+  options: UseChartDataWithStrategyOptions = {}
+): ChartDataResult => {
+  const {
+    enabled = true,
+    strategyName = 'month',
+    days = 30
+  } = options;
+
+  // Query for line chart data using strategy
+  const lineQuery = useQuery({
+    queryKey: ['chart-line-data-strategy', pillar, strategyName],
+    queryFn: async () => {
+      return await chartTransformationService.getLineChartDataWithStrategy(pillar, strategyName);
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on insufficient data errors
+      if (error instanceof InsufficientDataError) {
+        return false;
+      }
+      return failureCount < 2;
+    }
+  });
+
+  // Query for pie chart data (same as before)
+  const pieQuery = useQuery({
+    queryKey: ['chart-pie-data-strategy', pillar, days],
+    queryFn: async () => {
+      return await chartTransformationService.getPieChartData(pillar, days);
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on insufficient data errors
+      if (error instanceof InsufficientDataError) {
+        return false;
+      }
+      return failureCount < 2;
+    }
+  });
+
+  // Query for data status
+  const statusQuery = useQuery({
+    queryKey: ['chart-data-status-strategy', pillar],
     queryFn: () => chartTransformationService.getDataStatus(pillar),
     enabled,
     staleTime: 2 * 60 * 1000, // 2 minutes

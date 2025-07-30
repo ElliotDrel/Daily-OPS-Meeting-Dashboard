@@ -31,6 +31,9 @@ export interface ChartTransformationService {
   // Get line chart data for a pillar (monthly trends)
   getLineChartData(pillar: PillarName, months?: number): Promise<LineChartData[]>;
   
+  // Get line chart data for a pillar using time period strategies
+  getLineChartDataWithStrategy(pillar: PillarName, strategyName?: string): Promise<LineChartData[]>;
+  
   // Get pie chart data for a pillar (categorical breakdowns)
   getPieChartData(pillar: PillarName, days?: number): Promise<DonutData[]>;
   
@@ -67,6 +70,9 @@ export interface PillarTransformer {
   
   // Get the pillar this transformer handles
   getPillarName(): PillarName;
+  
+  // Get the value extractor function for this pillar (used by strategies)
+  getValueExtractor(): (response: PillarResponse) => number;
 }
 
 // Aggregation function types for reusable logic
