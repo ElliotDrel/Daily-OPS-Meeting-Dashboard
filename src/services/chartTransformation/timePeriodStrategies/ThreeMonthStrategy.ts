@@ -97,6 +97,12 @@ export class ThreeMonthStrategy extends BaseTimePeriodStrategy {
    */
   private isMonthInFuture(startDate: Date, endDate: Date, referenceDate: Date): boolean {
     // A month is considered "future" if its start date is after today
-    return this.isFutureDate(startDate, referenceDate);
+    const normalizedDate = new Date(startDate);
+    normalizedDate.setHours(0, 0, 0, 0);
+    
+    const normalizedReference = new Date(referenceDate);
+    normalizedReference.setHours(0, 0, 0, 0);
+    
+    return normalizedDate > normalizedReference;
   }
 }
