@@ -12,7 +12,6 @@ export interface StrategyDateRange {
     label: string;
     startDate: Date;
     endDate: Date;
-    isFuture?: boolean;
   }>;
 }
 

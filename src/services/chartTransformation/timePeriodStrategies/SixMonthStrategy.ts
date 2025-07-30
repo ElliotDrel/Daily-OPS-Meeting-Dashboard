@@ -34,8 +34,7 @@ export class SixMonthStrategy extends BaseTimePeriodStrategy {
     const periods = months.map(month => ({
       label: month.label,
       startDate: month.startDate,
-      endDate: month.endDate,
-      isFuture: this.isMonthInFuture(month.startDate, month.endDate, today)
+      endDate: month.endDate
     }));
     
     return {
@@ -77,9 +76,6 @@ export class SixMonthStrategy extends BaseTimePeriodStrategy {
       let totalValue = 0;
       if (monthResponses.length > 0) {
         totalValue = this.calculateTotalValue(monthResponses, valueExtractor);
-      } else if (period.isFuture) {
-        // Future months show as empty/zero (shouldn't happen for this strategy)
-        totalValue = 0;
       }
       
       chartData.push(this.createChartDataPoint(
@@ -92,17 +88,4 @@ export class SixMonthStrategy extends BaseTimePeriodStrategy {
     return chartData;
   }
   
-  /**
-   * Check if a month is in the future (entire month is future)
-   */
-  private isMonthInFuture(startDate: Date, endDate: Date, referenceDate: Date): boolean {
-    // A month is considered "future" if its start date is after today
-    const normalizedDate = new Date(startDate);
-    normalizedDate.setHours(0, 0, 0, 0);
-    
-    const normalizedReference = new Date(referenceDate);
-    normalizedReference.setHours(0, 0, 0, 0);
-    
-    return normalizedDate > normalizedReference;
-  }
 }
