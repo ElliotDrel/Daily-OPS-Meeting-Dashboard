@@ -7,6 +7,17 @@ interface SimpleBarChartProps {
   pillar: string;
 }
 
+interface TooltipPayload {
+  dataType?: string;
+  [key: string]: unknown;
+}
+
+interface TooltipProps {
+  payload?: TooltipPayload;
+  color?: string;
+  dataKey?: string;
+}
+
 const getPillarColor = (pillar: string): string => {
   const pillarColors: Record<string, string> = {
     safety: 'hsl(180, 85%, 42%)',
@@ -50,7 +61,7 @@ export const SimpleBarChart = ({ data, title, pillar }: SimpleBarChartProps) => 
               borderRadius: '8px',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}
-            formatter={(value: number, name: string, props: any) => {
+            formatter={(value: number, name: string, props: TooltipProps) => {
               const dataType = props.payload?.dataType;
               
               if (name === 'value') {

@@ -7,6 +7,17 @@ interface IncidentColumnChartProps {
   formatValue?: (value: number) => string;
 }
 
+interface TooltipPayload {
+  dataType?: string;
+  [key: string]: unknown;
+}
+
+interface TooltipProps {
+  payload?: TooltipPayload;
+  color?: string;
+  dataKey?: string;
+}
+
 export const IncidentColumnChart = ({ 
   data, 
   title, 
@@ -51,7 +62,7 @@ export const IncidentColumnChart = ({
               borderRadius: '8px',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}
-            formatter={(value: number, name: string, props: any) => {
+            formatter={(value: number, name: string, props: TooltipProps) => {
               const dataType = props.payload?.dataType;
               
               if (dataType === 'missing') return ['No data recorded', 'Status'];

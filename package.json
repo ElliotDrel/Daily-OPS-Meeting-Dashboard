@@ -8,6 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "analyze": "vite build --mode production && echo \\n📊 Bundle Analysis: && dir dist\\assets && echo \\n📈 Total dist size: && powershell \"(Get-ChildItem -Path dist -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB\"",
     "preview": "vite preview",
     "migrate:storage": "node scripts/migrate-response-storage.js",
     "migrate:storage:dry-run": "node scripts/migrate-response-storage.js --dry-run",

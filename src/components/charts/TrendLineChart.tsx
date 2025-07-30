@@ -8,6 +8,17 @@ interface TrendLineChartProps {
   formatValue?: (value: number) => string;
 }
 
+interface TooltipPayload {
+  dataType?: string;
+  [key: string]: unknown;
+}
+
+interface TooltipProps {
+  payload?: TooltipPayload;
+  color?: string;
+  dataKey?: string;
+}
+
 export const TrendLineChart = ({ data, title, color, formatValue = (v) => v.toString() }: TrendLineChartProps) => {
   return (
     <div className="w-full h-48">
@@ -35,7 +46,7 @@ export const TrendLineChart = ({ data, title, color, formatValue = (v) => v.toSt
               borderRadius: '8px',
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}
-            formatter={(value: number, name: string, props: any) => {
+            formatter={(value: number, name: string, props: TooltipProps) => {
               const dataType = props.payload?.dataType;
               
               if (name === 'value') {
