@@ -30,8 +30,7 @@ export class WeekStrategy extends BaseTimePeriodStrategy {
     const periods = weekDates.map(dateInfo => ({
       label: dateInfo.label,
       startDate: dateInfo.date,
-      endDate: dateInfo.date,
-      isFuture: dateInfo.isFuture
+      endDate: dateInfo.date
     }));
     
     return {
@@ -75,17 +74,13 @@ export class WeekStrategy extends BaseTimePeriodStrategy {
       
       // Calculate total value for this day
       let totalValue = 0;
-      let dataType: 'recorded' | 'missing' | 'future' = 'missing';
+      let dataType: 'recorded' | 'missing' = 'missing';
       
       if (dayResponses.length > 0) {
         totalValue = this.calculateTotalValue(dayResponses, valueExtractor);
         dataType = 'recorded';
-      } else if (period.isFuture) {
-        // Future dates show as empty/zero
-        totalValue = 0;
-        dataType = 'future';
       } else {
-        // Historical day with no data
+        // Day with no data
         totalValue = 0;
         dataType = 'missing';
       }

@@ -126,18 +126,6 @@ export abstract class BaseTimePeriodStrategy implements TimePeriodStrategy {
     return new Date(date.getFullYear(), date.getMonth(), 1);
   }
   
-  /**
-   * Check if a date is in the future (after today)
-   */
-  protected isFutureDate(date: Date, referenceDate: Date = new Date()): boolean {
-    const normalizedDate = new Date(date);
-    normalizedDate.setHours(0, 0, 0, 0);
-    
-    const normalizedReference = new Date(referenceDate);
-    normalizedReference.setHours(0, 0, 0, 0);
-    
-    return normalizedDate > normalizedReference;
-  }
   
   /**
    * Create a chart data point with default values
@@ -146,7 +134,7 @@ export abstract class BaseTimePeriodStrategy implements TimePeriodStrategy {
     label: string, 
     value: number, 
     target: number = 0,
-    dataType: 'recorded' | 'missing' | 'future' = 'recorded'
+    dataType: 'recorded' | 'missing' = 'recorded'
   ): LineChartData {
     return {
       month: label,

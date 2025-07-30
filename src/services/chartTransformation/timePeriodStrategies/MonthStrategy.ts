@@ -34,8 +34,7 @@ export class MonthStrategy extends BaseTimePeriodStrategy {
     const periods = weeks.map(week => ({
       label: week.label,
       startDate: week.startDate,
-      endDate: week.endDate,
-      isFuture: this.isWeekInFuture(week.dates, today)
+      endDate: week.endDate
     }));
     
     return {
@@ -79,17 +78,13 @@ export class MonthStrategy extends BaseTimePeriodStrategy {
       
       // Calculate total value for this week
       let totalValue = 0;
-      let dataType: 'recorded' | 'missing' | 'future' = 'missing';
+      let dataType: 'recorded' | 'missing' = 'missing';
       
       if (weekResponses.length > 0) {
         totalValue = this.calculateTotalValue(weekResponses, valueExtractor);
         dataType = 'recorded';
-      } else if (period.isFuture) {
-        // Future weeks show as empty/zero
-        totalValue = 0;
-        dataType = 'future';
       } else {
-        // Historical week with no data
+        // Week with no data
         totalValue = 0;
         dataType = 'missing';
       }
@@ -105,11 +100,4 @@ export class MonthStrategy extends BaseTimePeriodStrategy {
     return chartData;
   }
   
-  /**
-   * Check if a week contains any future dates
-   */
-  private isWeekInFuture(weekDates: Date[], referenceDate: Date): boolean {
-    // A week is considered "future" if all its dates are in the future
-    return weekDates.every(date => this.isFutureDate(date, referenceDate));
-  }
 }
