@@ -26,22 +26,34 @@ export interface MonthInfo {
 }
 
 /**
- * Calculate dates for week view (5 consecutive days centered around today)
- * If today is Tuesday: Monday, Tuesday, Wednesday, Thursday, Friday
+ * Calculate dates for week view (5 work days: Monday through Friday of current work week)
+ * If today is Wednesday: Monday, Tuesday, Wednesday, Thursday, Friday
  */
 export function calculateWeekViewDates(referenceDate: Date = new Date()): DateInfo[] {
   const dates: DateInfo[] = [];
   const today = new Date(referenceDate);
   today.setHours(0, 0, 0, 0); // Normalize to start of day
   
-  // Calculate yesterday as starting point
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
+  // Find Monday of the current work week
+  // Saturday and Sunday belong to the PRIOR work week
+  const monday = new Date(today);
+  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   
-  // Generate 5 consecutive days starting from yesterday
+  let daysToSubtract;
+  if (dayOfWeek === 0) { // Sunday
+    daysToSubtract = 6; // Go back 6 days to previous Monday
+  } else if (dayOfWeek === 6) { // Saturday  
+    daysToSubtract = 5; // Go back 5 days to previous Monday
+  } else { // Monday (1) through Friday (5)
+    daysToSubtract = dayOfWeek - 1; // Go back to current week's Monday
+  }
+  
+  monday.setDate(today.getDate() - daysToSubtract);
+  
+  // Generate 5 work days starting from Monday
   for (let i = 0; i < 5; i++) {
-    const currentDate = new Date(yesterday);
-    currentDate.setDate(yesterday.getDate() + i);
+    const currentDate = new Date(monday);
+    currentDate.setDate(monday.getDate() + i);
     
     const dateString = formatDateString(currentDate);
     const label = formatDateLabel(currentDate);
@@ -104,7 +116,7 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
         weekNumber,
         startDate: weekStart,
         endDate: weekEnd,
-        label: `Week ${weekNumber}`,
+        label: `W${weekNumber}`,
         dates: weekDates
       });
       
