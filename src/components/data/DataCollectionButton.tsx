@@ -72,6 +72,8 @@ export const DataCollectionButton = ({
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    // Trigger data refresh on any modal close (cancel, ESC, etc.)
+    onDataChange?.();
   };
 
   const handleModalSuccess = () => {
