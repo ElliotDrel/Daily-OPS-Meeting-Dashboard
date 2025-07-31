@@ -71,7 +71,7 @@ export function calculateWeekViewDates(referenceDate: Date = new Date()): DateIn
 
 /**
  * Calculate calendar weeks for the current month
- * Breaks the month into proper calendar weeks (Sunday to Saturday)
+ * Breaks the month into proper calendar weeks (Monday to Sunday)
  */
 export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekInfo[] {
   const year = referenceDate.getFullYear();
@@ -85,16 +85,18 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
   let weekNumber = 1;
   let currentDate = new Date(firstDay);
   
-  // Move to the first Sunday of the week containing the first day
-  const firstSunday = new Date(firstDay);
-  firstSunday.setDate(firstDay.getDate() - firstDay.getDay());
-  currentDate = new Date(firstSunday);
+  // Move to the first Monday of the week containing the first day
+  const firstMonday = new Date(firstDay);
+  const dayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days to Monday
+  firstMonday.setDate(firstDay.getDate() - daysToSubtract);
+  currentDate = new Date(firstMonday);
   
-  while (currentDate <= lastDay || currentDate.getDay() !== 0) {
+  while (currentDate <= lastDay || currentDate.getDay() !== 1) {
     const weekStart = new Date(currentDate);
     const weekDates: Date[] = [];
     
-    // Collect 7 days for this week
+    // Collect 7 days for this week (Monday to Sunday)
     for (let i = 0; i < 7; i++) {
       const dayDate = new Date(currentDate);
       dayDate.setDate(currentDate.getDate() + i);
@@ -107,7 +109,9 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
     
     // Only create week if it has dates in the target month
     if (weekDates.length > 0) {
-      const weekEnd = new Date(weekDates[weekDates.length - 1]);
+      // Week always ends on Sunday (6 days after Monday start)
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
       
       weeks.push({
         weekNumber,
@@ -124,7 +128,7 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
     currentDate.setDate(currentDate.getDate() + 7);
     
     // Break if we've gone past the month and completed a full week
-    if (currentDate.getMonth() !== month && currentDate.getDay() === 0) {
+    if (currentDate.getMonth() !== month && currentDate.getDay() === 1) {
       break;
     }
   }

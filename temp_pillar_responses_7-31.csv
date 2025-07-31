@@ -1,0 +1,5 @@
+id,user_id,pillar,response_date,responses,created_at,updated_at
+d292350e-66f4-49a0-bae8-e9319c4e71c8,default-user,safety,2025-07-30,"{""safety-incidents-count"": ""0""}",2025-07-31 12:01:37.729875+00,2025-07-31 12:01:37.729875+00
+653a392b-d490-4c27-866f-4ccca2dc6633,default-user,safety,2025-07-29,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""saftey test 1""}",2025-07-31 01:10:45.410876+00,2025-07-31 01:21:05.200621+00
+88e3cb49-c0b9-414d-999c-83607af9bf46,default-user,safety,2025-07-28,"{""safety-incidents-count"": ""2"", ""safety-incident-1-description"": ""saftey test 1"", ""safety-incident-2-description"": ""safety test 3 (7/28)""}",2025-07-31 01:11:15.773919+00,2025-07-31 01:46:46.836316+00
+2dfdcd71-c06d-4c2c-bd21-32c25d5505fb,default-user,safety,2025-07-21,"{""safety-incidents-count"": ""1"", ""safety-incident-1-description"": ""saftey test 1""}",2025-07-31 01:52:41.49362+00,2025-07-31 01:52:41.49362+00

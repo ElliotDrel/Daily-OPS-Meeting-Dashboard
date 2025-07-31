@@ -75,7 +75,10 @@ export class SixMonthStrategy extends BaseTimePeriodStrategy {
       // Calculate total value for this month
       let totalValue = 0;
       if (monthResponses.length > 0) {
-        totalValue = this.calculateTotalValue(monthResponses, valueExtractor);
+        // FIXED: Sum daily incidents instead of using maximum
+        // This provides the correct total incidents per month
+        const values = monthResponses.map(valueExtractor).filter(v => !isNaN(v));
+        totalValue = values.length > 0 ? values.reduce((sum, val) => sum + val, 0) : 0;
       }
       
       chartData.push(this.createChartDataPoint(
