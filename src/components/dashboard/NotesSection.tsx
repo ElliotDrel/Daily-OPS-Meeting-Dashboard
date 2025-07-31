@@ -349,7 +349,7 @@ export const NotesSection = ({
                 </h4>
               </div>
               
-              <div className="space-y-4 opacity-75">
+              <div className="space-y-4 opacity-75 max-h-[240px] overflow-y-auto">
                 {displayLogic.yesterdayDisplay.hasContent && displayLogic.yesterdayDisplay.note ? (
                   <YesterdayNotesCard note={displayLogic.yesterdayDisplay.note} />
                 ) : (
@@ -374,7 +374,7 @@ export const NotesSection = ({
                 </h4>
               </div>
               
-              <div className="space-y-4 opacity-75">
+              <div className="space-y-4 opacity-75 max-h-[240px] overflow-y-auto">
                 <HistoricalNotesCard note={displayLogic.lastRecordedDisplay.note} />
               </div>
             </div>

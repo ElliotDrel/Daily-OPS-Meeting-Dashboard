@@ -159,40 +159,42 @@ export const ActionItemsSection = ({
 
       <div className="space-y-4">
         {/* Current Action Items */}
-        {actionItems.length > 0 ? (
-          actionItems.map((item) => (
-            <div 
-              key={item.id} 
-              className="cursor-pointer hover:bg-muted/30 p-3 rounded-lg transition-colors"
-              onClick={() => handleEditItem(item)}
-            >
-              <div className="space-y-2">
-                <div className="flex items-start space-x-2">
-                  <span className="text-muted-foreground mt-1">•</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{item.description}</p>
-                    {item.category && (
-                      <Badge variant="outline" className="text-xs mt-1">
-                        {item.category}
-                      </Badge>
-                    )}
+        <div className="max-h-[240px] overflow-y-auto">
+          {actionItems.length > 0 ? (
+            actionItems.map((item) => (
+              <div 
+                key={item.id} 
+                className="cursor-pointer hover:bg-muted/30 p-3 rounded-lg transition-colors"
+                onClick={() => handleEditItem(item)}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-start space-x-2">
+                    <span className="text-muted-foreground mt-1">•</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{item.description}</p>
+                      {item.category && (
+                        <Badge variant="outline" className="text-xs mt-1">
+                          {item.category}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ml-4 flex flex-wrap gap-2">
+                    <PersonCard assignee={item.assignee || 'TBD'} />
+                    <PriorityCard priority={item.priority || 'Medium'} />
+                    <DateCard dueDate={item.due_date || ''} />
+                    <StatusCard status={item.status || 'Open'} />
                   </div>
                 </div>
-                <div className="ml-4 flex flex-wrap gap-2">
-                  <PersonCard assignee={item.assignee || 'TBD'} />
-                  <PriorityCard priority={item.priority || 'Medium'} />
-                  <DateCard dueDate={item.due_date || ''} />
-                  <StatusCard status={item.status || 'Open'} />
-                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm mb-4">
+              <AlertTriangle className="w-16 h-16 mr-4 opacity-50" />
+              <p className="max-w-xs">No current action items</p>
             </div>
-          ))
-        ) : (
-          <div className="flex items-center justify-center py-0.5 text-muted-foreground text-sm mb-4">
-            <AlertTriangle className="w-16 h-16 mr-4 opacity-50" />
-            <p className="max-w-xs">No current action items</p>
-          </div>
-        )}
+          )}
+        </div>
         
         {/* Yesterday's Items Section */}
         {displayLogic.shouldShowYesterday && (
@@ -208,7 +210,7 @@ export const ActionItemsSection = ({
             </div>
             
             {displayLogic.yesterdayDisplay.hasContent ? (
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[240px] overflow-y-auto">
                 {displayLogic.yesterdayDisplay.items.map((item) => (
                   <YesterdayActionItem key={`yesterday-${item.id}`} item={item} />
                 ))}
@@ -235,7 +237,7 @@ export const ActionItemsSection = ({
               </Badge>
             </div>
             
-            <div className="space-y-3 opacity-75">
+            <div className="space-y-3 opacity-75 max-h-[240px] overflow-y-auto">
               {displayLogic.lastRecordedDisplay.items.map((item) => (
                 <Tooltip key={`last-recorded-${item.id}`}>
                   <TooltipTrigger asChild>

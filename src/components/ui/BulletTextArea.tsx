@@ -33,12 +33,21 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
     const shouldAutoResize = rows === undefined
     const effectiveRows = shouldAutoResize ? undefined : (rows ?? 5)
     
-    // Auto-resize function
+    // Auto-resize function with max height constraint
     const autoResize = useCallback(() => {
       if (shouldAutoResize && internalRef && 'current' in internalRef && internalRef.current) {
         const textarea = internalRef.current
         textarea.style.height = 'auto'
-        textarea.style.height = textarea.scrollHeight + 'px'
+        const maxHeight = 240 // Match the max height for other sections
+        const newHeight = Math.min(textarea.scrollHeight, maxHeight)
+        textarea.style.height = newHeight + 'px'
+        
+        // Enable scrolling if content exceeds max height  
+        if (textarea.scrollHeight > maxHeight) {
+          textarea.style.overflowY = 'auto'
+        } else {
+          textarea.style.overflowY = 'hidden'
+        }
       }
     }, [shouldAutoResize, internalRef])
     
@@ -188,7 +197,7 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
           disabled={disabled}
           className={cn(
             'flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-            shouldAutoResize ? 'resize-none overflow-hidden' : 'min-h-[80px] resize-y',
+            shouldAutoResize ? 'resize-none' : 'min-h-[80px] resize-y',
             !disabled && hasUnsavedChanges && 'border-yellow-400',
             className
           )}
