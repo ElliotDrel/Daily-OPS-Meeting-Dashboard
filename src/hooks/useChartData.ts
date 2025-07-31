@@ -223,6 +223,34 @@ export const useInvalidateChartData = () => {
 };
 
 /**
+ * Hook for getting incident types pie chart data (for safety pillar)
+ */
+export const useIncidentTypesPieChartData = (
+  pillar: PillarName, 
+  strategyName: string = 'week',
+  options: { enabled?: boolean; selectedDate?: Date } = {}
+) => {
+  const { enabled = true, selectedDate } = options;
+  
+  return useQuery({
+    queryKey: ['chart-incident-types-pie-data', pillar, strategyName, selectedDate?.toISOString()],
+    queryFn: async () => {
+      return await chartTransformationService.getIncidentTypesPieChartData(pillar, strategyName);
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on insufficient data errors
+      if (error instanceof InsufficientDataError) {
+        return false;
+      }
+      return failureCount < 2;
+    }
+  });
+};
+
+/**
  * Hook for checking data sufficiency without fetching full chart data
  */
 export const useChartDataSufficiency = (pillar: PillarName) => {

@@ -11,7 +11,7 @@ import { saveMeetingNotesToFile, loadMeetingNotesFromFile } from "@/utils/dataUt
 import { useDate } from "@/contexts/DateContext";
 import { PillarGraphsPane } from "@/components/pillar/PillarGraphsPane";
 import { usePillarData } from "@/hooks/usePillarData";
-import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useChartData";
+import { useChartDataWithStrategy, useInvalidateChartData, useIncidentTypesPieChartData } from "@/hooks/useChartData";
 import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
@@ -69,6 +69,7 @@ const safetyActions = [
 export const Safety = () => {
   const { selectedDate } = useDate();
   const [selectedTimePeriod, setSelectedTimePeriod] = useState("week");
+  const [pieChartTimePeriod, setPieChartTimePeriod] = useState("week");
   const { 
     meetingNote, 
     actionItems, 
@@ -104,14 +105,25 @@ export const Safety = () => {
     selectedDate: selectedDate
   });
 
+  // Get incident types pie chart data with independent time period
+  const {
+    data: incidentTypesData,
+    isLoading: isIncidentTypesLoading,
+    isError: isIncidentTypesError,
+    refetch: refetchIncidentTypesData
+  } = useIncidentTypesPieChartData('safety', pieChartTimePeriod, {
+    selectedDate: selectedDate
+  });
+
   const invalidateChartData = useInvalidateChartData();
 
   // Invalidate chart data when date changes to ensure fresh data
   useEffect(() => {
     refetchChartData();
-  }, [selectedDate, refetchChartData]);
+    refetchIncidentTypesData();
+  }, [selectedDate, refetchChartData, refetchIncidentTypesData]);
 
-  if (isLoading || isChartLoading) {
+  if (isLoading || isChartLoading || isIncidentTypesLoading) {
     return (
       <PillarLayout
         letter="S"
@@ -127,19 +139,25 @@ export const Safety = () => {
     );
   }
 
+  // Determine if we have real data for incident types (separate from regular pie chart)
+  const hasIncidentTypesData = incidentTypesData && incidentTypesData.length > 0;
+  const pieChartTimePeriodConfig = getTimePeriodConfig(pieChartTimePeriod);
+
   const graphsPane = (
     <PillarGraphsPane
       pillarName="Safety"
       pillarColor="safety"
       lineChartData={lineData}
-      pieChartData={pieData}
+      pieChartData={incidentTypesData || []}
       lineChartTitle={`Safety Incidents - ${timePeriodConfig.label} Trend ${hasRealData ? '' : '(No Data)'}`}
-      pieChartTitle={`Safety Incident Types ${hasRealData ? '' : '(No Data)'}`}
+      pieChartTitle={`Safety Incident Types ${hasIncidentTypesData ? '' : '(No Data)'}`}
       formatValue={(value) => value.toString()}
       hasRealData={hasRealData}
-      isLoading={isChartLoading}
+      isLoading={isChartLoading || isIncidentTypesLoading}
       selectedTimePeriod={selectedTimePeriod}
       onTimePeriodChange={setSelectedTimePeriod}
+      pieChartTimePeriod={pieChartTimePeriod}
+      onPieChartTimePeriodChange={setPieChartTimePeriod}
       chartType="column"
     />
   );
@@ -155,6 +173,7 @@ export const Safety = () => {
       onDataChange={() => {
         refetch();
         refetchChartData();
+        refetchIncidentTypesData();
       }}
     >
       <div className="space-y-6">

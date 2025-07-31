@@ -30,6 +30,8 @@ interface PillarGraphsPaneProps {
   isLoading?: boolean;
   selectedTimePeriod?: string;
   onTimePeriodChange?: (period: string) => void;
+  pieChartTimePeriod?: string;
+  onPieChartTimePeriodChange?: (period: string) => void;
   chartType?: 'line' | 'column';
 }
 
@@ -46,6 +48,8 @@ export const PillarGraphsPane = ({
   isLoading = false,
   selectedTimePeriod = "5m",
   onTimePeriodChange,
+  pieChartTimePeriod,
+  onPieChartTimePeriodChange,
   chartType = 'line'
 }: PillarGraphsPaneProps) => {
   // Helper function to render chart with no data fallback
@@ -111,7 +115,19 @@ export const PillarGraphsPane = ({
 
         {/* Pie Chart */}
         <Card className="p-4 shadow-lg">
-          <h3 className={`text-base font-semibold text-${pillarColor} mb-3`}>{pieChartTitle}</h3>
+          <div className="mb-3">
+            <h3 className={`text-base font-semibold text-${pillarColor} mb-2`}>{pieChartTitle}</h3>
+            {onPieChartTimePeriodChange && pieChartTimePeriod && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-medium text-muted-foreground">Time Period:</span>
+                <TimePeriodSelector
+                  selectedPeriod={pieChartTimePeriod}
+                  onPeriodChange={onPieChartTimePeriodChange}
+                  showLabel={false}
+                />
+              </div>
+            )}
+          </div>
           <div className="h-48">
             {renderChartContent(
               pieChartData,
