@@ -11,6 +11,8 @@ import {
   hasResponse,
   formatResponseForForm 
 } from '@/services/dataCollectionService';
+import { validateIncidentText, isIncidentField } from '@/services/incidentHistoryService';
+import { SMART_INCIDENT_FIELD_TYPE } from '@/constants/incidentConfiguration';
 import { 
   PillarQuestion, 
   FormData, 
@@ -150,6 +152,23 @@ export const useDataCollection = (
               newErrors.push({
                 field: question.id,
                 message: `${question.text} must be a selection`
+              });
+            }
+            break;
+            
+          case SMART_INCIDENT_FIELD_TYPE:
+            if (typeof value === 'string') {
+              const validation = validateIncidentText(value);
+              if (!validation.isValid) {
+                newErrors.push({
+                  field: question.id,
+                  message: validation.message || 'Invalid incident description'
+                });
+              }
+            } else if (value !== undefined && value !== null && value !== '') {
+              newErrors.push({
+                field: question.id,
+                message: `${question.text} must be text`
               });
             }
             break;

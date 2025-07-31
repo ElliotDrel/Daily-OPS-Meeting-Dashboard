@@ -152,6 +152,7 @@ export const DataCollectionModal = ({
                   value={formData[question.id]}
                   onChange={(value) => setValue(question.id, value)}
                   error={getFieldError(question.id)}
+                  pillar={pillar}
                 />
               ))}
             </div>

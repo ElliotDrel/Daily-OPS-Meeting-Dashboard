@@ -10,7 +10,7 @@ export interface SupabasePillarQuestion {
   pillar: string;
   question_id: string;
   question_text: string;
-  question_type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'multiselect';
+  question_type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'multiselect' | 'smart-incident-select';
   required: boolean;
   options: string[] | null;
   order_index: number;

@@ -5,7 +5,7 @@ export interface PillarQuestion {
   id: string;
   pillar: string;
   text: string;
-  type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'multiselect';
+  type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'multiselect' | 'smart-incident-select';
   required: boolean;
   options?: string[];
   order: number;

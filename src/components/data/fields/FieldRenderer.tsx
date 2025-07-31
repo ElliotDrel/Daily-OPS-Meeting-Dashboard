@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { SmartIncidentDropdown } from './SmartIncidentDropdown';
 import { PillarQuestion } from '@/types/dataCollection';
+import { SMART_INCIDENT_FIELD_TYPE, INCIDENT_FIELD_PATTERN } from '@/constants/incidentConfiguration';
 import { cn } from '@/lib/utils';
 
 interface FieldRendererProps {
@@ -15,9 +17,10 @@ interface FieldRendererProps {
   value: string | number | boolean | string[];
   onChange: (value: string | number | boolean | string[]) => void;
   error?: string;
+  pillar?: string; // Required for smart incident fields
 }
 
-export const FieldRenderer = ({ question, value, onChange, error }: FieldRendererProps) => {
+export const FieldRenderer = ({ question, value, onChange, error, pillar }: FieldRendererProps) => {
   const renderField = () => {
     switch (question.type) {
       case 'text':
@@ -49,6 +52,28 @@ export const FieldRenderer = ({ question, value, onChange, error }: FieldRendere
         );
 
       case 'textarea':
+        // Check if this is an incident field - if so, use smart dropdown instead
+        if (INCIDENT_FIELD_PATTERN.test(question.id)) {
+          if (!pillar) {
+            return (
+              <div className="text-muted-foreground text-sm">
+                Smart incident field requires pillar information
+              </div>
+            );
+          }
+          return (
+            <SmartIncidentDropdown
+              questionId={question.id}
+              pillar={pillar}
+              value={typeof value === 'string' ? value : ''}
+              onChange={(newValue) => onChange(newValue)}
+              error={error}
+              required={question.required}
+            />
+          );
+        }
+        
+        // Regular textarea for non-incident fields
         return (
           <Textarea
             id={question.id}
@@ -128,6 +153,25 @@ export const FieldRenderer = ({ question, value, onChange, error }: FieldRendere
           </div>
         );
       }
+
+      case SMART_INCIDENT_FIELD_TYPE:
+        if (!pillar) {
+          return (
+            <div className="text-muted-foreground text-sm">
+              Smart incident field requires pillar information
+            </div>
+          );
+        }
+        return (
+          <SmartIncidentDropdown
+            questionId={question.id}
+            pillar={pillar}
+            value={typeof value === 'string' ? value : ''}
+            onChange={(newValue) => onChange(newValue)}
+            error={error}
+            required={question.required}
+          />
+        );
 
       default:
         return (
