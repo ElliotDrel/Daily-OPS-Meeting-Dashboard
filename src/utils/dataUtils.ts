@@ -28,8 +28,7 @@ export const saveMeetingNotesToFile = async (updatedNotes: MeetingNote[], pillar
     });
     
     // In a real application, this would make an API call to save the data
-    // For now, we'll just log the update and store in localStorage as a fallback
-    console.log('Updated meeting notes:', updatedData);
+    // For now, we'll store in localStorage as a fallback
     localStorage.setItem('meetingNotesData', JSON.stringify(updatedData));
     
     // You could also make an API call here:
@@ -40,7 +39,6 @@ export const saveMeetingNotesToFile = async (updatedNotes: MeetingNote[], pillar
     // });
     
   } catch (error) {
-    console.error('Error saving meeting notes:', error);
     // Fallback: save to localStorage
     localStorage.setItem(`meetingNotes_${pillar}`, JSON.stringify(updatedNotes));
   }
@@ -73,7 +71,6 @@ export const loadMeetingNotesFromFile = async (pillar: string): Promise<MeetingN
         keyPoints: note.keyPoints
       }));
   } catch (error) {
-    console.error('Error loading meeting notes:', error);
     return [];
   }
 };

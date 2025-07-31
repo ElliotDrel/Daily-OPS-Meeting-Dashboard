@@ -57,19 +57,6 @@ function hasValidActionItems(items: ActionItem[] | null | undefined): boolean {
     return hasValidDesc;
   });
   
-  // DEBUG: Log validation details
-  if (items.length > 0) {
-    console.log('🔍 hasValidActionItems check:', {
-      itemsCount: items.length,
-      result,
-      sampleItems: items.slice(0, 3).map(item => ({
-        id: item.id,
-        description: item.description,
-        hasDesc: !!item.description,
-        trimLength: item.description?.trim().length || 0
-      }))
-    });
-  }
   
   return result;
 }
@@ -140,13 +127,6 @@ export const useActionItemsDisplayLogic = ({
     const normalizedYesterday = yesterdayActionItems ?? [];
     const normalizedLastRecorded = lastRecordedActionItems ?? [];
     
-    // DEBUG: Log raw input data
-    console.log('🔍 RAW INPUT DATA:', {
-      selectedDate,
-      yesterdayItems: normalizedYesterday.length,
-      lastRecordedItems: normalizedLastRecorded.length,
-      loadingStates: { isLoading, isYesterdayLoading, isLastRecordedActionItemsLoading }
-    });
     
     // Calculate yesterday date string for validation
     const yesterdayDate = (() => {
@@ -179,24 +159,6 @@ export const useActionItemsDisplayLogic = ({
     // Only show yesterday when we're not showing last recorded (mutually exclusive)
     const shouldShowYesterday = !shouldShowLastRecorded;
     
-    // DEBUG: Log the logic decisions
-    console.log('🔍 ACTION ITEMS DISPLAY LOGIC:', {
-      isReady,
-      yesterdayHasContent,
-      lastRecordedHasContent,
-      isValidLastRecorded,
-      shouldShowLastRecorded,
-      yesterdayItemsCount: normalizedYesterday.length,
-      lastRecordedItemsCount: normalizedLastRecorded.length,
-      yesterdayDate,
-      loadingStates: { isLoading, isYesterdayLoading, isLastRecordedActionItemsLoading },
-      lastRecordedItems: normalizedLastRecorded.slice(0, 3).map(item => ({ 
-        date: item.item_date, 
-        desc: item.description?.substring(0, 50),
-        hasDesc: !!item.description,
-        descTrimLength: item.description?.trim().length 
-      }))
-    });
     
     // Prepare display data
     const yesterdayDisplay = {

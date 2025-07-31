@@ -101,7 +101,6 @@ export const getIncidentHistory = async (
       error: undefined
     };
   } catch (error) {
-    console.error('Error getting incident history:', error);
     return {
       options: [],
       error: VALIDATION_MESSAGES.NO_DATA_AVAILABLE

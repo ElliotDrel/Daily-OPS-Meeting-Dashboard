@@ -46,21 +46,13 @@ export class WeekStrategy extends BaseTimePeriodStrategy {
     valueExtractor: (response: PillarResponse) => number,
     referenceDate?: Date
   ): LineChartData[] {
-    console.log(`[WeekStrategy] Starting aggregation with ${responses.length} responses`);
-    
     if (!this.canHandle(responses)) {
-      console.log(`[WeekStrategy] Cannot handle responses - returning empty array`);
       return [];
     }
     
     const today = referenceDate || getTodayNormalized();
-    console.log(`[WeekStrategy] Using reference date: ${today.toISOString().split('T')[0]}`);
-    
     const dateRange = this.calculateDateRange(today);
-    console.log(`[WeekStrategy] Date range: ${dateRange.startDate.toISOString().split('T')[0]} to ${dateRange.endDate.toISOString().split('T')[0]}`);
-    
     const filteredResponses = this.filterResponsesByDateRange(responses, dateRange);
-    console.log(`[WeekStrategy] Filtered responses: ${filteredResponses.length}`);
     
     // Group responses by date
     const responsesByDate = this.groupResponsesByDate(filteredResponses);
@@ -91,11 +83,8 @@ export class WeekStrategy extends BaseTimePeriodStrategy {
         0, // Target is always 0 for safety incidents
         dataType
       ));
-      
-      console.log(`[WeekStrategy] Created chart point: ${period.label} = ${totalValue}`);
     });
     
-    console.log(`[WeekStrategy] Final chart data (${chartData.length} points):`, chartData);
     return chartData;
   }
 }

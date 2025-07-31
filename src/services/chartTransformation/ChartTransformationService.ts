@@ -135,7 +135,6 @@ class ChartTransformationService implements IChartTransformationService {
 
       // Parse selected date or use today
       const referenceDate = selectedDate ? new Date(selectedDate) : undefined;
-      console.log(`[ChartTransformationService] Using reference date: ${referenceDate ? referenceDate.toISOString().split('T')[0] : 'today'}`);
 
       // Calculate date range for data fetching
       const dateRange = strategy.calculateDateRange(referenceDate);
@@ -156,10 +155,7 @@ class ChartTransformationService implements IChartTransformationService {
 
       // Use strategy to aggregate data
       const valueExtractor = transformer.getValueExtractor();
-      console.log(`[ChartTransformationService] Using strategy ${strategyName} with ${responses.length} responses`);
-      console.log(`[ChartTransformationService] Date range: ${dateRange.startDate.toISOString().split('T')[0]} to ${dateRange.endDate.toISOString().split('T')[0]}`);
       let chartData = strategy.aggregateToChartData(responses, valueExtractor, referenceDate);
-      console.log(`[ChartTransformationService] Strategy generated ${chartData.length} chart points:`, chartData);
 
       // Apply targets to chart data using pillar-specific configuration
       chartData = this.applyTargetsToLineChart(chartData, pillar);
@@ -262,7 +258,6 @@ class ChartTransformationService implements IChartTransformationService {
 
       return responses.length >= minRequired;
     } catch (error) {
-      console.error(`Error checking data sufficiency for ${pillar}:`, error);
       return false;
     }
   }
@@ -307,7 +302,6 @@ class ChartTransformationService implements IChartTransformationService {
         newestDataDate: dateRange.newest
       };
     } catch (error) {
-      console.error(`Error getting data status for ${pillar}:`, error);
       return {
         hasLineData: false,
         hasPieData: false,
@@ -325,9 +319,6 @@ class ChartTransformationService implements IChartTransformationService {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     
-    console.log(`[ChartTransformationService] Fetching ${pillar} responses for last ${days} days`);
-    console.log(`[ChartTransformationService] Cutoff date: ${cutoffDate.toISOString().split('T')[0]}`);
-    
     const { data, error } = await supabase
       .from('pillar_responses')
       .select('*')
@@ -339,12 +330,7 @@ class ChartTransformationService implements IChartTransformationService {
       throw new Error(`Database error fetching ${pillar} responses: ${error.message}`);
     }
 
-    console.log(`[ChartTransformationService] Found ${(data || []).length} responses from database`);
-    if (data && data.length > 0) {
-      console.log(`[ChartTransformationService] Sample response:`, data[0]);
-    }
-
-    // Transform database format to app format
+// Transform database format to app format
     return (data || []).map(dbResponse => ({
       id: dbResponse.id,
       userId: dbResponse.user_id,
@@ -367,8 +353,6 @@ class ChartTransformationService implements IChartTransformationService {
     const startDateStr = startDate.toISOString().split('T')[0];
     const endDateStr = endDate.toISOString().split('T')[0];
     
-    console.log(`[ChartTransformationService] Fetching ${pillar} responses from ${startDateStr} to ${endDateStr}`);
-    
     const { data, error } = await supabase
       .from('pillar_responses')
       .select('*')
@@ -381,12 +365,7 @@ class ChartTransformationService implements IChartTransformationService {
       throw new Error(`Database error fetching ${pillar} responses: ${error.message}`);
     }
 
-    console.log(`[ChartTransformationService] Found ${(data || []).length} responses from database`);
-    if (data && data.length > 0) {
-      console.log(`[ChartTransformationService] Sample response:`, data[0]);
-    }
-
-    // Transform database format to app format
+// Transform database format to app format
     return (data || []).map(dbResponse => ({
       id: dbResponse.id,
       userId: dbResponse.user_id,
@@ -438,8 +417,6 @@ class ChartTransformationService implements IChartTransformationService {
       const responses = await this.getResponsesForPillar(pillar, lookbackDays);
       const dateRange = dateUtils.getDateRange(responses);
       
-      console.log(`[ChartTransformationService] Strategy '${strategyName}' data status: ${responses.length} responses, minimum needed: ${strategyMinimum}`);
-      
       return {
         hasLineData: responses.length >= strategyMinimum,
         hasPieData: responses.length >= Math.min(3, strategyMinimum), // Pie charts need fewer points
@@ -449,7 +426,6 @@ class ChartTransformationService implements IChartTransformationService {
         strategyMinimum
       };
     } catch (error) {
-      console.error(`Error getting strategy-aware data status for ${pillar}:`, error);
       return {
         hasLineData: false,
         hasPieData: false,

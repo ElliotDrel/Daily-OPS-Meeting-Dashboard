@@ -39,8 +39,6 @@ export class StrategyFactory implements TimePeriodStrategyFactory {
     defaultStrategies.forEach(strategy => {
       this.registerStrategy(strategy);
     });
-    
-    console.log(`[StrategyFactory] Initialized ${defaultStrategies.length} strategies`);
   }
   
   /**
@@ -49,7 +47,6 @@ export class StrategyFactory implements TimePeriodStrategyFactory {
   getStrategy(strategyName: string): TimePeriodStrategy | null {
     const strategy = this.strategies.get(strategyName);
     if (!strategy) {
-      console.warn(`[StrategyFactory] Strategy not found: ${strategyName}`);
       return null;
     }
     return strategy;
@@ -67,12 +64,7 @@ export class StrategyFactory implements TimePeriodStrategyFactory {
    */
   registerStrategy(strategy: TimePeriodStrategy): void {
     const name = strategy.getStrategyName();
-    if (this.strategies.has(name)) {
-      console.warn(`[StrategyFactory] Overwriting existing strategy: ${name}`);
-    }
-    
     this.strategies.set(name, strategy);
-    console.log(`[StrategyFactory] Registered strategy: ${name}`);
   }
   
   /**

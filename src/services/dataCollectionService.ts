@@ -62,24 +62,18 @@ const transformResponse = (dbResponse: SupabasePillarResponse): PillarResponse =
 
 // Get questions for a specific pillar
 export const getQuestionsForPillar = async (pillar: string): Promise<PillarQuestion[]> => {
-  try {
-    const { data, error } = await supabase
-      .from('pillar_questions')
-      .select('*')
-      .eq('pillar', pillar)
-      .order('order_index', { ascending: true });
+  const { data, error } = await supabase
+    .from('pillar_questions')
+    .select('*')
+    .eq('pillar', pillar)
+    .order('order_index', { ascending: true });
 
-    if (error) {
-      console.error('Error fetching questions from database:', error);
-      throw new Error(`Failed to load questions for ${pillar}: ${error.message}`);
-    }
-
-    // Return empty array if no questions found (this is valid - some pillars may not have questions configured yet)
-    return (data || []).map(transformQuestion);
-  } catch (error) {
-    console.error('Error in getQuestionsForPillar:', error);
-    throw error; // Re-throw to let the UI handle the error state
+  if (error) {
+    throw new Error(`Failed to load questions for ${pillar}: ${error.message}`);
   }
+
+  // Return empty array if no questions found (this is valid - some pillars may not have questions configured yet)
+  return (data || []).map(transformQuestion);
 };
 
 // Get visible questions based on form data and conditional logic
@@ -166,7 +160,6 @@ export const saveResponse = async (
       return transformResponse(data);
     }
   } catch (error) {
-    console.error('Error saving response:', error);
     throw new Error('Failed to save response');
   }
 };
@@ -191,7 +184,6 @@ export const getResponse = async (
     
     return data ? transformResponse(data) : null;
   } catch (error) {
-    console.error('Error getting response:', error);
     throw new Error('Failed to load response');
   }
 };
@@ -215,7 +207,6 @@ export const hasResponse = async (
     if (error) throw error;
     return !!data;
   } catch (error) {
-    console.error('Error checking response existence:', error);
     return false;
   }
 };
@@ -236,7 +227,6 @@ export const deleteResponse = async (
 
     if (error) throw error;
   } catch (error) {
-    console.error('Error deleting response:', error);
     throw new Error('Failed to delete response');
   }
 };
@@ -258,7 +248,6 @@ export const getResponsesForPillar = async (
     
     return (data || []).map(transformResponse);
   } catch (error) {
-    console.error('Error getting pillar responses:', error);
     throw new Error('Failed to load pillar responses');
   }
 };

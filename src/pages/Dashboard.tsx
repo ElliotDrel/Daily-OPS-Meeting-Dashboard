@@ -46,12 +46,10 @@ export const Dashboard = () => {
   };
   
   const handleCellClick = (letter: string, day: number) => {
-    console.log(`${letter} - Day ${day} clicked`);
     // Handle individual day click logic here
   };
   
   const handleIncidentClick = (incident: Incident) => {
-    console.log('Incident clicked:', incident);
     // Handle incident click logic here
   };
   return (

@@ -227,7 +227,6 @@ export const useDataCollection = (
       }, 2000);
     },
     onError: (error) => {
-      console.error('Error submitting form:', error);
       setErrors([{ 
         field: 'general', 
         message: 'Failed to save data. Please try again.' 

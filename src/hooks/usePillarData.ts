@@ -148,7 +148,6 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         table: 'meeting_notes',
         filter: `pillar=eq.${pillar}` 
       }, (payload) => {
-        console.log('Meeting note changed:', payload)
         queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, selectedDate] })
         queryClient.invalidateQueries({ queryKey: ['meeting-note', pillar, yesterdayString] })
       })
@@ -158,7 +157,6 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
         table: 'action_items',
         filter: `pillar=eq.${pillar}` 
       }, (payload) => {
-        console.log('Action item changed:', payload)
         queryClient.invalidateQueries({ queryKey: ['action-items', pillar, selectedDate] })
         queryClient.invalidateQueries({ queryKey: ['action-items', pillar, yesterdayString] })
       })

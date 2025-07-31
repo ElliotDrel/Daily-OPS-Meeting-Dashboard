@@ -36,19 +36,15 @@ export abstract class BaseTimePeriodStrategy implements TimePeriodStrategy {
     responses: PillarResponse[], 
     dateRange: StrategyDateRange
   ): PillarResponse[] {
-    console.log(`[BaseStrategy] Filtering ${responses.length} responses for date range ${dateRange.startDate.toISOString().split('T')[0]} to ${dateRange.endDate.toISOString().split('T')[0]}`);
-    
     const filtered = responses.filter(response => {
       // Parse date string as local date to avoid timezone issues
       const [year, month, day] = response.responseDate.split('-').map(Number);
       const responseDate = new Date(year, month - 1, day); // month is 0-indexed
       const inRange = isDateInRange(responseDate, dateRange.startDate, dateRange.endDate);
       
-      console.log(`[BaseStrategy] Response ${response.responseDate}: parsed as ${responseDate.toISOString().split('T')[0]}, in range: ${inRange}`);
       return inRange;
     });
     
-    console.log(`[BaseStrategy] Filtered to ${filtered.length} responses`);
     return filtered;
   }
   

@@ -39,13 +39,9 @@ export class SafetyTransformer implements PillarTransformer {
       if (response.pillar === 'safety') {
         for (const fieldName of possibleFieldNames) {
           if (response.responses[fieldName] !== undefined) {
-            console.log(`[SafetyTransformer] Found incident count field: '${fieldName}'`);
             return fieldName;
           }
         }
-        // Log available fields for debugging
-        const availableFields = Object.keys(response.responses);
-        console.log(`[SafetyTransformer] Available fields in response:`, availableFields);
       }
     }
     
@@ -61,7 +57,6 @@ export class SafetyTransformer implements PillarTransformer {
     const incidentField = this.findIncidentCountField(responses);
     const canTransform = incidentField !== null;
     
-    console.log(`[SafetyTransformer] Can transform: ${canTransform}, incident field: ${incidentField}`);
     return canTransform;
   }
 
@@ -73,18 +68,13 @@ export class SafetyTransformer implements PillarTransformer {
     config: ChartTargetConfig,
     timePeriod?: { days: number; useDailyAggregation: boolean }
   ): Promise<LineChartData[]> {
-    console.log(`[SafetyTransformer] Processing ${responses.length} responses`);
-    console.log(`[SafetyTransformer] Time period:`, timePeriod);
-    
     if (!this.canTransform(responses)) {
-      console.log(`[SafetyTransformer] Cannot transform responses - missing safety-incidents-count`);
       return [];
     }
 
     // Find the incident count field dynamically
     const incidentField = this.findIncidentCountField(responses);
     if (!incidentField) {
-      console.log(`[SafetyTransformer] No incident count field found`);
       return [];
     }
     
@@ -92,7 +82,6 @@ export class SafetyTransformer implements PillarTransformer {
     const valueExtractor = (response: PillarResponse): number => {
       const incidentCount = response.responses[incidentField];
       const numValue = this.convertIncidentCountToNumber(incidentCount);
-      console.log(`[SafetyTransformer] Date: ${response.responseDate}, field: ${incidentField}, incidents: ${incidentCount} -> ${numValue}`);
       return numValue;
     };
 
@@ -100,17 +89,13 @@ export class SafetyTransformer implements PillarTransformer {
     let chartData: LineChartData[];
     
     if (timePeriod?.useDailyAggregation) {
-      console.log(`[SafetyTransformer] Using daily aggregation for ${timePeriod.days} days`);
       // Use daily aggregation for shorter periods
       chartData = aggregationUtils.aggregateToDaily(responses, valueExtractor, timePeriod.days);
     } else {
-      console.log(`[SafetyTransformer] Using monthly aggregation`);
       // Use monthly aggregation for longer periods
       const months = timePeriod ? Math.ceil(timePeriod.days / 30) : 5;
       chartData = aggregationUtils.aggregateToMonthly(responses, valueExtractor, months);
     }
-
-    console.log(`[SafetyTransformer] Generated ${chartData.length} chart data points:`, chartData);
 
     // Apply target values (safety target is always 0 incidents)
     return chartData.map(item => ({
@@ -130,7 +115,6 @@ export class SafetyTransformer implements PillarTransformer {
     // Find the incident count field dynamically
     const incidentField = this.findIncidentCountField(responses);
     if (!incidentField) {
-      console.log(`[SafetyTransformer] No incident count field found for pie chart`);
       return [];
     }
 
