@@ -118,21 +118,22 @@ export const Quality = () => {
     );
   }
   const graphsPane = (
-    <PillarGraphsPane
-      pillarName="Quality"
-      pillarColor="quality"
-      lineChartData={lineData}
-      pieChartData={pieData}
-      metrics={qualityMetrics}
-      lineChartTitle={`Quality Performance - ${timePeriodConfig.label} Trend ${hasRealData ? '' : '(No Data)'}`}
-      pieChartTitle={`Quality Metrics Distribution ${hasRealData ? '' : '(No Data)'}`}
-      formatValue={(value) => `${value}%`}
-      hasRealData={hasRealData}
-      isLoading={isChartLoading}
-      selectedTimePeriod={selectedTimePeriod}
-      onTimePeriodChange={setSelectedTimePeriod}
-      chartType="line"
-    />
+    <div className="space-y-4 p-4">
+      <div className="rounded-lg border bg-card text-card-foreground p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-quality mb-4">Quality Performance</h3>
+        <p className="text-muted-foreground mb-4">
+          To see quality performance data and analytics, click the link below:
+        </p>
+        <a 
+          href="https://docs.google.com/spreadsheets/d/16uWHAbSr03lm6CW1H5SzJ8OzhEZMX_IkLPWLDFI1i3I/edit?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-4 py-2 bg-quality text-white rounded-md hover:bg-quality/90 transition-colors"
+        >
+          View Quality Performance Data
+        </a>
+      </div>
+    </div>
   );
 
   return (
