@@ -17,7 +17,7 @@ interface PillarGraphsPaneProps {
     value: number;
     color: string;
   }>;
-  metrics: Array<{
+  metrics?: Array<{
     label: string;
     value: string;
     icon: React.ComponentType<{ className?: string }>;
@@ -38,7 +38,7 @@ export const PillarGraphsPane = ({
   pillarColor,
   lineChartData,
   pieChartData,
-  metrics,
+  metrics = [],
   lineChartTitle,
   pieChartTitle,
   formatValue = (value) => value.toString(),
@@ -126,22 +126,7 @@ export const PillarGraphsPane = ({
           </div>
         </Card>
 
-        {/* Metrics */}
-        <div className="space-y-2">
-          {metrics.map((metric, index) => (
-            <Card key={index} className="p-3 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${metric.color} shadow-sm`}>
-                  <metric.icon className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-lg font-bold text-foreground">{metric.value}</p>
-                  <p className="text-xs text-muted-foreground font-medium truncate">{metric.label}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+
       </div>
     </div>
   );

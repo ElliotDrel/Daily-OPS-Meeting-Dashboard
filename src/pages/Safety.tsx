@@ -15,12 +15,7 @@ import { useChartDataWithStrategy, useInvalidateChartData } from "@/hooks/useCha
 import { getTimePeriodConfig, mapLegacyPeriod } from "@/components/charts/TimePeriodSelector";
 
 
-const safetyMetrics = [
-  { label: "No Accidents", value: "12", icon: Shield, color: "bg-status-good" },
-  { label: "Near Misses", value: "3", icon: AlertTriangle, color: "bg-status-caution" },
-  { label: "Safety Incidents", value: "1", icon: AlertTriangle, color: "bg-status-issue" },
-  { label: "Safety Talks", value: "8", icon: Users, color: "bg-chart-blue" }
-];
+
 
 const actionItems = [
   { id: "1", text: "PPE Inspection", status: "good", count: 5 },
@@ -138,7 +133,6 @@ export const Safety = () => {
       pillarColor="safety"
       lineChartData={lineData}
       pieChartData={pieData}
-      metrics={safetyMetrics}
       lineChartTitle={`Safety Incidents - ${timePeriodConfig.label} Trend ${hasRealData ? '' : '(No Data)'}`}
       pieChartTitle={`Safety Incident Types ${hasRealData ? '' : '(No Data)'}`}
       formatValue={(value) => value.toString()}
