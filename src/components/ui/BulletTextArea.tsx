@@ -172,7 +172,7 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
       }, 0)
     }
 
-    const displayValue = value ? formatTextWithBullets(value) : BULLET
+    const displayValue = disabled && value ? formatTextWithBullets(value) : (value || BULLET)
 
     return (
       <>
