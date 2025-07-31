@@ -77,9 +77,14 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
   const year = referenceDate.getFullYear();
   const month = referenceDate.getMonth();
   
+  console.log(`[calculateMonthViewWeeks] Starting calculation for month ${month + 1}/${year} (reference date: ${referenceDate.toISOString().split('T')[0]})`);
+  
   // Get first and last day of the month
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
+  
+  console.log(`[calculateMonthViewWeeks] Month range: ${firstDay.toISOString().split('T')[0]} to ${lastDay.toISOString().split('T')[0]}`);
+  console.log(`[calculateMonthViewWeeks] First day of month is ${getDayName(firstDay.getDay())} (${firstDay.getDay()})`);
   
   const weeks: WeekInfo[] = [];
   let weekNumber = 1;
@@ -89,12 +94,19 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
   const firstMonday = new Date(firstDay);
   const dayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days to Monday
+  
+  console.log(`[calculateMonthViewWeeks] First day is ${getDayName(dayOfWeek)} (${dayOfWeek}), subtracting ${daysToSubtract} days to find Monday`);
+  
   firstMonday.setDate(firstDay.getDate() - daysToSubtract);
   currentDate = new Date(firstMonday);
+  
+  console.log(`[calculateMonthViewWeeks] First Monday starts at: ${firstMonday.toISOString().split('T')[0]} (${getDayName(firstMonday.getDay())})`);
   
   while (currentDate <= lastDay || currentDate.getDay() !== 1) {
     const weekStart = new Date(currentDate);
     const weekDates: Date[] = [];
+    
+    console.log(`[calculateMonthViewWeeks] Processing week ${weekNumber} starting from ${weekStart.toISOString().split('T')[0]} (${getDayName(weekStart.getDay())})`);
     
     // Collect 7 days for this week (Monday to Sunday)
     for (let i = 0; i < 7; i++) {
@@ -104,6 +116,9 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
       // Only include dates that fall within the target month
       if (dayDate.getMonth() === month) {
         weekDates.push(new Date(dayDate));
+        console.log(`[calculateMonthViewWeeks]   - Including ${dayDate.toISOString().split('T')[0]} (${getDayName(dayDate.getDay())}) in week ${weekNumber}`);
+      } else {
+        console.log(`[calculateMonthViewWeeks]   - Excluding ${dayDate.toISOString().split('T')[0]} (${getDayName(dayDate.getDay())} - month ${dayDate.getMonth() + 1}, target month ${month + 1})`);
       }
     }
     
@@ -112,6 +127,10 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
       // Week always ends on Sunday (6 days after Monday start)
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekStart.getDate() + 6);
+      
+      console.log(`[calculateMonthViewWeeks] Created week ${weekNumber} with ${weekDates.length} days`);
+      console.log(`[calculateMonthViewWeeks] Week ${weekNumber} range: ${weekStart.toISOString().split('T')[0]} to ${weekEnd.toISOString().split('T')[0]}`);
+      console.log(`[calculateMonthViewWeeks] Week ${weekNumber} dates:`, weekDates.map(d => d.toISOString().split('T')[0]));
       
       weeks.push({
         weekNumber,
@@ -122,16 +141,29 @@ export function calculateMonthViewWeeks(referenceDate: Date = new Date()): WeekI
       });
       
       weekNumber++;
+    } else {
+      console.log(`[calculateMonthViewWeeks] Skipping week ${weekNumber} - no dates in target month`);
     }
     
     // Move to next week
     currentDate.setDate(currentDate.getDate() + 7);
     
+    console.log(`[calculateMonthViewWeeks] Moving to next week starting: ${currentDate.toISOString().split('T')[0]} (${getDayName(currentDate.getDay())})`);
+    
     // Break if we've gone past the month and completed a full week
     if (currentDate.getMonth() !== month && currentDate.getDay() === 1) {
+      console.log(`[calculateMonthViewWeeks] Breaking - moved past target month and hit Monday`);
       break;
     }
   }
+  
+  console.log(`[calculateMonthViewWeeks] Final result: ${weeks.length} weeks generated`);
+  console.log(`[calculateMonthViewWeeks] Weeks summary:`, weeks.map(w => ({
+    label: w.label,
+    start: w.startDate.toISOString().split('T')[0],
+    end: w.endDate.toISOString().split('T')[0],
+    daysCount: w.dates.length
+  })));
   
   return weeks;
 }
@@ -212,7 +244,12 @@ export function isDateInRange(date: Date, startDate: Date, endDate: Date): boole
   const normalizedEnd = new Date(endDate);
   normalizedEnd.setHours(23, 59, 59, 999);
   
-  return normalizedDate >= normalizedStart && normalizedDate <= normalizedEnd;
+  const result = normalizedDate >= normalizedStart && normalizedDate <= normalizedEnd;
+  
+  console.log(`[isDateInRange] Checking if ${normalizedDate.toISOString().split('T')[0]} is in range [${normalizedStart.toISOString().split('T')[0]} to ${normalizedEnd.toISOString().split('T')[0]}]: ${result}`);
+  console.log(`[isDateInRange] Date comparison: ${normalizedDate.getTime()} >= ${normalizedStart.getTime()} = ${normalizedDate >= normalizedStart}, ${normalizedDate.getTime()} <= ${normalizedEnd.getTime()} = ${normalizedDate <= normalizedEnd}`);
+  
+  return result;
 }
 
 /**
@@ -222,4 +259,12 @@ export function getTodayNormalized(): Date {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return today;
+}
+
+/**
+ * Helper function to get day name from day number
+ */
+function getDayName(dayNumber: number): string {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return days[dayNumber] || 'Unknown';
 }
