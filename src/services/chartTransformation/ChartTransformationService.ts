@@ -406,12 +406,58 @@ class ChartTransformationService implements IChartTransformationService {
       case 'week':
         return 1; // Week view can work with just 1 data point
       case 'month':
-        return 3; // Month view needs at least a few weeks
+        return 2; // Month view needs at least 2 data points
       case '3month':
       case '6month':
-        return 5; // Multi-month views need more data points
+        return 3; // Multi-month views need more data points (reduced from 5)
       default:
-        return DEFAULT_CONFIG.minDataPointsForLine; // Default requirement
+        return 2; // Reduced default requirement for better compatibility
+    }
+  }
+
+  /**
+   * Get data status using strategy-aware minimums
+   */
+  async getDataStatusWithStrategy(pillar: PillarName, strategyName: string = 'month'): Promise<{
+    hasLineData: boolean;
+    hasPieData: boolean;
+    dataPointsCount: number;
+    oldestDataDate: string | null;
+    newestDataDate: string | null;
+    strategyMinimum: number;
+  }> {
+    try {
+      // Get strategy-specific minimum requirement
+      const strategyMinimum = this.getMinDataPointsForStrategy(strategyName);
+      
+      // Use a reasonable lookback period for the strategy
+      const lookbackDays = strategyName === 'week' ? 14 : 
+                          strategyName === 'month' ? 60 : 
+                          strategyName === '3month' ? 120 : 180;
+      
+      const responses = await this.getResponsesForPillar(pillar, lookbackDays);
+      const dateRange = dateUtils.getDateRange(responses);
+      
+      console.log(`[ChartTransformationService] Strategy '${strategyName}' data status: ${responses.length} responses, minimum needed: ${strategyMinimum}`);
+      
+      return {
+        hasLineData: responses.length >= strategyMinimum,
+        hasPieData: responses.length >= Math.min(3, strategyMinimum), // Pie charts need fewer points
+        dataPointsCount: responses.length,
+        oldestDataDate: dateRange.oldest,
+        newestDataDate: dateRange.newest,
+        strategyMinimum
+      };
+    } catch (error) {
+      console.error(`Error getting strategy-aware data status for ${pillar}:`, error);
+      return {
+        hasLineData: false,
+        hasPieData: false,
+        dataPointsCount: 0,
+        oldestDataDate: null,
+        newestDataDate: null,
+        strategyMinimum: this.getMinDataPointsForStrategy(strategyName)
+      };
     }
   }
 

@@ -18,16 +18,51 @@ export class SafetyTransformer implements PillarTransformer {
   }
 
   /**
+   * Find the incident count field name in responses (flexible field name detection)
+   */
+  private findIncidentCountField(responses: PillarResponse[]): string | null {
+    if (responses.length === 0) return null;
+    
+    // List of possible field names for incident count
+    const possibleFieldNames = [
+      'safety-incidents-count',
+      'incidents-count', 
+      'incident-count',
+      'incidents',
+      'safety-incidents',
+      'incidentCount',
+      'safetyIncidents'
+    ];
+    
+    // Check each response for any of these field names
+    for (const response of responses) {
+      if (response.pillar === 'safety') {
+        for (const fieldName of possibleFieldNames) {
+          if (response.responses[fieldName] !== undefined) {
+            console.log(`[SafetyTransformer] Found incident count field: '${fieldName}'`);
+            return fieldName;
+          }
+        }
+        // Log available fields for debugging
+        const availableFields = Object.keys(response.responses);
+        console.log(`[SafetyTransformer] Available fields in response:`, availableFields);
+      }
+    }
+    
+    return null;
+  }
+
+  /**
    * Check if this transformer can handle the given responses
    */
   canTransform(responses: PillarResponse[]): boolean {
     if (responses.length === 0) return false;
     
-    // Check if responses contain safety incident count data
-    return responses.some(response => 
-      response.pillar === 'safety' && 
-      response.responses['safety-incidents-count'] !== undefined
-    );
+    const incidentField = this.findIncidentCountField(responses);
+    const canTransform = incidentField !== null;
+    
+    console.log(`[SafetyTransformer] Can transform: ${canTransform}, incident field: ${incidentField}`);
+    return canTransform;
   }
 
   /**
@@ -46,11 +81,18 @@ export class SafetyTransformer implements PillarTransformer {
       return [];
     }
 
+    // Find the incident count field dynamically
+    const incidentField = this.findIncidentCountField(responses);
+    if (!incidentField) {
+      console.log(`[SafetyTransformer] No incident count field found`);
+      return [];
+    }
+    
     // Extract incident count values and convert to numbers
     const valueExtractor = (response: PillarResponse): number => {
-      const incidentCount = response.responses['safety-incidents-count'];
+      const incidentCount = response.responses[incidentField];
       const numValue = this.convertIncidentCountToNumber(incidentCount);
-      console.log(`[SafetyTransformer] Date: ${response.responseDate}, incidents: ${incidentCount} -> ${numValue}`);
+      console.log(`[SafetyTransformer] Date: ${response.responseDate}, field: ${incidentField}, incidents: ${incidentCount} -> ${numValue}`);
       return numValue;
     };
 
@@ -84,13 +126,20 @@ export class SafetyTransformer implements PillarTransformer {
     if (!this.canTransform(responses)) {
       return [];
     }
+    
+    // Find the incident count field dynamically
+    const incidentField = this.findIncidentCountField(responses);
+    if (!incidentField) {
+      console.log(`[SafetyTransformer] No incident count field found for pie chart`);
+      return [];
+    }
 
     // Count incident levels
     const incidentLevelCounts = new Map<string, number>();
     
     responses.forEach(response => {
-      const incidentCount = response.responses['safety-incidents-count'];
-      if (incidentCount) {
+      const incidentCount = response.responses[incidentField];
+      if (incidentCount !== undefined) {
         const level = this.getIncidentLevel(incidentCount);
         incidentLevelCounts.set(level, (incidentLevelCounts.get(level) || 0) + 1);
       }
@@ -170,7 +219,25 @@ export class SafetyTransformer implements PillarTransformer {
    */
   getValueExtractor(): (response: PillarResponse) => number {
     return (response: PillarResponse): number => {
-      const incidentCount = response.responses['safety-incidents-count'];
+      // Try to find incident count field dynamically
+      const possibleFieldNames = [
+        'safety-incidents-count',
+        'incidents-count', 
+        'incident-count',
+        'incidents',
+        'safety-incidents',
+        'incidentCount',
+        'safetyIncidents'
+      ];
+      
+      let incidentCount: any = 0;
+      for (const fieldName of possibleFieldNames) {
+        if (response.responses[fieldName] !== undefined) {
+          incidentCount = response.responses[fieldName];
+          break;
+        }
+      }
+      
       return this.convertIncidentCountToNumber(incidentCount);
     };
   }
@@ -197,8 +264,19 @@ export class SafetyTransformer implements PillarTransformer {
     let incidentFreeDays = 0;
     let worstDay: { date: string; incidents: number } | null = null;
 
+    // Find the incident count field dynamically
+    const incidentField = this.findIncidentCountField(responses);
+    if (!incidentField) {
+      return {
+        totalIncidents: 0,
+        incidentFreeDays: 0,
+        averageIncidentsPerMonth: 0,
+        worstDay: null
+      };
+    }
+    
     responses.forEach(response => {
-      const incidents = this.convertIncidentCountToNumber(response.responses['safety-incidents-count']);
+      const incidents = this.convertIncidentCountToNumber(response.responses[incidentField]);
       totalIncidents += incidents;
       
       if (incidents === 0) {

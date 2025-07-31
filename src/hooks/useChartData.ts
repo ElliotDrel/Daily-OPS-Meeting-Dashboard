@@ -183,11 +183,16 @@ export const useChartDataWithStrategy = (
     cacheTime: 5 * 60 * 1000   // 5 minutes
   });
 
-  // Determine if we have real data
+  // Determine if we have real data - strategy-based approach
   const hasRealData = React.useMemo(() => {
-    if (!statusQuery.data) return false;
-    return statusQuery.data.hasLineData && statusQuery.data.hasPieData;
-  }, [statusQuery.data]);
+    // For strategy-based charts, we base hasRealData on actual data returned
+    // rather than strict minimum requirements from statusQuery
+    const hasLineChartData = lineQuery.data && lineQuery.data.length > 0;
+    const hasPieChartData = pieQuery.data && pieQuery.data.length > 0;
+    
+    // For line charts with strategy, we only need line data (pie is optional)
+    return hasLineChartData || hasPieChartData;
+  }, [lineQuery.data, pieQuery.data]);
 
   // Handle refetch for all queries
   const refetch = () => {

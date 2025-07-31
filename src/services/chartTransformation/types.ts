@@ -51,6 +51,16 @@ export interface ChartTransformationService {
     oldestDataDate: string | null;
     newestDataDate: string | null;
   }>;
+  
+  // Get strategy-aware data sufficiency status
+  getDataStatusWithStrategy(pillar: PillarName, strategyName?: string): Promise<{
+    hasLineData: boolean;
+    hasPieData: boolean;
+    dataPointsCount: number;
+    oldestDataDate: string | null;
+    newestDataDate: string | null;
+    strategyMinimum: number;
+  }>;
 }
 
 // Individual pillar transformer interface
