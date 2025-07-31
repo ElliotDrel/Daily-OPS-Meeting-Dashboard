@@ -101,4 +101,5 @@ export interface DataCollectionButtonProps {
   pillar: string;
   selectedDate: string;
   className?: string;
+  onDataChange?: () => void;
 }

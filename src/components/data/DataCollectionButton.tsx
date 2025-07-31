@@ -12,7 +12,8 @@ import { DataCollectionButtonProps } from '@/types/dataCollection';
 export const DataCollectionButton = ({ 
   pillar, 
   selectedDate, 
-  className 
+  className,
+  onDataChange
 }: DataCollectionButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -76,6 +77,8 @@ export const DataCollectionButton = ({
   const handleModalSuccess = () => {
     setIsModalOpen(false);
     // The button state will update automatically through the hook
+    // Trigger data refresh if callback provided
+    onDataChange?.();
   };
 
   return (

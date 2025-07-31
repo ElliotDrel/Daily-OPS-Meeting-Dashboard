@@ -35,7 +35,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   const yesterdayString = format(yesterdayDate, 'yyyy-MM-dd')
 
   // Load single meeting note for the day
-  const { data: meetingNote = null, isLoading: notesLoading } = useQuery({
+  const { data: meetingNote = null, isLoading: notesLoading, refetch: refetchMeetingNote } = useQuery({
     queryKey: ['meeting-note', pillar, selectedDate],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -59,7 +59,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   })
 
   // Load yesterday's single meeting note
-  const { data: yesterdayMeetingNote = null, isLoading: yesterdayNotesLoading } = useQuery({
+  const { data: yesterdayMeetingNote = null, isLoading: yesterdayNotesLoading, refetch: refetchYesterdayMeetingNote } = useQuery({
     queryKey: ['meeting-note', pillar, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -83,7 +83,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   })
 
   // Load last recorded meeting note (FIXED: now filters by date to prevent future notes)
-  const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading } = useQuery({
+  const { data: lastRecordedNote = null, isLoading: lastRecordedNotesLoading, refetch: refetchLastRecordedNote } = useQuery({
     queryKey: ['last-meeting-note', pillar, selectedDate, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -107,7 +107,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   })
 
   // Load action items  
-  const { data: actionItems = [], isLoading: itemsLoading } = useQuery({
+  const { data: actionItems = [], isLoading: itemsLoading, refetch: refetchActionItems } = useQuery({
     queryKey: ['action-items', pillar, selectedDate],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -123,7 +123,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
   })
 
   // Load yesterday's action items
-  const { data: yesterdayActionItems = [], isLoading: yesterdayItemsLoading } = useQuery({
+  const { data: yesterdayActionItems = [], isLoading: yesterdayItemsLoading, refetch: refetchYesterdayActionItems } = useQuery({
     queryKey: ['action-items', pillar, yesterdayString],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -294,6 +294,15 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
+  // Handle refetch for all queries
+  const refetch = () => {
+    refetchMeetingNote();
+    refetchActionItems();
+    refetchYesterdayMeetingNote();
+    refetchYesterdayActionItems();
+    refetchLastRecordedNote();
+  };
+
   return {
     meetingNote,
     actionItems,
@@ -314,6 +323,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     isDeletingNote: deleteNoteMutation.isPending,
     isCreatingItem: createItemMutation.isPending,
     isUpdatingItem: updateItemMutation.isPending,
-    isDeletingItem: deleteItemMutation.isPending
+    isDeletingItem: deleteItemMutation.isPending,
+    refetch
   }
 }

@@ -28,6 +28,7 @@ interface PillarLayoutProps {
     count?: number;
   }>;
   graphsPane?: React.ReactNode;
+  onDataChange?: () => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -60,7 +61,8 @@ export const PillarLayout = ({
   children,
   squares,
   actionItems = [],
-  graphsPane
+  graphsPane,
+  onDataChange
 }: PillarLayoutProps) => {
   const { selectedDate, setSelectedDate } = useDate();
   const [month, setMonth] = useState(new Date());
@@ -104,6 +106,7 @@ export const PillarLayout = ({
               <DataCollectionButton
                 pillar={pillarName.toLowerCase()}
                 selectedDate={format(selectedDate, 'yyyy-MM-dd')}
+                onDataChange={onDataChange}
               />
               
               {/* Date Controls */}
