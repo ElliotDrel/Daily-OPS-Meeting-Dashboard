@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/sonner";
 import { Copy, ChevronDown, ChevronRight, Check } from "lucide-react";
 
@@ -16,6 +17,8 @@ export const CreateMeetingEmail = () => {
   const [promptCopied, setPromptCopied] = useState(false);
   const [emailsCopied, setEmailsCopied] = useState(false);
   const [subjectCopied, setSubjectCopied] = useState(false);
+  const [flashTranscript, setFlashTranscript] = useState(false);
+  const [flashNotes, setFlashNotes] = useState(false);
 
   const isFormValid = transcript.trim() !== "" && meetingNotes.trim() !== "";
 
@@ -375,6 +378,22 @@ ${templateSection}`;
     setShowEmailsPreview(false);
   };
 
+  const handleValidationError = () => {
+    toast.error("Please fill in both text areas to enable copying", {
+      duration: 3000,
+    });
+
+    // Flash empty text areas
+    if (transcript.trim() === '') {
+      setFlashTranscript(true);
+      setTimeout(() => setFlashTranscript(false), 1000);
+    }
+    if (meetingNotes.trim() === '') {
+      setFlashNotes(true);
+      setTimeout(() => setFlashNotes(false), 1000);
+    }
+  };
+
   const emailSubject = "Meeting Overview & Action Items - Daily Tier 3 OPS Meeting";
   
   const emails = `Adam Stroobandt <adam.stroobandt@guardianbikes.com>,
@@ -398,7 +417,10 @@ Troy Mobley <troy.mobley@guardianbikes.com>,
 Brian Riley <brian@guardianbikes.com>`;
 
   const handleCopyPrompt = async () => {
-    if (!isFormValid) return;
+    if (!isFormValid) {
+      handleValidationError();
+      return;
+    }
 
     try {
       const prompt = generatePrompt();
@@ -414,7 +436,10 @@ Brian Riley <brian@guardianbikes.com>`;
   };
 
   const handleCopyEmails = async () => {
-    if (!isFormValid) return;
+    if (!isFormValid) {
+      handleValidationError();
+      return;
+    }
 
     try {
       await navigator.clipboard.writeText(emails);
@@ -429,7 +454,10 @@ Brian Riley <brian@guardianbikes.com>`;
   };
 
   const handleCopySubject = async () => {
-    if (!isFormValid) return;
+    if (!isFormValid) {
+      handleValidationError();
+      return;
+    }
 
     try {
       await navigator.clipboard.writeText(emailSubject);
@@ -477,13 +505,28 @@ Brian Riley <brian@guardianbikes.com>`;
                 <Label htmlFor="transcript" className="text-base font-medium">
                   Paste Transcript Here
                 </Label>
-                <Textarea
-                  id="transcript"
-                  placeholder="Paste your meeting transcript here..."
-                  className="resize-y"
-                  value={transcript}
-                  onChange={(e) => setTranscript(e.target.value)}
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Textarea
+                        id="transcript"
+                        placeholder="Paste your meeting transcript here..."
+                        className={`resize-y transition-all duration-300 ${
+                          transcript.trim() === '' ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                        } ${
+                          flashTranscript ? 'border-red-500 bg-red-50 shadow-lg shadow-red-200' : ''
+                        }`}
+                        value={transcript}
+                        onChange={(e) => setTranscript(e.target.value)}
+                      />
+                    </TooltipTrigger>
+                    {transcript.trim() === '' && (
+                      <TooltipContent>
+                        <p>Please fill in both text areas to enable all copy buttons</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Meeting Notes Input */}
@@ -491,13 +534,28 @@ Brian Riley <brian@guardianbikes.com>`;
                 <Label htmlFor="meeting-notes" className="text-base font-medium">
                   Paste Meeting Notes Here
                 </Label>
-                <Textarea
-                  id="meeting-notes"
-                  placeholder="Paste your meeting notes here..."
-                  className="resize-y"
-                  value={meetingNotes}
-                  onChange={(e) => setMeetingNotes(e.target.value)}
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Textarea
+                        id="meeting-notes"
+                        placeholder="Paste your meeting notes here..."
+                        className={`resize-y transition-all duration-300 ${
+                          meetingNotes.trim() === '' ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
+                        } ${
+                          flashNotes ? 'border-red-500 bg-red-50 shadow-lg shadow-red-200' : ''
+                        }`}
+                        value={meetingNotes}
+                        onChange={(e) => setMeetingNotes(e.target.value)}
+                      />
+                    </TooltipTrigger>
+                    {meetingNotes.trim() === '' && (
+                      <TooltipContent>
+                        <p>Please fill in both text areas to enable all copy buttons</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Instructions */}
@@ -531,7 +589,6 @@ Brian Riley <brian@guardianbikes.com>`;
               <div className="flex justify-center gap-4 pt-4 flex-wrap">
                 <Button
                   onClick={handleCopyPrompt}
-                  disabled={!isFormValid}
                   size="lg"
                   className={`min-w-[150px] transition-all ${promptCopied 
                     ? 'bg-green-600 hover:bg-green-600 text-white' 
@@ -547,7 +604,6 @@ Brian Riley <brian@guardianbikes.com>`;
                 </Button>
                 <Button
                   onClick={handleCopyEmails}
-                  disabled={!isFormValid}
                   size="lg"
                   className={`min-w-[150px] transition-all ${emailsCopied 
                     ? 'bg-green-600 hover:bg-green-600 text-white border-green-600' 
@@ -563,7 +619,6 @@ Brian Riley <brian@guardianbikes.com>`;
                 </Button>
                 <Button
                   onClick={handleCopySubject}
-                  disabled={!isFormValid}
                   size="lg"
                   className={`min-w-[150px] transition-all ${subjectCopied 
                     ? 'bg-green-600 hover:bg-green-600 text-white border-green-600' 
@@ -672,11 +727,6 @@ Brian Riley <brian@guardianbikes.com>`;
                 </div>
               )}
 
-              {!isFormValid && (
-                <p className="text-sm text-muted-foreground text-center">
-                  Please fill in both text areas to enable all copy buttons.
-                </p>
-              )}
             </CardContent>
           </Card>
         </motion.div>
