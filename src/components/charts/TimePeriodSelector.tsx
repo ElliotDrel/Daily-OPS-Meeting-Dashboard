@@ -10,12 +10,8 @@ import {
 // Re-export utilities for backward compatibility
 // eslint-disable-next-line react-refresh/only-export-components
 export {
-  getTimePeriodOptions,
   getTimePeriodConfig, 
-  mapLegacyPeriod,
-  isLegacyPeriod,
-  LEGACY_TIME_PERIOD_OPTIONS,
-  type TimePeriodOption
+  mapLegacyPeriod
 } from "./timePeriodUtils";
 
 interface TimePeriodSelectorProps {
