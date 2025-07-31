@@ -50,7 +50,8 @@ export const Inventory = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('inventory', selectedDate.toISOString().slice(0, 10));
 
   if (isLoading) {
@@ -62,6 +63,9 @@ export const Inventory = () => {
       
         squares={dashboardData.pillars.inventory.squares}
         actionItems={actionItems || []}
+        onDataChange={() => {
+          refetch();
+        }}
       >
         <div className="flex justify-center items-center h-64">
           <p>Loading inventory data...</p>
@@ -93,6 +97,9 @@ export const Inventory = () => {
       squares={dashboardData.pillars.inventory.squares}
       actionItems={actionItems || []}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+      }}
     >
       <div className="space-y-6">
 

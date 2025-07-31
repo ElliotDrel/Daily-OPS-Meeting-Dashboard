@@ -76,7 +76,8 @@ export const Production = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('production', selectedDate.toISOString().slice(0, 10));
 
   const {
@@ -100,6 +101,10 @@ export const Production = () => {
       
         squares={dashboardData.pillars.production.squares}
         actionItems={actionItems}
+        onDataChange={() => {
+          refetch();
+          refetchChartData();
+        }}
       >
         <div className="flex justify-center items-center h-64">
           <p>Loading production data...</p>
@@ -135,6 +140,10 @@ export const Production = () => {
       squares={dashboardData.pillars.production.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+        refetchChartData();
+      }}
     >
       <div className="space-y-6">
 

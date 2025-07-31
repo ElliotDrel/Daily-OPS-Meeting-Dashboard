@@ -88,7 +88,8 @@ export const Safety = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('safety', selectedDate.toISOString().slice(0, 10));
 
   // Get time period configuration
@@ -157,6 +158,10 @@ export const Safety = () => {
             squares={dashboardData.pillars.safety.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+        refetchChartData();
+      }}
     >
       <div className="space-y-6">
 

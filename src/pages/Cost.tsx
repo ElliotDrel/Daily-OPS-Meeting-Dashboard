@@ -68,7 +68,8 @@ export const Cost = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('cost', selectedDate.toISOString().slice(0, 10));
 
   const {
@@ -92,6 +93,10 @@ export const Cost = () => {
       
         squares={dashboardData.pillars.cost.squares}
         actionItems={actionItems}
+        onDataChange={() => {
+          refetch();
+          refetchChartData();
+        }}
       >
         <div className="flex justify-center items-center h-64">
           <p>Loading cost data...</p>
@@ -127,6 +132,10 @@ export const Cost = () => {
       squares={dashboardData.pillars.cost.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+        refetchChartData();
+      }}
     >
       <div className="space-y-6">
 

@@ -83,7 +83,8 @@ export const Quality = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('quality', selectedDate.toISOString().slice(0, 10));
 
   const {
@@ -105,6 +106,10 @@ export const Quality = () => {
         pillarColor="quality"
         squares={dashboardData.pillars.quality.squares}
         actionItems={actionItems}
+        onDataChange={() => {
+          refetch();
+          refetchChartData();
+        }}
       >
         <div className="flex justify-center items-center h-64">
           <p>Loading quality data...</p>
@@ -138,6 +143,10 @@ export const Quality = () => {
             squares={dashboardData.pillars.quality.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+        refetchChartData();
+      }}
     >
       <div className="space-y-6">
 

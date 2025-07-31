@@ -63,7 +63,8 @@ export const Delivery = () => {
     isLoading,
     isYesterdayLoading,
     isLastRecordedLoading,
-    isLastRecordedActionItemsLoading
+    isLastRecordedActionItemsLoading,
+    refetch
   } = usePillarData('delivery', selectedDate.toISOString().slice(0, 10));
 
   const {
@@ -87,6 +88,10 @@ export const Delivery = () => {
       
         squares={dashboardData.pillars.delivery.squares}
         actionItems={actionItems}
+        onDataChange={() => {
+          refetch();
+          refetchChartData();
+        }}
       >
         <div className="flex justify-center items-center h-64">
           <p>Loading delivery data...</p>
@@ -122,6 +127,10 @@ export const Delivery = () => {
       squares={dashboardData.pillars.delivery.squares}
       actionItems={actionItems}
       graphsPane={graphsPane}
+      onDataChange={() => {
+        refetch();
+        refetchChartData();
+      }}
     >
       <div className="space-y-6">
 
