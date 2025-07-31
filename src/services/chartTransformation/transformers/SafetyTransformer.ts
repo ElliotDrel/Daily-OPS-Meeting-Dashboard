@@ -230,7 +230,7 @@ export class SafetyTransformer implements PillarTransformer {
         'safetyIncidents'
       ];
       
-      let incidentCount: any = 0;
+      let incidentCount: string | number | boolean | string[] = 0;
       for (const fieldName of possibleFieldNames) {
         if (response.responses[fieldName] !== undefined) {
           incidentCount = response.responses[fieldName];

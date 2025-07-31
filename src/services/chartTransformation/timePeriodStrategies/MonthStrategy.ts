@@ -81,7 +81,10 @@ export class MonthStrategy extends BaseTimePeriodStrategy {
       let dataType: 'recorded' | 'missing' = 'missing';
       
       if (weekResponses.length > 0) {
-        totalValue = this.calculateTotalValue(weekResponses, valueExtractor);
+        // For safety incidents, use maximum daily incidents instead of sum
+        // This provides a better representation of peak incident levels per week
+        const values = weekResponses.map(valueExtractor).filter(v => !isNaN(v));
+        totalValue = values.length > 0 ? Math.max(...values) : 0;
         dataType = 'recorded';
       } else {
         // Week with no data
