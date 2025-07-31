@@ -305,10 +305,11 @@ export const NotesSection = ({
               value={localNoteValue}
               onChange={debouncedOnChange}
               placeholder="Type meeting notes and press Enter..."
-              className="min-h-[2.5rem] mb-2"
+              className="mb-2"
               disabled={!onUpsertNote || !isEditing}
               initialValue={localNoteValue}
               onSave={handleManualSave}
+              rows={undefined}
             />
           ) : (
             <div className="flex items-center justify-center py-4 text-muted-foreground text-sm">

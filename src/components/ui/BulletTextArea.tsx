@@ -1,4 +1,4 @@
-import { forwardRef, KeyboardEvent, ClipboardEvent, ChangeEvent, useState, useEffect } from 'react'
+import { forwardRef, KeyboardEvent, ClipboardEvent, ChangeEvent, useState, useEffect, useRef, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -17,15 +17,37 @@ interface BulletTextAreaProps {
 const BULLET = '• '
 
 export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProps>(
-  ({ value, onChange, placeholder, className, rows = 5, disabled, onSave, initialValue, ...props }, ref) => {
+  ({ value, onChange, placeholder, className, rows, disabled, onSave, initialValue, ...props }, ref) => {
     
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [lastSavedValue, setLastSavedValue] = useState(initialValue || value)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const internalRef = ref || textareaRef
     
     useEffect(() => {
       setHasUnsavedChanges(value !== lastSavedValue)
     }, [value, lastSavedValue])
+    
+    // Determine if we should use auto-resize mode
+    const shouldAutoResize = rows === undefined
+    const effectiveRows = shouldAutoResize ? undefined : (rows ?? 5)
+    
+    // Auto-resize function
+    const autoResize = useCallback(() => {
+      if (shouldAutoResize && internalRef && 'current' in internalRef && internalRef.current) {
+        const textarea = internalRef.current
+        textarea.style.height = 'auto'
+        textarea.style.height = textarea.scrollHeight + 'px'
+      }
+    }, [shouldAutoResize, internalRef])
+    
+    // Auto-resize on value change when in auto-resize mode
+    useEffect(() => {
+      if (shouldAutoResize) {
+        autoResize()
+      }
+    }, [value, shouldAutoResize, autoResize])
     
     const formatTextWithBullets = (text: string): string => {
       if (!text.trim()) return BULLET
@@ -106,6 +128,8 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value
       onChange(newValue)
+      // Trigger auto-resize after state update
+      setTimeout(autoResize, 0)
     }
     
     const handleBlur = () => {
@@ -148,27 +172,27 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
       }, 0)
     }
 
-    const displayValue = value || BULLET
+    const displayValue = value ? formatTextWithBullets(value) : BULLET
 
     return (
       <>
         <textarea
-          ref={ref}
+          ref={internalRef}
           value={displayValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           onBlur={handleBlur}
           placeholder={placeholder}
-          rows={rows}
+          {...(effectiveRows !== undefined && { rows: effectiveRows })}
           disabled={disabled}
           className={cn(
-            'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y',
+            'flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+            shouldAutoResize ? 'resize-none overflow-hidden' : 'min-h-[80px] resize-y',
             hasUnsavedChanges && 'border-yellow-400',
             className
           )}
           style={{
-            fontFamily: 'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Source Code Pro", monospace',
             lineHeight: '1.5'
           }}
           {...props}
