@@ -182,14 +182,14 @@ export const BulletTextArea = forwardRef<HTMLTextAreaElement, BulletTextAreaProp
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
-          onBlur={handleBlur}
+          {...(!disabled && { onBlur: handleBlur })}
           placeholder={placeholder}
           {...(effectiveRows !== undefined && { rows: effectiveRows })}
           disabled={disabled}
           className={cn(
             'flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
             shouldAutoResize ? 'resize-none overflow-hidden' : 'min-h-[80px] resize-y',
-            hasUnsavedChanges && 'border-yellow-400',
+            !disabled && hasUnsavedChanges && 'border-yellow-400',
             className
           )}
           style={{
