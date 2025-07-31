@@ -5,12 +5,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
-import { Copy, ChevronDown, ChevronRight } from "lucide-react";
+import { Copy, ChevronDown, ChevronRight, Check } from "lucide-react";
 
 export const CreateMeetingEmail = () => {
   const [transcript, setTranscript] = useState("");
   const [meetingNotes, setMeetingNotes] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPromptPreview, setShowPromptPreview] = useState(false);
+  const [showEmailsPreview, setShowEmailsPreview] = useState(false);
+  const [showSubjectPreview, setShowSubjectPreview] = useState(false);
+  const [promptCopied, setPromptCopied] = useState(false);
+  const [emailsCopied, setEmailsCopied] = useState(false);
+  const [subjectCopied, setSubjectCopied] = useState(false);
 
   const isFormValid = transcript.trim() !== "" && meetingNotes.trim() !== "";
 
@@ -183,9 +188,9 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
   const generateColoredPrompt = () => {
     const instructionsSection = `<span class="text-blue-600">&lt;goal&gt;Using all the attached info, create meeting notes in the same format as the yesterdays notes (&lt;yesterdaysnotes&gt;).&lt;/goal&gt; &lt;additonalinstructions&gt;1. Use yesterday's notes (&lt;yesterdaysnotes&gt;) to find out in what style, format, and structure I want your output structured. Your output should be in the same style, format, and structure as yesterday's notes (&lt;yesterdaysnotes&gt;). 2. Use yesterday's notes (&lt;yesterdaysnotes&gt;) plus my notes (&lt;mynotes&gt;) to find what was covered in the last meeting and add that to the proper sections. 3. Use the transcript (&lt;transcript&gt;) to collect and identify what was covered in today's meeting to fill in the proper sections.&lt;/additonalinstructions&gt; &lt;outputformat&gt;Output in the same format, style and structure as yesterday's notes (&lt;yesterdaysnotes&gt;). Ensure your notes are to the same level of detail as the example notes. &lt;/outputformat&gt;</span>`;
     
-    const transcriptSection = `<span class="text-green-600">&lt;transcript&gt;${transcript || "[YOUR TRANSCRIPT WILL APPEAR HERE]"}&lt;/transcript&gt;</span>`;
+    const transcriptSection = `<span class="text-green-600">&lt;transcript&gt;${transcript || "[PASTE YOUR TRANSCRIPT CONTENT HERE]"}&lt;/transcript&gt;</span>`;
     
-    const notesSection = `<span class="text-purple-600">&lt;mynotes&gt;${meetingNotes || "[YOUR MEETING NOTES WILL APPEAR HERE]"}&lt;/mynotes&gt;</span>`;
+    const notesSection = `<span class="text-purple-600">&lt;mynotes&gt;${meetingNotes || "[PASTE YOUR MEETING NOTES CONTENT HERE]"}&lt;/mynotes&gt;</span>`;
     
     const templateSection = `<span class="text-amber-600">&lt;yesterdaysnotes&gt;# Manufacturing Daily Huddle Meeting Notes
 
@@ -352,17 +357,89 @@ ${notesSection}
 ${templateSection}`;
   };
 
-  const handleCopyToClipboard = async () => {
+  const handleTogglePromptPreview = () => {
+    setShowPromptPreview(!showPromptPreview);
+    setShowEmailsPreview(false);
+    setShowSubjectPreview(false);
+  };
+
+  const handleToggleEmailsPreview = () => {
+    setShowEmailsPreview(!showEmailsPreview);
+    setShowPromptPreview(false);
+    setShowSubjectPreview(false);
+  };
+
+  const handleToggleSubjectPreview = () => {
+    setShowSubjectPreview(!showSubjectPreview);
+    setShowPromptPreview(false);
+    setShowEmailsPreview(false);
+  };
+
+  const emailSubject = "Meeting Overview & Action Items - Daily Tier 3 OPS Meeting";
+  
+  const emails = `Adam Stroobandt <adam.stroobandt@guardianbikes.com>,
+Amber Wilber <amber.wilber@guardianbikes.com>,
+Arpan Ojha <arpan.ojha@guardianbikes.com>,
+Ashley Campbell <ashley.campbell@guardianbikes.com>,
+Courtney Fasnacht <courtney.fasnacht@guardianbikes.com>,
+Jennica Harding <jennica.harding@guardianbikes.com>,
+Kaitlin Keirsted <kaitlin.keirsted@guardianbikes.com>,
+Kyle Jansen <kyle.jansen@guardianbikes.com>,
+Kyle Jansen <kyle@guardianbikes.com>,
+Lou Ochs <lou.ochs@guardianbikes.com>,
+Mary Shipman <mary.shipman@guardianbikes.com>,
+Matt Craig <matt.craig@guardianbikes.com>,
+Mike Ayers <mike.ayers@guardianbikes.com>,
+Natalie Mathern <natalie.mathern@guardianbikes.com>,
+Ryan Beecher <ryan.beecher@guardianbikes.com>,
+Ryan Jansen <ryan.jansen@guardianbikes.com>,
+Sam Markel <sam.markel@guardianbikes.com>,
+Troy Mobley <troy.mobley@guardianbikes.com>,
+Brian Riley <brian@guardianbikes.com>`;
+
+  const handleCopyPrompt = async () => {
     if (!isFormValid) return;
 
     try {
       const prompt = generatePrompt();
       await navigator.clipboard.writeText(prompt);
+      setPromptCopied(true);
       toast.success("Prompt copied! Paste this into ChatGPT now.", {
         duration: 4000,
       });
+      setTimeout(() => setPromptCopied(false), 2000);
     } catch (error) {
-      toast.error("Failed to copy to clipboard. Please try again.");
+      toast.error("Failed to copy prompt. Please try again.");
+    }
+  };
+
+  const handleCopyEmails = async () => {
+    if (!isFormValid) return;
+
+    try {
+      await navigator.clipboard.writeText(emails);
+      setEmailsCopied(true);
+      toast.success("Email addresses copied to clipboard!", {
+        duration: 3000,
+      });
+      setTimeout(() => setEmailsCopied(false), 2000);
+    } catch (error) {
+      toast.error("Failed to copy emails. Please try again.");
+    }
+  };
+
+  const handleCopySubject = async () => {
+    if (!isFormValid) return;
+
+    try {
+      await navigator.clipboard.writeText(emailSubject);
+      setSubjectCopied(true);
+      toast.success("Email subject copied to clipboard!", {
+        duration: 3000,
+      });
+      setTimeout(() => setSubjectCopied(false), 2000);
+    } catch (error) {
+      toast.error("Failed to copy subject. Please try again.");
     }
   };
 
@@ -424,35 +501,92 @@ ${templateSection}`;
               </div>
 
               {/* Instructions */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 text-center">
-                <h3 className="font-semibold text-blue-900 mb-2">Next Steps</h3>
-                <p className="text-blue-800 text-sm">
-                  Copy the prompt below and paste it into <strong>ChatGPT o3</strong> for optimal results. 
-                  The AI will generate structured meeting notes in your preferred format.
-                </p>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="font-semibold text-blue-900 mb-3 text-center">Complete Workflow</h3>
+                <div className="text-blue-800 text-sm space-y-2">
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">1.</span>
+                    <span>Click <strong>"Copy Full Prompt"</strong> and paste into <strong>ChatGPT o3</strong> for optimal results</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">2.</span>
+                    <span>Let AI generate your structured meeting notes</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">3.</span>
+                    <span>Click <strong>"Copy Emails"</strong> to get recipient list for your email client</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">4.</span>
+                    <span>Click <strong>"Copy Subject"</strong> to get the standardized email subject line</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">5.</span>
+                    <span>Email the AI-generated meeting notes to your team!</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Copy Button */}
-              <div className="flex justify-center pt-4">
+              {/* Copy Buttons */}
+              <div className="flex justify-center gap-4 pt-4 flex-wrap">
                 <Button
-                  onClick={handleCopyToClipboard}
+                  onClick={handleCopyPrompt}
                   disabled={!isFormValid}
                   size="lg"
-                  className="min-w-[200px]"
+                  className={`min-w-[150px] transition-all ${promptCopied 
+                    ? 'bg-green-600 hover:bg-green-600 text-white' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                  }`}
                 >
-                  <Copy className="w-4 h-4 mr-2" />
-                  Copy to Clipboard
+                  {promptCopied ? (
+                    <Check className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Copy className="w-4 h-4 mr-2" />
+                  )}
+                  {promptCopied ? 'Copied!' : 'Copy Full Prompt'}
+                </Button>
+                <Button
+                  onClick={handleCopyEmails}
+                  disabled={!isFormValid}
+                  size="lg"
+                  className={`min-w-[150px] transition-all ${emailsCopied 
+                    ? 'bg-green-600 hover:bg-green-600 text-white border-green-600' 
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600'
+                  }`}
+                >
+                  {emailsCopied ? (
+                    <Check className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Copy className="w-4 h-4 mr-2" />
+                  )}
+                  {emailsCopied ? 'Copied!' : 'Copy Emails'}
+                </Button>
+                <Button
+                  onClick={handleCopySubject}
+                  disabled={!isFormValid}
+                  size="lg"
+                  className={`min-w-[150px] transition-all ${subjectCopied 
+                    ? 'bg-green-600 hover:bg-green-600 text-white border-green-600' 
+                    : 'bg-purple-600 hover:bg-purple-700 text-white border-purple-600'
+                  }`}
+                >
+                  {subjectCopied ? (
+                    <Check className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Copy className="w-4 h-4 mr-2" />
+                  )}
+                  {subjectCopied ? 'Copied!' : 'Copy Subject'}
                 </Button>
               </div>
 
-              {/* Preview Toggle */}
-              <div className="flex justify-center pt-4">
+              {/* Preview Toggles */}
+              <div className="flex justify-center gap-4 pt-4 flex-wrap">
                 <Button
                   variant="outline"
-                  onClick={() => setShowPreview(!showPreview)}
+                  onClick={handleTogglePromptPreview}
                   className="flex items-center gap-2"
                 >
-                  {showPreview ? (
+                  {showPromptPreview ? (
                     <>
                       <ChevronDown className="w-4 h-4" />
                       Hide Prompt Preview
@@ -464,29 +598,83 @@ ${templateSection}`;
                     </>
                   )}
                 </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleToggleEmailsPreview}
+                  className="flex items-center gap-2"
+                >
+                  {showEmailsPreview ? (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Hide Emails Preview
+                    </>
+                  ) : (
+                    <>
+                      <ChevronRight className="w-4 h-4" />
+                      Show Emails Preview
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleToggleSubjectPreview}
+                  className="flex items-center gap-2"
+                >
+                  {showSubjectPreview ? (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Hide Subject Preview
+                    </>
+                  ) : (
+                    <>
+                      <ChevronRight className="w-4 h-4" />
+                      Show Subject Preview
+                    </>
+                  )}
+                </Button>
               </div>
 
               {/* Prompt Preview */}
-              {showPreview && (
+              {showPromptPreview && (
                 <div className="space-y-2">
                   <Label className="text-base font-medium">
                     Generated Prompt Preview
                   </Label>
                   <div className="min-h-[300px] p-4 border rounded-md bg-muted font-mono text-xs overflow-auto whitespace-pre-wrap">
-                    {!isFormValid ? (
-                      <p className="text-muted-foreground">
-                        Fill in both text areas above to see the generated prompt...
-                      </p>
-                    ) : (
-                      <div dangerouslySetInnerHTML={{ __html: generateColoredPrompt() }} />
-                    )}
+                    <div dangerouslySetInnerHTML={{ __html: generateColoredPrompt() }} />
+                  </div>
+                </div>
+              )}
+
+              {/* Emails Preview */}
+              {showEmailsPreview && (
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">
+                    Email Recipients Preview
+                  </Label>
+                  <div className="p-4 border rounded-md bg-muted font-mono text-xs overflow-auto">
+                    <p className="text-muted-foreground text-xs mb-2">Email addresses (comma-separated):</p>
+                    <div className="whitespace-pre-wrap">{emails}</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Subject Preview */}
+              {showSubjectPreview && (
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">
+                    Email Subject Preview
+                  </Label>
+                  <div className="p-4 border rounded-md bg-muted font-mono text-sm overflow-auto">
+                    <p className="text-muted-foreground text-xs mb-2">Email subject line:</p>
+                    <div className="font-semibold">{emailSubject}</div>
                   </div>
                 </div>
               )}
 
               {!isFormValid && (
                 <p className="text-sm text-muted-foreground text-center">
-                  Please fill in both text areas to enable the copy button.
+                  Please fill in both text areas to enable all copy buttons.
                 </p>
               )}
             </CardContent>
