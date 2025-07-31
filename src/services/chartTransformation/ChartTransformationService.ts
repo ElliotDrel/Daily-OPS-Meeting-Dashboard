@@ -249,6 +249,89 @@ class ChartTransformationService implements IChartTransformationService {
   }
 
   /**
+   * Get incident types pie chart data for safety pillar with caching and time period support
+   */
+  async getIncidentTypesPieChartData(pillar: PillarName, strategyName: string = 'week'): Promise<DonutData[]> {
+    const cacheKey = `${pillar}-incident-types-pie-${strategyName}`;
+    
+    // Check cache first
+    const cached = this.pieChartCache.get(cacheKey);
+    if (cached && this.isCacheValid(cached)) {
+      return cached.data;
+    }
+
+    try {
+      // Get the strategy for time period calculation
+      const strategy = strategyFactory.getStrategy(strategyName);
+      if (!strategy) {
+        throw new ChartTransformationError(`Strategy not found: ${strategyName}`, pillar, 'pie');
+      }
+
+      // Calculate date range for data fetching
+      const dateRange = strategy.calculateDateRange();
+      const totalDays = Math.ceil((dateRange.endDate.getTime() - dateRange.startDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Get responses from database using date range
+      const responses = await this.getResponsesForDateRange(pillar, dateRange.startDate, dateRange.endDate);
+      
+      // Check if we have any data (incident types chart can work with minimal data)
+      if (responses.length === 0) {
+        throw new InsufficientDataError(
+          pillar, 
+          'pie', 
+          responses.length, 
+          1
+        );
+      }
+
+      // Get transformer and check if it supports incident types
+      const transformer = this.transformers.get(pillar);
+      if (!transformer) {
+        throw new ChartTransformationError(`No transformer registered for pillar: ${pillar}`, pillar, 'pie');
+      }
+
+      // Check if transformer has the incident types method
+      if (typeof (transformer as any).transformToIncidentTypesPieChart !== 'function') {
+        throw new ChartTransformationError(
+          `Transformer for ${pillar} does not support incident types pie chart`, 
+          pillar, 
+          'pie'
+        );
+      }
+
+      // Call the incident types transformation method
+      const chartData = await (transformer as any).transformToIncidentTypesPieChart(responses, {
+        days: totalDays,
+        useDailyAggregation: totalDays <= 30
+      });
+
+      // Cache the result
+      this.pieChartCache.set(cacheKey, {
+        data: chartData,
+        timestamp: Date.now(),
+        pillar,
+        parameters: cacheKey
+      });
+
+      console.log(`[ChartTransformationService] Generated ${chartData.length} incident type categories for ${pillar}:`, chartData);
+      return chartData;
+
+    } catch (error) {
+      if (error instanceof InsufficientDataError) {
+        // Return empty array for insufficient data - caller should handle fallback
+        return [];
+      }
+      
+      throw new ChartTransformationError(
+        `Failed to get incident types pie chart data for ${pillar}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        pillar,
+        'pie',
+        error instanceof Error ? error : undefined
+      );
+    }
+  }
+
+  /**
    * Check if we have sufficient data for accurate charts
    */
   async hasSufficientData(pillar: PillarName, chartType: 'line' | 'pie'): Promise<boolean> {

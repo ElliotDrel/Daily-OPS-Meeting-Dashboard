@@ -166,6 +166,118 @@ export class SafetyTransformer implements PillarTransformer {
   }
 
   /**
+   * Transform safety responses into pie chart format showing incident types by description
+   */
+  async transformToIncidentTypesPieChart(
+    responses: PillarResponse[], 
+    timePeriod?: { days: number; useDailyAggregation: boolean }
+  ): Promise<DonutData[]> {
+    if (!this.canTransform(responses)) {
+      console.log(`[SafetyTransformer] Cannot transform responses for incident types pie chart`);
+      return [];
+    }
+
+    // Filter responses by time period if provided
+    let filteredResponses = responses;
+    if (timePeriod) {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - timePeriod.days);
+      filteredResponses = responses.filter(response => {
+        const responseDate = new Date(response.responseDate);
+        return responseDate >= cutoffDate;
+      });
+      console.log(`[SafetyTransformer] Filtered to ${filteredResponses.length} responses within ${timePeriod.days} days`);
+    }
+
+    // Track incident descriptions with count and earliest occurrence
+    const incidentTracker = new Map<string, {
+      count: number;
+      firstOccurrenceDate: string;
+    }>();
+
+    // Extract all incident descriptions from filtered responses
+    filteredResponses.forEach(response => {
+      const descriptions = this.extractIncidentDescriptions(response.responses);
+      descriptions.forEach(description => {
+        const existing = incidentTracker.get(description);
+        if (existing) {
+          existing.count++;
+          // Keep earliest occurrence date for color assignment consistency
+          if (response.responseDate < existing.firstOccurrenceDate) {
+            existing.firstOccurrenceDate = response.responseDate;
+          }
+        } else {
+          incidentTracker.set(description, {
+            count: 1,
+            firstOccurrenceDate: response.responseDate
+          });
+        }
+      });
+    });
+
+    // If no incidents found, return empty array
+    if (incidentTracker.size === 0) {
+      console.log(`[SafetyTransformer] No incident descriptions found in responses`);
+      return [];
+    }
+
+    // Convert to array and sort by earliest occurrence date for consistent color assignment
+    const sortedIncidents = Array.from(incidentTracker.entries())
+      .sort((a, b) => {
+        // Sort by earliest occurrence date (ascending)
+        return new Date(a[1].firstOccurrenceDate).getTime() - new Date(b[1].firstOccurrenceDate).getTime();
+      });
+
+    // Define color palette for incident types
+    const colorPalette = [
+      '#ef4444', // Red
+      '#f97316', // Orange  
+      '#eab308', // Yellow
+      '#22c55e', // Green
+      '#06b6d4', // Cyan
+      '#3b82f6', // Blue
+      '#8b5cf6', // Purple
+      '#ec4899', // Pink
+      '#f59e0b', // Amber
+      '#10b981', // Emerald
+      '#6366f1', // Indigo
+      '#84cc16', // Lime
+    ];
+
+    // Create DonutData with color assignment
+    const result = sortedIncidents.map(([description, data], index) => ({
+      name: description,
+      value: data.count,
+      color: colorPalette[index % colorPalette.length]
+    }));
+
+    console.log(`[SafetyTransformer] Generated ${result.length} incident type categories:`, result);
+    return result;
+  }
+
+  /**
+   * Extract incident descriptions from response JSONB data
+   */
+  private extractIncidentDescriptions(responseJson: Record<string, any>): string[] {
+    const descriptions: string[] = [];
+    const incidentCount = this.convertIncidentCountToNumber(responseJson['safety-incidents-count'] || '0');
+    
+    // Only look for descriptions if count > 0
+    if (incidentCount > 0) {
+      for (let i = 1; i <= incidentCount; i++) {
+        const fieldName = `safety-incident-${i}-description`;
+        const description = responseJson[fieldName];
+        
+        if (description && typeof description === 'string' && description.trim()) {
+          descriptions.push(description.trim());
+        }
+      }
+    }
+    
+    return descriptions;
+  }
+
+  /**
    * Convert incident count response to numeric value
    */
   private convertIncidentCountToNumber(incidentCount: string | number | boolean | string[]): number {
