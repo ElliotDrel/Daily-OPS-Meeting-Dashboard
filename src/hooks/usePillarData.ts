@@ -138,6 +138,23 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     }
   })
 
+  // Load last recorded action items (following same pattern as lastRecordedNote)
+  const { data: lastRecordedActionItems = [], isLoading: lastRecordedActionItemsLoading, refetch: refetchLastRecordedActionItems } = useQuery({
+    queryKey: ['last-action-items', pillar, selectedDate, yesterdayString],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('action_items')
+        .select('*')
+        .eq('pillar', pillar)
+        .lt('item_date', yesterdayString) // CRITICAL: Only get items BEFORE yesterday
+        .order('item_date', { ascending: false })
+        .limit(10) // Reasonable limit for UI performance
+      
+      if (error) throw error
+      return data as ActionItem[]
+    }
+  })
+
   // Real-time subscriptions
   useEffect(() => {
     const channel = supabase
@@ -159,6 +176,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
       }, (payload) => {
         queryClient.invalidateQueries({ queryKey: ['action-items', pillar, selectedDate] })
         queryClient.invalidateQueries({ queryKey: ['action-items', pillar, yesterdayString] })
+        queryClient.invalidateQueries({ queryKey: ['last-action-items', pillar, selectedDate, yesterdayString] })
       })
       .subscribe()
 
@@ -299,6 +317,7 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     refetchYesterdayMeetingNote();
     refetchYesterdayActionItems();
     refetchLastRecordedNote();
+    refetchLastRecordedActionItems();
   };
 
   return {
@@ -307,11 +326,11 @@ export const usePillarData = (pillar: string, selectedDate: string) => {
     yesterdayMeetingNote,
     yesterdayActionItems,
     lastRecordedNote,
-    lastRecordedActionItems: [], // Legacy hook - limited functionality
+    lastRecordedActionItems,
     isLoading: notesLoading || itemsLoading,
     isYesterdayLoading: yesterdayNotesLoading || yesterdayItemsLoading,
     isLastRecordedLoading: lastRecordedNotesLoading,
-    isLastRecordedActionItemsLoading: false, // Legacy hook - limited functionality
+    isLastRecordedActionItemsLoading: lastRecordedActionItemsLoading,
     upsertNote: upsertNoteMutation.mutate,
     deleteNote: deleteNoteMutation.mutate,
     createItem: createItemMutation.mutate,
