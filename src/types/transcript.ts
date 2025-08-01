@@ -60,6 +60,9 @@ export interface UseTranscriptFormReturn {
   handleInputChange: (field: keyof TranscriptFormData, value: string) => void;
   handleSave: () => Promise<void>;
   resetForm: () => void;
+  handleDelete: () => Promise<void>;
+  canDelete: boolean;
+  isDeleting: boolean;
 }
 
 export interface UseTranscriptDataReturn {
@@ -86,6 +89,7 @@ export interface UseUnsavedChangesReturn {
   handleSaveAndGo: (saveFunction: () => Promise<void>) => Promise<void>;
   handleDiscard: (resetFunction: () => void) => void;
   handleCancel: () => void;
+  showUnsavedChangesModal: () => boolean;
 }
 
 // Component props interfaces

@@ -159,6 +159,23 @@ export const useTranscriptForm = (
     setFormData(initialData);
   }, [initialData]);
 
+  // Handle delete operation
+  const handleDelete = useCallback(async () => {
+    setIsDeleting(true);
+    try {
+      await deleteTranscriptMutation.mutateAsync();
+    } catch (error) {
+      // Error already handled in mutation onError
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [deleteTranscriptMutation]);
+
+  // Determine if delete is available - only if transcript exists
+  const canDelete = useMemo(() => {
+    return Boolean(transcript && !isDeleting);
+  }, [transcript, isDeleting]);
+
   return {
     formData,
     validation,
@@ -168,6 +185,9 @@ export const useTranscriptForm = (
     lastSavedAt,
     handleInputChange,
     handleSave,
-    resetForm
+    resetForm,
+    handleDelete,
+    canDelete,
+    isDeleting
   };
 };
