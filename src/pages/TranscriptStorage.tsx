@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { TranscriptForm } from '@/components/transcript/TranscriptForm';
@@ -49,13 +48,26 @@ export default function TranscriptStorage() {
     isModalOpen,
     handleSaveAndGo,
     handleDiscard,
-    handleCancel
+    handleCancel,
+    protectRouteNavigation,
+    protectDateChange,
+    protectGenericAction
   } = useUnsavedChanges(isFormDirty);
 
+  // Protected navigation handlers
   const handleDateChange = React.useCallback((date: Date) => {
-    setSelectedDate(date);
-    resetForm();
-  }, [resetForm]);
+    const actualChangeHandler = (newDate: Date) => {
+      setSelectedDate(newDate);
+      resetForm();
+    };
+    
+    protectDateChange(date, actualChangeHandler);
+  }, [resetForm, protectDateChange]);
+
+  const handleBackToDashboard = React.useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    protectRouteNavigation('/');
+  }, [protectRouteNavigation]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,12 +80,14 @@ export default function TranscriptStorage() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleBackToDashboard}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Dashboard
+              </Button>
               <h1 className="text-3xl font-bold">Daily Transcript and Notes Storage</h1>
             </div>
             

@@ -91,6 +91,10 @@ export interface UseUnsavedChangesReturn {
   handleDiscard: (resetFunction: () => void) => void;
   handleCancel: () => void;
   showUnsavedChangesModal: () => boolean;
+  // Navigation protection functions
+  protectRouteNavigation: (path: string) => boolean;
+  protectDateChange: (newDate: Date, changeHandler: (date: Date) => void) => boolean;
+  protectGenericAction: (action: () => void) => boolean;
 }
 
 // Component props interfaces

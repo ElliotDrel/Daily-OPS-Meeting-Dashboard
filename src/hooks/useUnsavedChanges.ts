@@ -1,14 +1,18 @@
-// Simplified unsaved changes hook - reliable browser navigation protection
-// Handles browser refresh/close, provides modal interface for explicit navigation protection
+// Enhanced unsaved changes hook - provides comprehensive navigation protection
+// Handles browser refresh/close and in-app navigation with modal confirmation
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UseUnsavedChangesReturn } from '@/types/transcript';
 
 export const useUnsavedChanges = (hasUnsavedChanges: boolean): UseUnsavedChangesReturn => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  
+  // Store the pending navigation action to execute after user choice
+  const pendingActionRef = useRef<(() => void) | null>(null);
 
   // Handle browser beforeunload event (refresh, close tab, etc.)
-  // This is the only reliable way to intercept browser navigation
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasUnsavedChanges) {
@@ -22,26 +26,60 @@ export const useUnsavedChanges = (hasUnsavedChanges: boolean): UseUnsavedChanges
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
-  // Modal action handlers - simplified without navigation logic
-  // Navigation protection for in-app routes should be handled explicitly by components
+  // Execute the pending action after save/discard
+  const executePendingAction = useCallback(() => {
+    if (pendingActionRef.current) {
+      const action = pendingActionRef.current;
+      pendingActionRef.current = null;
+      setIsModalOpen(false);
+      action();
+    }
+  }, []);
+
+  // Modal action handlers
   const handleSaveAndGo = useCallback(async (saveFunction: () => Promise<void>) => {
     try {
       await saveFunction();
-      setIsModalOpen(false);
+      executePendingAction();
     } catch (error) {
       console.error('Save failed:', error);
       throw error;
     }
-  }, []);
+  }, [executePendingAction]);
 
   const handleDiscard = useCallback((resetFunction: () => void) => {
     resetFunction();
+    executePendingAction();
+  }, [executePendingAction]);
+
+  const handleCancel = useCallback(() => {
+    pendingActionRef.current = null;
     setIsModalOpen(false);
   }, []);
 
-  const handleCancel = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  // Navigation protection functions
+  const protectNavigation = useCallback((action: () => void) => {
+    if (hasUnsavedChanges) {
+      pendingActionRef.current = action;
+      setIsModalOpen(true);
+      return true; // Navigation was blocked
+    } else {
+      action(); // No unsaved changes, proceed immediately
+      return false; // Navigation was not blocked
+    }
+  }, [hasUnsavedChanges]);
+
+  const protectRouteNavigation = useCallback((path: string) => {
+    return protectNavigation(() => navigate(path));
+  }, [navigate, protectNavigation]);
+
+  const protectDateChange = useCallback((newDate: Date, changeHandler: (date: Date) => void) => {
+    return protectNavigation(() => changeHandler(newDate));
+  }, [protectNavigation]);
+
+  const protectGenericAction = useCallback((action: () => void) => {
+    return protectNavigation(action);
+  }, [protectNavigation]);
 
   // Utility function for components to show the unsaved changes modal
   const showUnsavedChangesModal = useCallback(() => {
@@ -66,6 +104,9 @@ export const useUnsavedChanges = (hasUnsavedChanges: boolean): UseUnsavedChanges
     handleSaveAndGo,
     handleDiscard,
     handleCancel,
-    showUnsavedChangesModal
+    showUnsavedChangesModal,
+    protectRouteNavigation,
+    protectDateChange,
+    protectGenericAction
   };
 };
