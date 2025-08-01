@@ -3,8 +3,10 @@
 
 import { supabase } from '@/lib/supabase';
 import { DailyTranscript, CreateTranscriptData, UpdateTranscriptData } from '@/types/transcript';
+import { cleanTranscriptData } from '@/utils/transcriptUtils';
 
 export class TranscriptService {
+
   /**
    * Get a transcript by date
    * Returns null if no transcript exists for the given date
@@ -30,17 +32,24 @@ export class TranscriptService {
   /**
    * Create or update a transcript for a specific date
    * Uses upsert to handle both create and update scenarios
+   * Automatically removes computer-generated transcript script text before saving
+   * 
+   * Note: We remove the disclaimer because it interferes with AI note processing
+   * and can confuse AI systems that analyze the transcript content.
    */
   static async upsertTranscript(
     date: string,
     data: CreateTranscriptData | UpdateTranscriptData
   ): Promise<DailyTranscript> {
     try {
+      // Clean the data by removing script text before saving
+      const cleanedData = cleanTranscriptData(data);
+      
       const { data: result, error } = await supabase
         .from('daily_transcripts')
         .upsert({
           date,
-          ...data,
+          ...cleanedData,
         }, {
           onConflict: 'date'
         })

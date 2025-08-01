@@ -7,10 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Loader2, AlertCircle, CheckCircle, Save, AlertTriangle, Trash2 } from 'lucide-react';
+import { Loader2, AlertCircle, CheckCircle, Save, AlertTriangle, Trash2, Info } from 'lucide-react';
 import { TranscriptFormProps } from '@/types/transcript';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { containsTranscriptScript } from '@/utils/transcriptUtils';
 
 export const TranscriptForm: React.FC<TranscriptFormProps> = ({
   formData,
@@ -238,6 +239,7 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
           )}
           disabled={isLoading}
         />
+        
       </div>
 
       {/* Action Buttons */}
