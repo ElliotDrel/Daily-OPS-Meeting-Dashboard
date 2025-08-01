@@ -48,7 +48,7 @@ const App = () => (
               <Route path="/graph-view" element={<GraphView />} />
               <Route path="/create-meeting-email" element={<CreateMeetingEmail />} />
               <Route path="/all-action-items" element={<AllActionItems />} />
-              <Route path="/transcriptStorage" element={<TranscriptStorage />} />
+              <Route path="/daily-transcript-and-notes-storage" element={<TranscriptStorage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

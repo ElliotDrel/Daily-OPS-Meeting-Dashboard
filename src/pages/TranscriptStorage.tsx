@@ -34,6 +34,7 @@ export default function TranscriptStorage() {
     isFormDirty,
     saveStatus,
     lastSavedAt,
+    showValidationError,
     handleInputChange,
     handleSave,
     handleDelete,
@@ -73,7 +74,7 @@ export default function TranscriptStorage() {
                   Dashboard
                 </Button>
               </Link>
-              <h1 className="text-3xl font-bold">Daily Transcript Storage</h1>
+              <h1 className="text-3xl font-bold">Daily Transcript and Notes Storage</h1>
             </div>
             
             <div className="flex items-center gap-4">
@@ -113,10 +114,11 @@ export default function TranscriptStorage() {
                   isFormDirty={isFormDirty}
                   saveStatus={saveStatus}
                   lastSavedAt={lastSavedAt}
+                  showValidationError={showValidationError}
                   onInputChange={handleInputChange}
                   onSave={handleSave}
                   onDelete={handleDelete}
-                  canSave={validation.isFormValid && !isSaving}
+                  canSave={!isSaving}
                   canDelete={canDelete}
                   isDeleting={isDeleting}
                 />
