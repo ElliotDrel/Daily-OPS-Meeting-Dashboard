@@ -245,8 +245,8 @@ export const AllActionItems = () => {
     // Sort items within each pillar
     Object.keys(groupedByPillar).forEach(pillar => {
       groupedByPillar[pillar].sort((a, b) => {
-        let aValue: any = a[sortField];
-        let bValue: any = b[sortField];
+        let aValue: string | number = a[sortField];
+        let bValue: string | number = b[sortField];
 
         // Handle priority sorting
         if (sortField === 'priority') {

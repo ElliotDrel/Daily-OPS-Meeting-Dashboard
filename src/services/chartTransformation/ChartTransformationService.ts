@@ -287,7 +287,7 @@ class ChartTransformationService implements IChartTransformationService {
       }
 
       // Check if transformer has the incident types method
-      if (typeof (transformer as any).transformToIncidentTypesPieChart !== 'function') {
+      if (typeof (transformer as Record<string, unknown>).transformToIncidentTypesPieChart !== 'function') {
         throw new ChartTransformationError(
           `Transformer for ${pillar} does not support incident types pie chart`, 
           pillar, 
@@ -296,7 +296,7 @@ class ChartTransformationService implements IChartTransformationService {
       }
 
       // Call the incident types transformation method
-      const chartData = await (transformer as any).transformToIncidentTypesPieChart(responses, {
+      const chartData = await (transformer as Record<string, unknown>).transformToIncidentTypesPieChart(responses, {
         days: totalDays,
         useDailyAggregation: totalDays <= 30
       });

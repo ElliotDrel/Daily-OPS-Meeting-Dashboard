@@ -242,7 +242,7 @@ export class SafetyTransformer implements PillarTransformer {
   /**
    * Extract incident descriptions from response JSONB data
    */
-  private extractIncidentDescriptions(responseJson: Record<string, any>): string[] {
+  private extractIncidentDescriptions(responseJson: Record<string, unknown>): string[] {
     const descriptions: string[] = [];
     const incidentCount = this.convertIncidentCountToNumber(responseJson['safety-incidents-count'] || '0');
     
