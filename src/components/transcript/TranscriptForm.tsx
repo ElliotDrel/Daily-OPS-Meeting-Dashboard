@@ -179,42 +179,32 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
       </div>
       {/* Transcript Input */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div>
           <label htmlFor="transcript" className="text-sm font-medium text-foreground">
             Meeting Transcript *
           </label>
-          <span className={cn(
-            "text-xs",
-            validation.transcript.isValid ? "text-muted-foreground" : "text-destructive"
-          )}>
-            {formData.transcript.length} / 1,000 minimum
-          </span>
         </div>
         
-        <Textarea
-          id="transcript"
-          placeholder="Paste your meeting transcript here (minimum 1,000 characters)..."
-          value={formData.transcript}
-          onChange={(e) => onInputChange('transcript', e.target.value)}
-          className={cn(
-            "min-h-[300px] resize-none transition-colors",
-            !validation.transcript.isValid && formData.transcript.length > 0 && "border-destructive focus-visible:ring-destructive",
-            // Always show sync status highlighting
-            !isFormDirty && (lastSavedAt || formData.transcript) && "border-green-200 bg-green-50", // Synced state
-            isFormDirty && "border-orange-200 bg-orange-50" // Unsaved changes
-          )}
-          disabled={isLoading}
-        />
+        <div className="relative">
+          <Textarea
+            id="transcript"
+            placeholder="Paste your meeting transcript here..."
+            value={formData.transcript}
+            onChange={(e) => onInputChange('transcript', e.target.value)}
+            className={cn(
+              "min-h-[300px] resize-none transition-colors",
+              !validation.transcript.isValid && formData.transcript.length > 0 && "border-destructive focus-visible:ring-destructive",
+              // Always show sync status highlighting
+              !isFormDirty && (lastSavedAt || formData.transcript) && "border-green-200 bg-green-50", // Synced state
+              isFormDirty && "border-orange-200 bg-orange-50" // Unsaved changes
+            )}
+            disabled={isLoading}
+          />
+        </div>
         
         {!validation.transcript.isValid && formData.transcript.length > 0 && (
           <p className="text-sm text-destructive">
             {validation.transcript.error}
-          </p>
-        )}
-        
-        {formData.transcript.length > 0 && formData.transcript.length < 1000 && (
-          <p className="text-sm text-muted-foreground">
-            Need {1000 - formData.transcript.length} more characters to save
           </p>
         )}
       </div>
@@ -262,7 +252,7 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
         
         {!validation.isFormValid && (
           <p className="text-sm text-muted-foreground mt-2 text-center">
-            Please enter at least 1,000 characters in the transcript to save
+            Please enter transcript content to save
           </p>
         )}
       </div>

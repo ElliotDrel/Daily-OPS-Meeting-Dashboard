@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS daily_transcripts (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   date DATE NOT NULL UNIQUE, -- One transcript per date
-  transcript TEXT NOT NULL CHECK (length(transcript) >= 1000), -- Minimum 1000 characters required
+  transcript TEXT NOT NULL CHECK (length(trim(transcript)) > 0), -- Non-empty transcript required
   additional_notes TEXT DEFAULT NULL, -- Optional additional notes
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL

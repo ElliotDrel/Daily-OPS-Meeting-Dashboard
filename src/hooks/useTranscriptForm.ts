@@ -9,8 +9,7 @@ import {
   TranscriptFormData, 
   TranscriptValidation, 
   DailyTranscript,
-  UseTranscriptFormReturn,
-  MINIMUM_TRANSCRIPT_LENGTH 
+  UseTranscriptFormReturn
 } from '@/types/transcript';
 
 export const useTranscriptForm = (
@@ -48,12 +47,12 @@ export const useTranscriptForm = (
 
   // Validation logic
   const validation = useMemo((): TranscriptValidation => {
-    const transcriptValid = formData.transcript.length >= MINIMUM_TRANSCRIPT_LENGTH;
+    const transcriptValid = formData.transcript.trim().length > 0;
     
     return {
       transcript: {
         isValid: transcriptValid,
-        error: transcriptValid ? undefined : `Transcript must be at least ${MINIMUM_TRANSCRIPT_LENGTH} characters (currently ${formData.transcript.length})`
+        error: transcriptValid ? undefined : 'Transcript cannot be empty'
       },
       isFormValid: transcriptValid
     };

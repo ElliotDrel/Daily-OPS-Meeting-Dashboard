@@ -135,4 +135,4 @@ export interface TranscriptServiceError extends Error {
 }
 
 // Constants
-export const MINIMUM_TRANSCRIPT_LENGTH = 1000;
+// Note: Removed MINIMUM_TRANSCRIPT_LENGTH - now using simple non-empty validation
