@@ -82,6 +82,10 @@ export interface UseUnsavedChangesReturn {
     proceed: () => void;
     reset: () => void;
   };
+  isModalOpen: boolean;
+  handleSaveAndGo: (saveFunction: () => Promise<void>) => Promise<void>;
+  handleDiscard: (resetFunction: () => void) => void;
+  handleCancel: () => void;
 }
 
 // Component props interfaces
@@ -95,7 +99,10 @@ export interface TranscriptFormProps {
   lastSavedAt: Date | null;
   onInputChange: (field: keyof TranscriptFormData, value: string) => void;
   onSave: () => void;
+  onDelete?: () => void;
   canSave: boolean;
+  canDelete: boolean;
+  isDeleting: boolean;
 }
 
 export interface TranscriptCalendarProps {

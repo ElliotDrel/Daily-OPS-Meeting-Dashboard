@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertCircle, CheckCircle, Save, AlertTriangle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Loader2, AlertCircle, CheckCircle, Save, AlertTriangle, Trash2 } from 'lucide-react';
 import { TranscriptFormProps } from '@/types/transcript';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
@@ -21,7 +22,10 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
   lastSavedAt,
   onInputChange,
   onSave,
-  canSave
+  onDelete,
+  canSave,
+  canDelete,
+  isDeleting
 }) => {
   // Helper function to get status badge content - always shows sync status
   const getStatusBadge = () => {
@@ -175,8 +179,8 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
         />
       </div>
 
-      {/* Save Button */}
-      <div className="pt-4">
+      {/* Action Buttons */}
+      <div className="pt-4 space-y-3">
         <Button
           onClick={onSave}
           disabled={!canSave}
@@ -197,6 +201,68 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
           <p className="text-sm text-muted-foreground mt-2 text-center">
             Please enter at least 1,000 characters in the transcript to save
           </p>
+        )}
+
+        {/* Delete Button - Only show if transcript exists */}
+        {canDelete && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="w-full"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete Transcript
+                  </>
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-destructive" />
+                  Delete Transcript Permanently?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="space-y-3">
+                  <p>
+                    Are you sure you want to delete this transcript? This action cannot be undone.
+                  </p>
+                  <div className="bg-destructive/10 border-l-4 border-destructive p-3 rounded">
+                    <p className="font-medium text-destructive mb-1">⚠️ Warning:</p>
+                    <p className="text-sm">
+                      Once deleted, this transcript will be <strong>permanently removed</strong> from the database. 
+                      There is no way to recover it.
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded">
+                    <p className="font-medium text-blue-800 mb-1">💡 Alternative:</p>
+                    <p className="text-sm text-blue-700">
+                      Consider <strong>editing</strong> the transcript instead if you just need to make changes. 
+                      You can modify the content and save your updates.
+                    </p>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={onDelete}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Yes, Delete Permanently
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </div>

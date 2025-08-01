@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { TranscriptForm } from '@/components/transcript/TranscriptForm';
 import { TranscriptCalendar } from '@/components/transcript/TranscriptCalendar';
 import { TranscriptDateSelector } from '@/components/transcript/TranscriptDateSelector';
+import { UnsavedChangesModal } from '@/components/transcript/UnsavedChangesModal';
 import { useTranscriptData } from '@/hooks/useTranscriptData';
 import { useTranscriptForm } from '@/hooks/useTranscriptForm';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
@@ -35,12 +36,20 @@ export default function TranscriptStorage() {
     lastSavedAt,
     handleInputChange,
     handleSave,
+    handleDelete,
     resetForm,
-    isSaving
+    isSaving,
+    isDeleting,
+    canDelete
   } = useTranscriptForm(transcript, dateString);
 
   // Navigation protection
-  useUnsavedChanges(isFormDirty);
+  const {
+    isModalOpen,
+    handleSaveAndGo,
+    handleDiscard,
+    handleCancel
+  } = useUnsavedChanges(isFormDirty);
 
   const handleDateChange = React.useCallback((date: Date) => {
     setSelectedDate(date);
@@ -106,12 +115,24 @@ export default function TranscriptStorage() {
                   lastSavedAt={lastSavedAt}
                   onInputChange={handleInputChange}
                   onSave={handleSave}
+                  onDelete={handleDelete}
                   canSave={validation.isFormValid && !isSaving}
+                  canDelete={canDelete}
+                  isDeleting={isDeleting}
                 />
               </div>
             </div>
           </div>
         </motion.div>
+
+        {/* Navigation Protection Modal */}
+        <UnsavedChangesModal
+          isOpen={isModalOpen}
+          onSaveAndGo={() => handleSaveAndGo(handleSave)}
+          onDiscard={() => handleDiscard(resetForm)}
+          onCancel={handleCancel}
+          validation={validation}
+        />
       </div>
     </div>
   );

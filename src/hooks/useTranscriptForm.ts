@@ -32,6 +32,7 @@ export const useTranscriptForm = (
   });
   
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
@@ -104,6 +105,34 @@ export const useTranscriptForm = (
       console.error('Save error:', error);
       setSaveStatus('error');
       toast.error('Failed to save transcript. Please try again.');
+    }
+  });
+
+  // Delete mutation
+  const deleteTranscriptMutation = useMutation({
+    mutationFn: async () => {
+      await TranscriptService.deleteTranscript(date);
+    },
+    onSuccess: () => {
+      // Reset form state to empty
+      const emptyData = {
+        transcript: '',
+        additional_notes: ''
+      };
+      setFormData(emptyData);
+      setInitialData(emptyData);
+      setSaveStatus('idle');
+      setLastSavedAt(null);
+      
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['transcript', date] });
+      queryClient.invalidateQueries({ queryKey: ['transcript-dates'] });
+      
+      toast.success('Transcript deleted successfully');
+    },
+    onError: (error) => {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete transcript. Please try again.');
     }
   });
 
