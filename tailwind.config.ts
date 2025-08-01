@@ -57,6 +57,11 @@ export default {
 					secondary: 'hsl(var(--production-secondary))',
 					light: 'hsl(var(--production-light))'
 				},
+				people: {
+					DEFAULT: 'hsl(var(--people))',
+					secondary: 'hsl(var(--people-secondary))',
+					light: 'hsl(var(--people-light))'
+				},
 				status: {
 					good: 'hsl(var(--status-good))',
 					'good-light': 'hsl(var(--status-good-light))',
@@ -122,6 +127,7 @@ export default {
 				'gradient-cost': 'var(--gradient-cost)',
 				'gradient-delivery': 'var(--gradient-delivery)',
 				'gradient-production': 'var(--gradient-production)',
+				'gradient-people': 'var(--gradient-people)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
