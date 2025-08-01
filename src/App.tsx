@@ -12,6 +12,7 @@ import { Cost } from "@/pages/Cost";
 import { Inventory } from "@/pages/Inventory";
 import { Delivery } from "@/pages/Delivery";
 import { Production } from "@/pages/Production";
+import { People } from "@/pages/People";
 import { GraphView } from "@/pages/GraphView";
 import { CreateMeetingEmail } from "@/pages/CreateMeetingEmail";
 import { AllActionItems } from "@/pages/AllActionItems";
@@ -42,7 +43,7 @@ const App = () => (
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/delivery" element={<Delivery />} />
               <Route path="/production" element={<Production />} />
-              <Route path="/people" element={<Navigate to="/production" replace />} />
+              <Route path="/people" element={<People />} />
               <Route path="/graph-view" element={<GraphView />} />
               <Route path="/create-meeting-email" element={<CreateMeetingEmail />} />
               <Route path="/all-action-items" element={<AllActionItems />} />

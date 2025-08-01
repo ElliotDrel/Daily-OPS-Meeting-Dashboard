@@ -98,7 +98,8 @@ const generateSectionLeads = (): SectionLead[] => {
     { pillar: 'cost', name: '' },
     { pillar: 'delivery', name: '' },
     { pillar: 'inventory', name: '' },
-    { pillar: 'production', name: '' }
+    { pillar: 'production', name: '' },
+    { pillar: 'people', name: '' }
   ];
 };
 
@@ -124,6 +125,9 @@ export const dashboardData = {
     },
     production: {
       squares: generateSquares(0.85)
+    },
+    people: {
+      squares: generateSquares(0.82)
     }
   }
 };

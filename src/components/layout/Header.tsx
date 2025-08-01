@@ -19,7 +19,8 @@ export const Header = () => {
     { value: "/quality", label: "Quality" },
     { value: "/inventory", label: "Inventory" },
     { value: "/delivery", label: "Delivery" },
-    { value: "/production", label: "Production" }
+    { value: "/production", label: "Production" },
+    { value: "/people", label: "People" }
   ];
 
   const moreViewsItems = [
@@ -63,7 +64,7 @@ export const Header = () => {
         </div>
 
         <Tabs value={currentPath} className="w-full">
-          <TabsList className="grid grid-cols-7 w-full bg-navy/20">
+          <TabsList className="grid grid-cols-8 w-full bg-navy/20">
             {tabs.map((tab) => (
               <TabsTrigger 
                 key={tab.value}
