@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Loader2, AlertCircle, CheckCircle, Save, AlertTriangle, Trash2, Info } from 'lucide-react';
 import { TranscriptFormProps } from '@/types/transcript';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,7 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
   isFormDirty,
   saveStatus,
   lastSavedAt,
+  showValidationError,
   onInputChange,
   onSave,
   onDelete,
@@ -193,6 +195,7 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
             onChange={(e) => onInputChange('transcript', e.target.value)}
             className={cn(
               "min-h-[300px] resize-none transition-colors",
+              showValidationError && !validation.transcript.isValid && "border-destructive focus-visible:ring-destructive",
               !validation.transcript.isValid && formData.transcript.length > 0 && "border-destructive focus-visible:ring-destructive",
               // Always show sync status highlighting
               !isFormDirty && (lastSavedAt || formData.transcript) && "border-green-200 bg-green-50", // Synced state
@@ -234,27 +237,30 @@ export const TranscriptForm: React.FC<TranscriptFormProps> = ({
 
       {/* Action Buttons */}
       <div className="pt-4 space-y-3">
-        <Button
-          onClick={onSave}
-          disabled={!canSave}
-          className="w-full"
-          size="lg"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            'Save Changes'
-          )}
-        </Button>
-        
-        {!validation.isFormValid && (
-          <p className="text-sm text-muted-foreground mt-2 text-center">
-            Please enter transcript content to save
-          </p>
-        )}
+        <TooltipProvider>
+          <Tooltip open={showValidationError && !validation.isFormValid}>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={onSave}
+                disabled={!canSave}
+                className="w-full"
+                size="lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="bg-destructive text-destructive-foreground">
+              <p>Please enter transcript content to save</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );

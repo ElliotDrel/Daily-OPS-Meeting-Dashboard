@@ -57,6 +57,7 @@ export interface UseTranscriptFormReturn {
   isSaving: boolean;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error';
   lastSavedAt: Date | null;
+  showValidationError: boolean;
   handleInputChange: (field: keyof TranscriptFormData, value: string) => void;
   handleSave: () => Promise<void>;
   resetForm: () => void;
@@ -101,6 +102,7 @@ export interface TranscriptFormProps {
   isFormDirty: boolean;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error';
   lastSavedAt: Date | null;
+  showValidationError: boolean;
   onInputChange: (field: keyof TranscriptFormData, value: string) => void;
   onSave: () => void;
   onDelete?: () => void;
