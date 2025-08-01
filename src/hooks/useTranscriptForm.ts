@@ -34,6 +34,7 @@ export const useTranscriptForm = (
   const [isDeleting, setIsDeleting] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [showValidationError, setShowValidationError] = useState(false);
 
   // Update form when transcript data changes
   useEffect(() => {
@@ -43,6 +44,15 @@ export const useTranscriptForm = (
     };
     setFormData(newData);
     setInitialData(newData);
+    
+    // Reset save status when switching dates - only keep 'saved' status if data exists
+    if (transcript) {
+      setSaveStatus('saved');
+      setLastSavedAt(new Date(transcript.updated_at || transcript.created_at));
+    } else {
+      setSaveStatus('idle');
+      setLastSavedAt(null);
+    }
   }, [transcript]);
 
   // Validation logic
@@ -70,6 +80,13 @@ export const useTranscriptForm = (
       setSaveStatus('idle');
     }
   }, [isFormDirty, saveStatus]);
+
+  // Clear validation error when transcript becomes valid
+  useEffect(() => {
+    if (validation.isFormValid && showValidationError) {
+      setShowValidationError(false);
+    }
+  }, [validation.isFormValid, showValidationError]);
 
   // Handle input changes
   const handleInputChange = useCallback((field: keyof TranscriptFormData, value: string) => {
@@ -138,10 +155,11 @@ export const useTranscriptForm = (
   // Handle save operation
   const handleSave = useCallback(async () => {
     if (!validation.isFormValid) {
-      toast.error('Please fix validation errors before saving');
+      setShowValidationError(true);
       return;
     }
 
+    setShowValidationError(false);
     setIsSaving(true);
     setSaveStatus('saving');
     try {
@@ -182,6 +200,7 @@ export const useTranscriptForm = (
     isSaving,
     saveStatus,
     lastSavedAt,
+    showValidationError,
     handleInputChange,
     handleSave,
     resetForm,
