@@ -27,8 +27,8 @@ export const Header = () => {
     { value: "/cost", label: "Cost" },
     { value: "/all-action-items", label: "All Action Items" },
     { value: "/daily-transcript-and-notes-storage", label: "Daily Transcript and Notes Storage" },
-    { value: "/graph-view", label: "Admin Graph View" },
-    { value: "/create-meeting-email", label: "Create Meeting Email" }
+    { value: "/create-meeting-email", label: "Create Meeting Email" },
+    { value: "/graph-view", label: "Admin Graph View" }
   ];
 
   const isMoreViewsActive = moreViewsItems.some(item => item.value === currentPath);
