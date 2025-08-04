@@ -401,20 +401,20 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                 />
 
                 {/* AI Generation Section */}
-                <div className="my-8">
+                <div className="my-16">
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-gray-300" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="bg-white px-4 text-gray-500 font-medium">AI Meeting Notes Generation</span>
+                      <span className="bg-white px-6 text-gray-500 font-medium">AI Meeting Notes Generation</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-8 mt-8">
                   {/* AI Generation Header and Button */}
-                  <div className="mb-6">
+                  <div className="mb-8">
                     <h2 className="text-xl font-semibold text-foreground mb-2">
                       Generate AI-Powered Meeting Notes & Action Items
                     </h2>
@@ -462,20 +462,20 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                 </div>
 
                 {/* Visual Separator */}
-                <div className="my-8">
+                <div className="my-16">
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-gray-300" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="bg-white px-4 text-gray-500 font-medium">Email Generation Workflow</span>
+                      <span className="bg-white px-6 text-gray-500 font-medium">Email Generation Workflow</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Email Generation Section */}
-                <div className={`space-y-6 transition-opacity duration-300 ${!isEmailFormValid ? 'opacity-50 pointer-events-none' : ''}`}>
-                  <div className="mb-6">
+                <div className={`space-y-8 mt-8 transition-opacity duration-300 ${!isEmailFormValid ? 'opacity-50 pointer-events-none' : ''}`}>
+                  <div className="mb-8">
                     <h2 className="text-xl font-semibold text-foreground mb-2">
                       Generate AI Email Communication
                     </h2>
