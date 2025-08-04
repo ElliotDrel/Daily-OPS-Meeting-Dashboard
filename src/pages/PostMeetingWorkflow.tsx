@@ -6,6 +6,15 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { TranscriptForm } from '@/components/transcript/TranscriptForm';
 import { TranscriptCalendar } from '@/components/transcript/TranscriptCalendar';
 import { TranscriptDateSelector } from '@/components/transcript/TranscriptDateSelector';
@@ -15,7 +24,7 @@ import { useTranscriptForm } from '@/hooks/useTranscriptForm';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { useAIGeneration } from '@/hooks/useAIGeneration';
 import { toast } from '@/components/ui/sonner';
-import { Copy, ChevronDown, ChevronRight, Check } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw } from 'lucide-react';
 import { AIGenerationButton, AIGenerationProgress, AIGenerationError } from '@/components/ai/AIGenerationButton';
 import { MeetingNotesApprovalInterface } from '@/components/ai/MeetingNotesApprovalInterface';
 
@@ -30,6 +39,7 @@ export default function PostMeetingWorkflow() {
   const [promptCopied, setPromptCopied] = useState(false);
   const [emailsCopied, setEmailsCopied] = useState(false);
   const [subjectCopied, setSubjectCopied] = useState(false);
+  const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false);
   
   // Data fetching
   const {
@@ -111,6 +121,12 @@ export default function PostMeetingWorkflow() {
     
     protectDateChange(date, actualChangeHandler);
   }, [resetForm, resetGeneration, protectDateChange]);
+
+  // Handle regenerate confirmation
+  const handleRegenerateConfirm = React.useCallback(async () => {
+    setRegenerateDialogOpen(false);
+    await regenerateAll(formData.transcript, formData.additional_notes);
+  }, [regenerateAll, formData.transcript, formData.additional_notes]);
 
   // Email generation constants and functions
   const emailSubject = "Meeting Overview & Action Items - Daily Tier 3 OPS Meeting";
@@ -448,16 +464,86 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
 
                   {/* Approval Interface */}
                   {aiState.generatedContent && aiState.existingContent && (
-                    <MeetingNotesApprovalInterface
-                      generatedContent={aiState.generatedContent}
-                      existingContent={aiState.existingContent}
-                      onContentEdit={editContent}
-                      onContentDelete={deleteContent}
-                      onApproveAll={approveAll}
-                      onRegenerateAll={regenerateAll}
-                      isApproving={aiState.status === 'processing'} // Adjust based on actual approval state
-                      isRegenerating={aiState.isRegenerating}
-                    />
+                    <>
+                      <MeetingNotesApprovalInterface
+                        generatedContent={aiState.generatedContent}
+                        existingContent={aiState.existingContent}
+                        onContentEdit={editContent}
+                        onContentDelete={deleteContent}
+                        onApproveAll={approveAll}
+                        onRegenerateAll={regenerateAll}
+                        isApproving={aiState.status === 'processing'} // Adjust based on actual approval state
+                        isRegenerating={aiState.isRegenerating}
+                      />
+                      
+                      {/* Action Buttons */}
+                      <div className="flex justify-center gap-4">
+                        <Button
+                          onClick={approveAll}
+                          disabled={aiState.status === 'processing' || aiState.isRegenerating}
+                          size="lg"
+                          className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white min-w-[180px]"
+                        >
+                          {aiState.status === 'processing' ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                              Saving Content...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-4 h-4 mr-2" />
+                              Approve All Content
+                            </>
+                          )}
+                        </Button>
+
+                        <Dialog open={regenerateDialogOpen} onOpenChange={setRegenerateDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="lg"
+                              disabled={aiState.status === 'processing' || aiState.isRegenerating || !formData.transcript.trim()}
+                              className="border-orange-300 text-orange-700 hover:bg-orange-50 min-w-[180px]"
+                            >
+                              {aiState.isRegenerating ? (
+                                <>
+                                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                  Regenerating...
+                                </>
+                              ) : (
+                                <>
+                                  <RefreshCw className="w-4 h-4 mr-2" />
+                                  Regenerate All
+                                </>
+                              )}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Regenerate All Content?</DialogTitle>
+                              <DialogDescription>
+                                This will replace all current generated content with fresh AI analysis. 
+                                Any manual edits you've made will be lost. This action cannot be undone.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => setRegenerateDialogOpen(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button 
+                                variant="destructive" 
+                                onClick={handleRegenerateConfirm}
+                              >
+                                Yes, Regenerate All
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </>
                   )}
                 </div>
 

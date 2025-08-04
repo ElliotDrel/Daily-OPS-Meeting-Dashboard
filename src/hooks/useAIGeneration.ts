@@ -176,22 +176,37 @@ export const useAIGeneration = (selectedDate: string) => {
   }, [fetchExistingContent])
 
   // Regenerate all content with user confirmation
-  const regenerateAll = useCallback(async (): Promise<void> => {
+  const regenerateAll = useCallback(async (
+    transcript?: string,
+    additionalNotes?: string
+  ): Promise<void> => {
+    if (!transcript) {
+      toast.error('No transcript available for regeneration')
+      return
+    }
+
+    // Clear old content and reset to initial generation state
     setState(prev => ({
       ...prev,
-      isRegenerating: true,
-      error: null
+      status: 'validating',
+      generatedContent: null, // Clear old generated content
+      error: null,
+      isRegenerating: true
     }))
 
-    // In a real implementation, we would get transcript and additional notes from the form
-    // For now, we'll need to pass these from the calling component
-    toast.info('Regeneration will be implemented when integrated with the form component')
-    
-    setState(prev => ({
-      ...prev,
-      isRegenerating: false
-    }))
-  }, [])
+    try {
+      // Use the existing generateNotes function to regenerate
+      await generateNotes(transcript, additionalNotes || '', selectedDate)
+    } catch (error) {
+      console.error('Regeneration failed:', error)
+      // Error handling is already done in generateNotes
+    } finally {
+      setState(prev => ({
+        ...prev,
+        isRegenerating: false
+      }))
+    }
+  }, [generateNotes, selectedDate])
 
   // Edit individual content items
   const editContent = useCallback((
