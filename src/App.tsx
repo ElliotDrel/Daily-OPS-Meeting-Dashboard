@@ -17,6 +17,7 @@ import { GraphView } from "@/pages/GraphView";
 import { CreateMeetingEmail } from "@/pages/CreateMeetingEmail";
 import { AllActionItems } from "@/pages/AllActionItems";
 import TranscriptStorage from "@/pages/TranscriptStorage";
+import PostMeetingWorkflow from "@/pages/PostMeetingWorkflow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/create-meeting-email" element={<CreateMeetingEmail />} />
               <Route path="/all-action-items" element={<AllActionItems />} />
               <Route path="/daily-transcript-and-notes-storage" element={<TranscriptStorage />} />
+              <Route path="/post-meeting-workflow" element={<PostMeetingWorkflow />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

@@ -26,8 +26,7 @@ export const Header = () => {
   const moreViewsItems = [
     { value: "/cost", label: "Cost" },
     { value: "/all-action-items", label: "All Action Items" },
-    { value: "/daily-transcript-and-notes-storage", label: "Daily Transcript and Notes Storage" },
-    { value: "/create-meeting-email", label: "Create Meeting Email" },
+    { value: "/post-meeting-workflow", label: "Post Meeting Workflow" },
     { value: "/graph-view", label: "Admin Graph View" }
   ];
 
