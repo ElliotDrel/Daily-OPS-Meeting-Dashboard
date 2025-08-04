@@ -13,8 +13,11 @@ import { UnsavedChangesModal } from '@/components/transcript/UnsavedChangesModal
 import { useTranscriptData } from '@/hooks/useTranscriptData';
 import { useTranscriptForm } from '@/hooks/useTranscriptForm';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
+import { useAIGeneration } from '@/hooks/useAIGeneration';
 import { toast } from '@/components/ui/sonner';
 import { Copy, ChevronDown, ChevronRight, Check } from 'lucide-react';
+import { AIGenerationButton, AIGenerationProgress, AIGenerationError } from '@/components/ai/AIGenerationButton';
+import { MeetingNotesApprovalInterface } from '@/components/ai/MeetingNotesApprovalInterface';
 
 export default function PostMeetingWorkflow() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -64,20 +67,50 @@ export default function PostMeetingWorkflow() {
     protectGenericAction
   } = useUnsavedChanges(isFormDirty);
 
-  // Protected navigation handlers
-  const handleDateChange = React.useCallback((date: Date) => {
-    const actualChangeHandler = (newDate: Date) => {
-      setSelectedDate(newDate);
-      resetForm();
-    };
-    
-    protectDateChange(date, actualChangeHandler);
-  }, [resetForm, protectDateChange]);
+  // AI Generation management
+  const {
+    state: aiState,
+    generateNotes,
+    regenerateAll,
+    editContent,
+    deleteContent,
+    approveAll,
+    resetGeneration,
+    canGenerate,
+    hasExistingData
+  } = useAIGeneration(dateString);
+
+  // Protected navigation handlers (consolidated into handleDateChangeWithAIReset)
 
   const handleBackToDashboard = React.useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     protectRouteNavigation('/');
   }, [protectRouteNavigation]);
+
+  // AI Generation handlers
+  const handleAIGeneration = React.useCallback(async () => {
+    if (!formData.transcript.trim()) {
+      toast.error('Please save transcript content before generating AI notes');
+      return;
+    }
+
+    try {
+      await generateNotes(formData.transcript, formData.additional_notes, dateString);
+    } catch (error) {
+      console.error('AI generation failed:', error);
+      // Error handling is managed by the hook
+    }
+  }, [formData.transcript, formData.additional_notes, dateString, generateNotes]);
+
+  const handleDateChangeWithAIReset = React.useCallback((date: Date) => {
+    const actualChangeHandler = (newDate: Date) => {
+      setSelectedDate(newDate);
+      resetForm();
+      resetGeneration(); // Reset AI generation state when changing dates
+    };
+    
+    protectDateChange(date, actualChangeHandler);
+  }, [resetForm, resetGeneration, protectDateChange]);
 
   // Email generation constants and functions
   const emailSubject = "Meeting Overview & Action Items - Daily Tier 3 OPS Meeting";
@@ -325,7 +358,7 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
               {/* Date Controls */}
               <TranscriptDateSelector
                 selectedDate={selectedDate}
-                onDateChange={handleDateChange}
+                onDateChange={handleDateChangeWithAIReset}
               />
             </div>
           </div>
@@ -335,7 +368,7 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
             {/* Left Column - Calendar (25%) */}
             <TranscriptCalendar
               selectedDate={selectedDate}
-              onDateSelect={handleDateChange}
+              onDateSelect={handleDateChangeWithAIReset}
             />
 
             {/* Right Columns - Form (75%) */}
@@ -366,6 +399,67 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                   canDelete={canDelete}
                   isDeleting={isDeleting}
                 />
+
+                {/* AI Generation Section */}
+                <div className="my-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="bg-white px-4 text-gray-500 font-medium">AI Meeting Notes Generation</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  {/* AI Generation Header and Button */}
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold text-foreground mb-2">
+                      Generate AI-Powered Meeting Notes & Action Items
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Use AI to automatically generate structured meeting notes and action items from your transcript and additional notes. 
+                      Review and edit the generated content before saving to your pillar pages.
+                    </p>
+                  </div>
+
+                  {/* AI Generation Button */}
+                  <AIGenerationButton
+                    disabled={!formData.transcript.trim() || !canGenerate}
+                    onGenerate={handleAIGeneration}
+                    status={aiState.status}
+                    error={aiState.error}
+                  />
+
+                  {/* AI Generation Progress */}
+                  <AIGenerationProgress
+                    status={aiState.status}
+                    error={aiState.error}
+                  />
+
+                  {/* AI Generation Error */}
+                  {aiState.error && (
+                    <AIGenerationError
+                      error={aiState.error}
+                      onRetry={aiState.error.retryable ? handleAIGeneration : undefined}
+                    />
+                  )}
+
+                  {/* Approval Interface */}
+                  {aiState.generatedContent && aiState.existingContent && (
+                    <MeetingNotesApprovalInterface
+                      generatedContent={aiState.generatedContent}
+                      existingContent={aiState.existingContent}
+                      onContentEdit={editContent}
+                      onContentDelete={deleteContent}
+                      onApproveAll={approveAll}
+                      onRegenerateAll={regenerateAll}
+                      isApproving={aiState.status === 'processing'} // Adjust based on actual approval state
+                      isRegenerating={aiState.isRegenerating}
+                    />
+                  )}
+                </div>
 
                 {/* Visual Separator */}
                 <div className="my-8">
