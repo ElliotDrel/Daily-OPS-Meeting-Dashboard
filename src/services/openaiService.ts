@@ -15,7 +15,7 @@ import {
 export class OpenAIService {
   private static config: OpenAIConfig = {
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-    model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-4o',
+    model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-4.1',
     maxTokens: parseInt(import.meta.env.VITE_OPENAI_MAX_TOKENS || '10000'),
     temperature: parseFloat(import.meta.env.VITE_OPENAI_TEMPERATURE || '0.3'),
     timeout: parseInt(import.meta.env.VITE_OPENAI_TIMEOUT || '60000')
