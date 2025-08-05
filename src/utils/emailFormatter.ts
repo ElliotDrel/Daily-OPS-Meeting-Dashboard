@@ -8,7 +8,8 @@ const PILLAR_TITLES: Record<string, string> = {
   cost: 'Cost',
   delivery: 'Delivery and Logistics',
   inventory: 'Inventory and Stockout Risk',
-  production: 'Production Performance'
+  production: 'Production Performance',
+  people: 'People and Workforce'
 }
 
 // Format action items for email display

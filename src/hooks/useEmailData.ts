@@ -33,7 +33,7 @@ export interface PillarData {
   yesterdayActionItems: ActionItem[]
 }
 
-const PILLARS = ['safety', 'quality', 'cost', 'delivery', 'inventory', 'production']
+const PILLARS = ['safety', 'quality', 'cost', 'delivery', 'inventory', 'production', 'people']
 
 export const useEmailData = (selectedDate: string) => {
   // Calculate yesterday's date (timezone-safe using date-fns)
