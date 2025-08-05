@@ -31,6 +31,8 @@ export interface PillarData {
   todayActionItems: ActionItem[]
   yesterdayNote: MeetingNote | null
   yesterdayActionItems: ActionItem[]
+  lastRecordedNote: MeetingNote | null
+  lastRecordedActionItems: ActionItem[]
 }
 
 const PILLARS = ['safety', 'quality', 'cost', 'delivery', 'inventory', 'production', 'people']
@@ -91,6 +93,29 @@ export const useEmailData = (selectedDate: string) => {
           
           if (yesterdayActionItemsError) throw yesterdayActionItemsError
 
+          // Fetch last recorded meeting note (before yesterday) for fallback
+          const { data: lastRecordedNote, error: lastRecordedNoteError } = await supabase
+            .from('meeting_notes')
+            .select('*')
+            .eq('pillar', pillar)
+            .lt('note_date', yesterdayString)
+            .order('note_date', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+          
+          if (lastRecordedNoteError) throw lastRecordedNoteError
+
+          // Fetch last recorded action items (before yesterday) for fallback
+          const { data: lastRecordedActionItems, error: lastRecordedActionItemsError } = await supabase
+            .from('action_items')
+            .select('*')
+            .eq('pillar', pillar)
+            .lt('item_date', yesterdayString)
+            .order('item_date', { ascending: false })
+            .limit(10)
+          
+          if (lastRecordedActionItemsError) throw lastRecordedActionItemsError
+
           // Transform meeting notes to UI format
           const transformNote = (note: MeetingNote | null): MeetingNote | null => {
             if (!note) return null
@@ -105,7 +130,9 @@ export const useEmailData = (selectedDate: string) => {
             todayNote: transformNote(todayNote),
             todayActionItems: todayActionItems || [],
             yesterdayNote: transformNote(yesterdayNote),
-            yesterdayActionItems: yesterdayActionItems || []
+            yesterdayActionItems: yesterdayActionItems || [],
+            lastRecordedNote: transformNote(lastRecordedNote),
+            lastRecordedActionItems: lastRecordedActionItems || []
           }
         })
       )

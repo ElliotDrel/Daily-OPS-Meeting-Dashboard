@@ -37,17 +37,60 @@ const formatMeetingNotes = (note: MeetingNote | null, label: string): string => 
   return `\n### ${label}\n${formattedNotes}`
 }
 
+// Helper function to check if content has meaningful data
+const hasValidContent = (note: MeetingNote | null, actionItems: ActionItem[]): boolean => {
+  const hasNote = note?.keyPoints?.length > 0
+  const hasActionItems = actionItems?.length > 0
+  return hasNote || hasActionItems
+}
+
+// Helper function to get formatted date label for last recorded content
+const getLastRecordedLabel = (note: MeetingNote | null, actionItems: ActionItem[]): string => {
+  // Get the most recent date from either notes or action items
+  let mostRecentDate = ''
+  
+  if (note?.note_date) {
+    mostRecentDate = note.note_date
+  }
+  
+  if (actionItems?.length > 0) {
+    const actionItemDate = actionItems[0].item_date
+    if (!mostRecentDate || actionItemDate > mostRecentDate) {
+      mostRecentDate = actionItemDate
+    }
+  }
+  
+  if (mostRecentDate) {
+    const formattedDate = format(parseISO(mostRecentDate), 'MMM d')
+    return `Last Recorded (${formattedDate})`
+  }
+  
+  return 'Last Recorded'
+}
+
 // Format a single pillar section
 const formatPillarSection = (pillarData: PillarData): string => {
-  const { pillar, todayNote, todayActionItems, yesterdayNote, yesterdayActionItems } = pillarData
+  const { 
+    pillar, 
+    todayNote, 
+    todayActionItems, 
+    yesterdayNote, 
+    yesterdayActionItems,
+    lastRecordedNote,
+    lastRecordedActionItems 
+  } = pillarData
   const title = PILLAR_TITLES[pillar] || pillar.charAt(0).toUpperCase() + pillar.slice(1)
   
   // Check if there's any content for this pillar
-  const hasTodayContent = todayNote?.keyPoints?.length > 0 || todayActionItems?.length > 0
-  const hasYesterdayContent = yesterdayNote?.keyPoints?.length > 0 || yesterdayActionItems?.length > 0
+  const hasTodayContent = hasValidContent(todayNote, todayActionItems)
+  const hasYesterdayContent = hasValidContent(yesterdayNote, yesterdayActionItems)
+  const hasLastRecordedContent = hasValidContent(lastRecordedNote, lastRecordedActionItems)
   
-  if (!hasTodayContent && !hasYesterdayContent) {
-    return '' // Skip pillars with no content
+  // Determine what historical content to show
+  const shouldShowLastRecorded = !hasYesterdayContent && hasLastRecordedContent
+  
+  if (!hasTodayContent && !hasYesterdayContent && !hasLastRecordedContent) {
+    return '' // Skip pillars with no content at all
   }
   
   let section = `\n## ${title}`
@@ -61,13 +104,26 @@ const formatPillarSection = (pillarData: PillarData): string => {
     section += formatActionItems(todayActionItems, 'Action Items')
   }
   
-  // Add yesterday's content if it exists
-  if (yesterdayNote?.keyPoints?.length > 0) {
-    section += formatMeetingNotes(yesterdayNote, "Yesterday's Summary")
-  }
-  
-  if (yesterdayActionItems?.length > 0) {
-    section += formatActionItems(yesterdayActionItems, "Yesterday's Action Items")
+  // Add yesterday's content if it exists, otherwise show last recorded as fallback
+  if (hasYesterdayContent) {
+    if (yesterdayNote?.keyPoints?.length > 0) {
+      section += formatMeetingNotes(yesterdayNote, "Yesterday's Summary")
+    }
+    
+    if (yesterdayActionItems?.length > 0) {
+      section += formatActionItems(yesterdayActionItems, "Yesterday's Action Items")
+    }
+  } else if (shouldShowLastRecorded) {
+    // Use last recorded data as fallback
+    const lastRecordedLabel = getLastRecordedLabel(lastRecordedNote, lastRecordedActionItems)
+    
+    if (lastRecordedNote?.keyPoints?.length > 0) {
+      section += formatMeetingNotes(lastRecordedNote, `${lastRecordedLabel} Summary`)
+    }
+    
+    if (lastRecordedActionItems?.length > 0) {
+      section += formatActionItems(lastRecordedActionItems, `${lastRecordedLabel} Action Items`)
+    }
   }
   
   section += '\n\n---'
