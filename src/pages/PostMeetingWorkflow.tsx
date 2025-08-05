@@ -26,7 +26,7 @@ import { useAIGeneration } from '@/hooks/useAIGeneration';
 import { useEmailData } from '@/hooks/useEmailData';
 import { generateEmail } from '@/utils/emailFormatter';
 import { toast } from '@/components/ui/sonner';
-import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw, FileText, AlertCircle } from 'lucide-react';
 import { AIGenerationButton, AIGenerationProgress, AIGenerationError } from '@/components/ai/AIGenerationButton';
 import { MeetingNotesApprovalInterface } from '@/components/ai/MeetingNotesApprovalInterface';
 
@@ -42,6 +42,9 @@ export default function PostMeetingWorkflow() {
   const [emailsCopied, setEmailsCopied] = useState(false);
   const [subjectCopied, setSubjectCopied] = useState(false);
   const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false);
+  
+  // Existing notes preview state
+  const [showExistingNotes, setShowExistingNotes] = useState(false);
   
   // Data fetching
   const {
@@ -170,23 +173,54 @@ Brian Riley <brian@guardianbikes.com>`;
     return generateEmail(emailData, dateString);
   };
 
+  // Format emailData for existing notes display
+  const formatExistingNotesFromEmailData = () => {
+    if (!emailData || emailData.length === 0) {
+      return { hasExistingData: false, pillars: [] };
+    }
+
+    const pillarsWithData = emailData
+      .filter(pillarData => pillarData.todayNote || pillarData.todayActionItems.length > 0)
+      .map(pillarData => ({
+        pillar: pillarData.pillar,
+        meeting_note: pillarData.todayNote,
+        action_items: pillarData.todayActionItems
+      }));
+
+    return {
+      hasExistingData: pillarsWithData.length > 0,
+      pillars: pillarsWithData
+    };
+  };
+
+  // Existing notes toggle function
+  const handleToggleExistingNotes = () => {
+    setShowExistingNotes(!showExistingNotes);
+    setShowEmailPreview(false);
+    setShowEmailsPreview(false);
+    setShowSubjectPreview(false);
+  };
+
   // Email toggle functions
   const handleToggleEmailPreview = () => {
     setShowEmailPreview(!showEmailPreview);
     setShowEmailsPreview(false);
     setShowSubjectPreview(false);
+    setShowExistingNotes(false);
   };
 
   const handleToggleEmailsPreview = () => {
     setShowEmailsPreview(!showEmailsPreview);
     setShowEmailPreview(false);
     setShowSubjectPreview(false);
+    setShowExistingNotes(false);
   };
 
   const handleToggleSubjectPreview = () => {
     setShowSubjectPreview(!showSubjectPreview);
     setShowEmailPreview(false);
     setShowEmailsPreview(false);
+    setShowExistingNotes(false);
   };
 
   const handleValidationError = () => {
@@ -400,6 +434,139 @@ Brian Riley <brian@guardianbikes.com>`;
                   canDelete={canDelete}
                   isDeleting={isDeleting}
                 />
+
+                {/* Existing Notes Section */}
+                <div className="my-8">
+                  {(() => {
+                    const existingData = formatExistingNotesFromEmailData();
+                    const hasNotes = existingData.hasExistingData && !isEmailDataLoading;
+                    const pillarsWithNotes = existingData.pillars.length;
+                    
+                    return (
+                      <>
+                        <div className="mb-4">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h2 className="text-xl font-semibold text-foreground">
+                              Existing Meeting Notes & Action Items
+                            </h2>
+                            {isEmailDataLoading ? (
+                              <div className="flex items-center gap-1 text-gray-500">
+                                <RefreshCw className="w-4 h-4 animate-spin" />
+                                <span className="text-sm">Loading...</span>
+                              </div>
+                            ) : hasNotes ? (
+                              <div className="flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                <FileText className="w-3 h-3" />
+                                <span>{pillarsWithNotes} pillar{pillarsWithNotes !== 1 ? 's' : ''} with notes</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">
+                                <AlertCircle className="w-3 h-3" />
+                                <span>No notes found</span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {hasNotes 
+                              ? `Review ${pillarsWithNotes} pillar${pillarsWithNotes !== 1 ? 's' : ''} with existing notes for ${format(selectedDate, 'MMMM d, yyyy')} before generating new content.`
+                              : `No existing notes found for ${format(selectedDate, 'MMMM d, yyyy')}. Generate AI notes to get started.`
+                            }
+                          </p>
+                        </div>
+
+                        <div className="flex justify-center gap-4 mb-4">
+                          <Button
+                            variant="outline"
+                            onClick={handleToggleExistingNotes}
+                            className={`flex items-center gap-2 transition-all ${
+                              hasNotes 
+                                ? 'border-green-300 text-green-700 hover:bg-green-50' 
+                                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                            }`}
+                            disabled={isEmailDataLoading}
+                          >
+                            {hasNotes ? (
+                              <FileText className="w-4 h-4" />
+                            ) : (
+                              <AlertCircle className="w-4 h-4" />
+                            )}
+                            {showExistingNotes ? (
+                              <>
+                                <ChevronDown className="w-4 h-4" />
+                                Hide {hasNotes ? 'Existing Notes' : 'Empty State'}
+                              </>
+                            ) : (
+                              <>
+                                <ChevronRight className="w-4 h-4" />
+                                {hasNotes ? `Show Notes (${pillarsWithNotes})` : 'Show Empty State'}
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </>
+                    );
+                  })()}
+
+                  {showExistingNotes && (
+                    <div className="space-y-2 border rounded-lg p-4 bg-gray-50">
+                      <h4 className="font-medium text-sm">Existing Notes Preview:</h4>
+                      <div className="text-xs bg-white p-3 rounded border max-h-96 overflow-y-auto">
+                        {(() => {
+                          const existingData = formatExistingNotesFromEmailData();
+                          if (!existingData.hasExistingData || isEmailDataLoading) {
+                            return (
+                              <div className="text-gray-500 italic text-center py-8">
+                                {isEmailDataLoading 
+                                  ? "Loading existing notes..." 
+                                  : `No existing notes found for ${format(selectedDate, 'MMMM d, yyyy')}`
+                                }
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div className="space-y-4">
+                              {existingData.pillars.map((pillarData) => (
+                                <div 
+                                  key={pillarData.pillar} 
+                                  className="bg-white rounded-lg border border-amber-200 p-4"
+                                >
+                                  <h3 className="font-semibold text-amber-900 mb-3 capitalize">
+                                    {pillarData.pillar}
+                                  </h3>
+                                  
+                                  {pillarData.meeting_note && (
+                                    <div className="mb-2">
+                                      <div className="text-sm font-medium text-amber-800 mb-1">Meeting Notes:</div>
+                                      <div className="text-sm text-amber-700 pl-4">
+                                        {pillarData.meeting_note.keyPoints?.map((point, index) => (
+                                          <div key={index}>• {point}</div>
+                                        )) || (
+                                          <div>• {pillarData.meeting_note.key_points}</div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {pillarData.action_items.length > 0 && (
+                                    <div>
+                                      <div className="text-sm font-medium text-amber-800 mb-1">Action Items:</div>
+                                      <div className="text-sm text-amber-700 pl-4">
+                                        {pillarData.action_items.map((item, index) => (
+                                          <div key={index}>• {item.description}</div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* AI Generation Section */}
                 <div className="my-16">
