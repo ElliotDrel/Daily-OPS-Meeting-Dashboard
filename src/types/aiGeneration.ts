@@ -4,7 +4,7 @@
 import { ActionItem, MeetingNote } from '@/hooks/usePillarData'
 
 // Core pillar types matching the existing system
-export type PillarType = 'safety' | 'quality' | 'cost' | 'delivery' | 'inventory' | 'production'
+export type PillarType = 'safety' | 'quality' | 'cost' | 'delivery' | 'inventory' | 'production' | 'people'
 
 // AI Generated Content Structure
 export interface PillarContent {
@@ -19,6 +19,7 @@ export interface GeneratedContent {
   delivery: PillarContent
   inventory: PillarContent
   production: PillarContent
+  people: PillarContent
 }
 
 // Processed content for local editing (with IDs for tracking)
@@ -49,6 +50,7 @@ export interface EditableGeneratedContent {
   delivery: EditablePillarContent
   inventory: EditablePillarContent
   production: EditablePillarContent
+  people: EditablePillarContent
 }
 
 // Existing content from Supabase (for days that already have data)
@@ -64,6 +66,7 @@ export interface ExistingContent {
   delivery: ExistingPillarContent
   inventory: ExistingPillarContent
   production: ExistingPillarContent
+  people: ExistingPillarContent
   hasExistingData: boolean
 }
 
@@ -245,7 +248,8 @@ export const PILLARS: readonly PillarType[] = [
   'cost', 
   'delivery', 
   'inventory', 
-  'production'
+  'production',
+  'people'
 ] as const
 
 export const AI_GENERATION_STATUSES: readonly AIGenerationStatus[] = [

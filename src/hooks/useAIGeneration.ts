@@ -48,6 +48,7 @@ export const useAIGeneration = (selectedDate: string) => {
       delivery: { meeting_note: null, action_items: [] },
       inventory: { meeting_note: null, action_items: [] },
       production: { meeting_note: null, action_items: [] },
+      people: { meeting_note: null, action_items: [] },
       hasExistingData: false
     }
 
@@ -365,26 +366,32 @@ const transformToEditableContent = (content: GeneratedContent): EditableGenerate
     cost: { meeting_notes: [], action_items: [] },
     delivery: { meeting_notes: [], action_items: [] },
     inventory: { meeting_notes: [], action_items: [] },
-    production: { meeting_notes: [], action_items: [] }
+    production: { meeting_notes: [], action_items: [] },
+    people: { meeting_notes: [], action_items: [] }
   }
 
   for (const pillar of PILLARS) {
-    // Transform meeting notes
-    editable[pillar].meeting_notes = content[pillar].meeting_notes.map((note, index) => ({
-      id: `${pillar}-note-${index}-${Date.now()}`,
-      content: note,
-      isEdited: false
-    }))
+    // Transform meeting notes (with safety check)
+    const pillarContent = content[pillar]
+    if (pillarContent && pillarContent.meeting_notes) {
+      editable[pillar].meeting_notes = pillarContent.meeting_notes.map((note, index) => ({
+        id: `${pillar}-note-${index}-${Date.now()}`,
+        content: note,
+        isEdited: false
+      }))
+    }
 
-    // Transform action items
-    editable[pillar].action_items = content[pillar].action_items.map((item, index) => ({
-      id: `${pillar}-action-${index}-${Date.now()}`,
-      description: item,
-      assignee: '', // User will need to fill this in
-      priority: 'Medium' as const,
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 1 week from now
-      isEdited: false
-    }))
+    // Transform action items (with safety check)
+    if (pillarContent && pillarContent.action_items) {
+      editable[pillar].action_items = pillarContent.action_items.map((item, index) => ({
+        id: `${pillar}-action-${index}-${Date.now()}`,
+        description: item,
+        assignee: '', // User will need to fill this in
+        priority: 'Medium' as const,
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 1 week from now
+        isEdited: false
+      }))
+    }
   }
 
   return editable

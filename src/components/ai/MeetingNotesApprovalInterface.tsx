@@ -332,7 +332,8 @@ const PillarContentSection: React.FC<{
       cost: { color: 'green', icon: '💰', label: 'Cost' },
       delivery: { color: 'purple', icon: '🚚', label: 'Delivery' },
       inventory: { color: 'orange', icon: '📦', label: 'Inventory' },
-      production: { color: 'indigo', icon: '⚙️', label: 'Production' }
+      production: { color: 'indigo', icon: '⚙️', label: 'Production' },
+      people: { color: 'teal', icon: '👥', label: 'People' }
     }
     
     return pillarConfig[pillar] || { color: 'gray', icon: '📋', label: pillar }

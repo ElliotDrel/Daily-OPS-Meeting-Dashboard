@@ -67,7 +67,7 @@ export class OpenAIService {
 CRITICAL INSTRUCTIONS:
 1. You MUST respond with ONLY valid JSON in the exact format specified below
 2. Do NOT include any text before or after the JSON
-3. Generate content for ALL 6 pillars even if not explicitly mentioned in the transcript
+3. Generate content for ALL 7 pillars even if not explicitly mentioned in the transcript
 4. If a pillar has no relevant content, use empty arrays for that pillar
 
 INPUT DATA:
@@ -100,6 +100,10 @@ OUTPUT FORMAT (respond with ONLY this JSON structure):
   "production": {
     "meeting_notes": ["Production-related note 1", "Production-related note 2"],
     "action_items": ["Production action item 1", "Production action item 2"]
+  },
+  "people": {
+    "meeting_notes": ["People-related note 1", "People-related note 2"],
+    "action_items": ["People action item 1", "People action item 2"]
   }
 }
 
@@ -110,6 +114,7 @@ PILLAR DEFINITIONS:
 - Delivery: Shipping, logistics, on-time delivery, transportation, customer delivery
 - Inventory: Stock levels, warehouse, materials, supply chain, inventory management
 - Production: Manufacturing, output, capacity, efficiency, production metrics, equipment
+- People: Workforce, staffing, training, employee performance, attendance, HR issues, team dynamics
 
 GENERATION RULES:
 1. Extract relevant information from the transcript and additional notes
@@ -348,7 +353,8 @@ Remember: Respond with ONLY the JSON object, no additional text.`
       cost: { meeting_notes: [], action_items: [] },
       delivery: { meeting_notes: [], action_items: [] },
       inventory: { meeting_notes: [], action_items: [] },
-      production: { meeting_notes: [], action_items: [] }
+      production: { meeting_notes: [], action_items: [] },
+      people: { meeting_notes: [], action_items: [] }
     }
 
     // Merge provided content
