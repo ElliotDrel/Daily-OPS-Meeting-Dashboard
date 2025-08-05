@@ -23,6 +23,7 @@ import {
   AIServiceError,
   AIGenerationButtonProps 
 } from '@/types/aiGeneration'
+import { useProgressiveTimer } from '@/hooks/useProgressiveTimer'
 
 export const AIGenerationButton: React.FC<AIGenerationButtonProps> = ({
   disabled,
@@ -190,6 +191,13 @@ export const AIGenerationProgress: React.FC<{
   status: AIGenerationStatus
   error: AIServiceError | null
 }> = ({ status, error }) => {
+  // Use progressive timer for generating and regenerating states
+  const useProgressiveForStatus = ['generating', 'regenerating'].includes(status)
+  const { progress: progressiveProgress } = useProgressiveTimer({
+    status,
+    isActive: useProgressiveForStatus
+  })
+
   if (!['validating', 'generating', 'processing', 'regenerating'].includes(status)) {
     return null
   }
@@ -204,7 +212,7 @@ export const AIGenerationProgress: React.FC<{
       case 'generating':
         return {
           message: 'AI is analyzing your transcript and generating content...',
-          progress: 50
+          progress: useProgressiveForStatus ? progressiveProgress : 50
         }
       case 'processing':
         return {
@@ -214,7 +222,7 @@ export const AIGenerationProgress: React.FC<{
       case 'regenerating':
         return {
           message: 'Regenerating all content with fresh AI analysis...',
-          progress: 60
+          progress: useProgressiveForStatus ? progressiveProgress : 60
         }
       default:
         return {
@@ -250,7 +258,7 @@ export const AIGenerationProgress: React.FC<{
       </div>
       
       <p className="text-xs text-blue-700 mt-2 text-center">
-        This may take 30-60 seconds depending on transcript length
+        This may take around 25 seconds depending on transcript length
       </p>
     </motion.div>
   )
