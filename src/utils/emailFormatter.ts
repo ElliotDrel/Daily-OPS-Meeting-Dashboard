@@ -44,6 +44,17 @@ const hasValidContent = (note: MeetingNote | null, actionItems: ActionItem[]): b
   return hasNote || hasActionItems
 }
 
+// Helper function to check if a pillar is completely empty (no content anywhere)
+const isPillarCompletelyEmpty = (pillarData: PillarData): boolean => {
+  const { todayNote, todayActionItems, yesterdayNote, yesterdayActionItems, lastRecordedNote, lastRecordedActionItems } = pillarData
+  
+  const hasTodayContent = hasValidContent(todayNote, todayActionItems)
+  const hasYesterdayContent = hasValidContent(yesterdayNote, yesterdayActionItems)
+  const hasLastRecordedContent = hasValidContent(lastRecordedNote, lastRecordedActionItems)
+  
+  return !hasTodayContent && !hasYesterdayContent && !hasLastRecordedContent
+}
+
 // Helper function to get formatted date label for last recorded content
 const getLastRecordedLabel = (note: MeetingNote | null, actionItems: ActionItem[]): string => {
   // Get the most recent date from either notes or action items
@@ -89,19 +100,20 @@ const formatPillarSection = (pillarData: PillarData): string => {
   // Determine what historical content to show
   const shouldShowLastRecorded = !hasYesterdayContent && hasLastRecordedContent
   
-  if (!hasTodayContent && !hasYesterdayContent && !hasLastRecordedContent) {
-    return '' // Skip pillars with no content at all
-  }
-  
   let section = `\n## ${title}`
   
-  // Add today's content
-  if (todayNote?.keyPoints?.length > 0) {
-    section += formatMeetingNotes(todayNote, 'Summary')
-  }
-  
-  if (todayActionItems?.length > 0) {
-    section += formatActionItems(todayActionItems, 'Action Items')
+  // Add today's content or "no today's notes" message
+  if (hasTodayContent) {
+    if (todayNote?.keyPoints?.length > 0) {
+      section += formatMeetingNotes(todayNote, 'Summary')
+    }
+    
+    if (todayActionItems?.length > 0) {
+      section += formatActionItems(todayActionItems, 'Action Items')
+    }
+  } else {
+    // Show "no today's notes" message
+    section += '\n\n*No meeting notes or action items recorded for today\'s session.*'
   }
   
   // Add yesterday's content if it exists, otherwise show last recorded as fallback
@@ -137,27 +149,41 @@ export const generateEmail = (emailData: PillarData[], selectedDate: string): st
   // Email header
   let email = `# Manufacturing Daily Huddle Meeting Notes\n**Date:** ${formattedDate}\n---`
   
-  // Check if there are any today's notes across all pillars
-  const hasTodayNotes = emailData.some(pillarData => 
-    hasValidContent(pillarData.todayNote, pillarData.todayActionItems)
-  )
+  // Single pass through emailData to gather all needed information
+  const analysis = emailData.reduce((acc, pillarData) => {
+    const isEmpty = isPillarCompletelyEmpty(pillarData)
+    const hasTodayContent = hasValidContent(pillarData.todayNote, pillarData.todayActionItems)
+    
+    // Track boolean conditions
+    acc.allEmpty = acc.allEmpty && isEmpty
+    acc.noTodayContent = acc.noTodayContent && !hasTodayContent
+    
+    // Collect pillars with content for processing
+    if (!isEmpty) {
+      acc.pillarsWithContent.push(pillarData)
+    }
+    
+    return acc
+  }, {
+    allEmpty: true,
+    noTodayContent: true,
+    pillarsWithContent: [] as PillarData[]
+  })
   
-  // If no today's notes exist at all, show the "no notes found" message
-  if (!hasTodayNotes) {
+  if (analysis.allEmpty) {
     email += '\n\n*No meeting notes or action items found for the selected dates.*'
   } else {
-    // Process each pillar and add sections with content
-    const pillarSections = emailData
-      .map(pillarData => formatPillarSection(pillarData))
-      .filter(section => section.trim() !== '') // Only include pillars with content
+    const pillarsWithContent = analysis.pillarsWithContent
     
-    if (pillarSections.length === 0) {
-      email += '\n\n*No meeting notes or action items found for the selected dates.*'
-    } else {
-      email += pillarSections.join('')
-      // Remove the last separator
-      email = email.replace(/\n\n---$/, '')
-    }
+    // Process each pillar with content and add sections
+    const pillarSections = pillarsWithContent
+      .map(pillarData => formatPillarSection(pillarData))
+    
+    // Add all pillar sections
+    email += pillarSections.join('')
+    
+    // Remove the last separator
+    email = email.replace(/\n\n---$/, '')
   }
   
   // Remove all empty lines (lines with only whitespace)
