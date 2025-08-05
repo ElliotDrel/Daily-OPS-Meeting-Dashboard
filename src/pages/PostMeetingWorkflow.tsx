@@ -15,6 +15,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { TranscriptForm } from '@/components/transcript/TranscriptForm';
 import { TranscriptCalendar } from '@/components/transcript/TranscriptCalendar';
 import { TranscriptDateSelector } from '@/components/transcript/TranscriptDateSelector';
@@ -26,7 +32,7 @@ import { useAIGeneration } from '@/hooks/useAIGeneration';
 import { useEmailData } from '@/hooks/useEmailData';
 import { generateEmail } from '@/utils/emailFormatter';
 import { toast } from '@/components/ui/sonner';
-import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw, FileText, AlertCircle } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw, FileText, AlertCircle, HelpCircle } from 'lucide-react';
 import { AIGenerationButton, AIGenerationProgress, AIGenerationError } from '@/components/ai/AIGenerationButton';
 import { MeetingNotesApprovalInterface } from '@/components/ai/MeetingNotesApprovalInterface';
 
@@ -45,6 +51,9 @@ export default function PostMeetingWorkflow() {
   
   // Existing notes preview state
   const [showExistingNotes, setShowExistingNotes] = useState(false);
+  
+  // Help tooltip state
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   
   // Data fetching
   const {
@@ -227,6 +236,11 @@ Brian Riley <brian@guardianbikes.com>`;
     toast.error("No meeting data available for the selected dates", {
       duration: 3000,
     });
+  };
+
+  // Help tooltip handler
+  const handleHelpTooltipToggle = () => {
+    setShowHelpTooltip(!showHelpTooltip);
   };
 
   // Rich copy function for Gmail compatibility
@@ -883,6 +897,38 @@ Brian Riley <brian@guardianbikes.com>`;
             </div>
           </div>
         </motion.div>
+
+        {/* Help Tooltip - Bottom Right */}
+        <TooltipProvider delayDuration={0}>
+          <Tooltip open={showHelpTooltip} onOpenChange={setShowHelpTooltip} delayDuration={Infinity} disableHoverableContent>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleHelpTooltipToggle}
+                className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg bg-white border-2 border-blue-200 z-50"
+              >
+                <HelpCircle className="h-5 w-5 text-blue-600" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-xs p-3 bg-white border border-gray-200 shadow-lg">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-gray-900 text-xs">Post Meeting Workflow Guide</h4>
+                <div className="text-xs text-gray-700 space-y-1">
+                  <div><strong>Step 1:</strong> Select the meeting date using the calendar or date picker</div>
+                  <div><strong>Step 2:</strong> Paste your meeting transcript and add any additional notes</div>
+                  <div><strong>Step 3:</strong> Review existing notes for the selected date (if any)</div>
+                  <div><strong>Step 4:</strong> Generate AI-powered meeting notes and action items</div>
+                  <div><strong>Step 5:</strong> Review, edit, and approve the generated content</div>
+                  <div><strong>Step 6:</strong> Use the email tools to copy formatted content for distribution</div>
+                </div>
+                <div className="text-xs text-blue-600 font-medium">
+                  💡 All changes are automatically saved as you work!
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         {/* Navigation Protection Modal */}
         <UnsavedChangesModal
