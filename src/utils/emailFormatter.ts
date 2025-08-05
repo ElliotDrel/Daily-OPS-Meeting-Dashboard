@@ -137,17 +137,27 @@ export const generateEmail = (emailData: PillarData[], selectedDate: string): st
   // Email header
   let email = `# Manufacturing Daily Huddle Meeting Notes\n**Date:** ${formattedDate}\n---`
   
-  // Process each pillar and add sections with content
-  const pillarSections = emailData
-    .map(pillarData => formatPillarSection(pillarData))
-    .filter(section => section.trim() !== '') // Only include pillars with content
+  // Check if there are any today's notes across all pillars
+  const hasTodayNotes = emailData.some(pillarData => 
+    hasValidContent(pillarData.todayNote, pillarData.todayActionItems)
+  )
   
-  if (pillarSections.length === 0) {
+  // If no today's notes exist at all, show the "no notes found" message
+  if (!hasTodayNotes) {
     email += '\n\n*No meeting notes or action items found for the selected dates.*'
   } else {
-    email += pillarSections.join('')
-    // Remove the last separator
-    email = email.replace(/\n\n---$/, '')
+    // Process each pillar and add sections with content
+    const pillarSections = emailData
+      .map(pillarData => formatPillarSection(pillarData))
+      .filter(section => section.trim() !== '') // Only include pillars with content
+    
+    if (pillarSections.length === 0) {
+      email += '\n\n*No meeting notes or action items found for the selected dates.*'
+    } else {
+      email += pillarSections.join('')
+      // Remove the last separator
+      email = email.replace(/\n\n---$/, '')
+    }
   }
   
   // Remove all empty lines (lines with only whitespace)
