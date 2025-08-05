@@ -23,6 +23,8 @@ import { useTranscriptData } from '@/hooks/useTranscriptData';
 import { useTranscriptForm } from '@/hooks/useTranscriptForm';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import { useAIGeneration } from '@/hooks/useAIGeneration';
+import { useEmailData } from '@/hooks/useEmailData';
+import { generateEmail } from '@/utils/emailFormatter';
 import { toast } from '@/components/ui/sonner';
 import { Copy, ChevronDown, ChevronRight, Check, CheckCircle2, RefreshCw } from 'lucide-react';
 import { AIGenerationButton, AIGenerationProgress, AIGenerationError } from '@/components/ai/AIGenerationButton';
@@ -33,10 +35,10 @@ export default function PostMeetingWorkflow() {
   const dateString = format(selectedDate, 'yyyy-MM-dd');
   
   // Email generation state
-  const [showPromptPreview, setShowPromptPreview] = useState(false);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
   const [showEmailsPreview, setShowEmailsPreview] = useState(false);
   const [showSubjectPreview, setShowSubjectPreview] = useState(false);
-  const [promptCopied, setPromptCopied] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
   const [emailsCopied, setEmailsCopied] = useState(false);
   const [subjectCopied, setSubjectCopied] = useState(false);
   const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false);
@@ -48,6 +50,14 @@ export default function PostMeetingWorkflow() {
     error,
     refetch
   } = useTranscriptData(dateString);
+
+  // Email data fetching
+  const {
+    emailData,
+    isLoading: isEmailDataLoading,
+    error: emailDataError,
+    refetch: refetchEmailData
+  } = useEmailData(dateString);
 
   // Form management
   const {
@@ -151,164 +161,150 @@ Sam Markel <sam.markel@guardianbikes.com>,
 Troy Mobley <troy.mobley@guardianbikes.com>,
 Brian Riley <brian@guardianbikes.com>`;
 
-  const isEmailFormValid = formData.transcript.trim() !== "";
+  const isEmailFormValid = emailData.length > 0 && !isEmailDataLoading;
 
-  const generatePrompt = () => {
-    const promptTemplate = `<goal>Using all the attached info, create meeting notes in the same format as the yesterdays notes (<yesterdaysnotes>).</goal> <additonalinstructions>1. Use yesterday's notes (<yesterdaysnotes>) to find out in what style, format, and structure I want your output structured. Your output should be in the same style, format, and structure as yesterday's notes (<yesterdaysnotes>). 2. Use yesterday's notes (<yesterdaysnotes>) plus my notes (<mynotes>) to find what was covered in the last meeting and add that to the proper sections. 3. Use the transcript (<transcript>) to collect and identify what was covered in today's meeting to fill in the proper sections.</additonalinstructions> <outputformat>Output in the same format, style and structure as yesterday's notes (<yesterdaysnotes>). Ensure your notes are to the same level of detail as the example notes. </outputformat>
-
-<transcript>${formData.transcript}</transcript>
-
-<mynotes>${formData.additional_notes}</mynotes>
-
-<yesterdaysnotes># Manufacturing Daily Huddle Meeting Notes
-
-## Executive Summary
-
-The team relocated the daily huddle to the manufacturing office to improve attendance and punctuality, working through initial AV setup challenges. Production showed strong improvement with **1,634 units** yesterday, though month-to-date attainment remains at **50%** with **4,757 bikes short** of plan. Key focuses included managing the incoming surge of twenty-four containers over eight workdays, addressing persistent quality issues with bent cranks, and evaluating a DC redistribution freeze that could increase shipping costs by **$200,000** during sales periods.
-
----
-
-## Safety
-
-### Summary
-- No new incidents reported
-- Preparing for extreme heat with **107-degree heat index** expected Thursday
-- Insurance walkthrough completed with no findings, proceeding with new carrier transition
-- Continuing to emphasize hydration and heat safety protocols across all facilities
-
-### Action Items
-- **Monitor heat safety compliance** and push water breaks during high heat index days *(All supervisors, ongoing)*
-
-### Yesterday's Action Items
-- Employee-only sign for G4 door remains **pending**; Limble ticket submitted
-- Weather-area signage audit continues for non-G10 buildings
-
----
-
-## Quality
-
-### Summary
-- **Bent cranks persist** as primary quality concern; Frank working on resolution but communication remains limited to one reply per week
-- Previous issues with wobbly single-speed freewheels and paint adhesion on rims continue under Frank's oversight
-
-### Action Items
-- **Follow up with Frank** on bent crank corrective action plan *(Lou, Jul 24)*
-- **Maintain pressure on Frank** for more frequent quality updates *(Lou, ongoing)*
-
-### Yesterday's Action Items
-- Awaiting Frank's detailed response on bent crank root cause; supplier needs additional information
-
----
-
-## Inventory and Stockout Risk
-
-### Summary
-Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models** reveals $10-per-shipment cost increase from Indiana fulfillment. Analysis shows potential **$200,000 shipping cost impact** per 20,000 orders during sales. 
-
-**Production Gap Analysis:**
-- Current shortfall: **4,757 bikes**
-- Remaining planned days: **6 days**
-- Required daily output: **2,793 units** (scheduled days only) or **1,862 units** (including weekends)
-
-### Action Items
-- **Follow up with Arpon** on cost assumptions and clarify DC inventory availability scenarios *(Lou & Jennica, Jul 24)*
-- **Determine switch timing** considering upcoming sales events *(Lou & Arpon, Jul 25)*
-
-### Yesterday's Action Items
-- Cost study initiated showing $19-20 base shipping cost versus $10 premium for Indiana direct fulfillment
-
----
-
-## Delivery and Logistics
-
-### Summary
-- **2 containers received** of 24 expected over next 8 workdays
-- New zone-based unloading system showing promise with smooth first container processing
-- Additional **26 containers** either in LA port or on water
-- Maintaining high-volume cadence through mid-August
-
-### Action Items
-- **Maintain extended staffing coverage** for 3-4 week container surge *(Troy, ongoing)*
-- **Monitor zone-based container system** effectiveness and adjust as needed *(Troy, Jul 24)*
-
-### Yesterday's Action Items
-- Staffing plan executed with 3 temps daily this week, 4 next week
-
----
-
-## Production Performance
-
-### Summary
-- Strong output of **1,634 units yesterday** with another robust day expected
-- New workshop initiated to push value improvements
-- **Fork production started** on 16-inch models with fixtures for 20-inch and 14-inch in development
-- **Powder coat line fire-up** scheduled for tomorrow
-
-### Action Items
-- **Integrate fork and powder coat production** into daily tracking metrics *(Production team, Jul 25)*
-- **Coordinate Martin cleaning setup** for powder coat area *(Lou, Jul 24)*
-
-### Yesterday's Action Items
-- Changeover reduction and new-hire integration continuing per plan
-
----
-
-## People and Staffing
-
-### Summary
-- Turnover challenges persist with **21% daily attendance call-ins** continuing for weeks
-- Middle-of-summer timing makes high absenteeism particularly concerning for production targets
-
-### Action Items
-- **Develop retention strategy** to address 21% call-in rate *(HR, Jul 25)*
-- **Implement daily attendance monitoring** with 4-hour backfill target *(HR, ongoing)*
-
-### Yesterday's Action Items
-- Continuing monitoring of attendance patterns and retention strategies</yesterdaysnotes>`;
-    return promptTemplate;
+  const generateFormattedEmail = () => {
+    if (!emailData || emailData.length === 0) {
+      return "No meeting notes or action items found for the selected dates.";
+    }
+    return generateEmail(emailData, dateString);
   };
 
   // Email toggle functions
-  const handleTogglePromptPreview = () => {
-    setShowPromptPreview(!showPromptPreview);
+  const handleToggleEmailPreview = () => {
+    setShowEmailPreview(!showEmailPreview);
     setShowEmailsPreview(false);
     setShowSubjectPreview(false);
   };
 
   const handleToggleEmailsPreview = () => {
     setShowEmailsPreview(!showEmailsPreview);
-    setShowPromptPreview(false);
+    setShowEmailPreview(false);
     setShowSubjectPreview(false);
   };
 
   const handleToggleSubjectPreview = () => {
     setShowSubjectPreview(!showSubjectPreview);
-    setShowPromptPreview(false);
+    setShowEmailPreview(false);
     setShowEmailsPreview(false);
   };
 
   const handleValidationError = () => {
-    toast.error("Please add transcript content to enable email generation", {
+    toast.error("No meeting data available for the selected dates", {
       duration: 3000,
     });
   };
 
+  // Rich copy function for Gmail compatibility
+  const copyRichContent = async (htmlContent: string, plainContent: string, successMessage: string) => {
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        // Modern browsers - dual format for Gmail
+        const blobHtml = new Blob([htmlContent], { type: "text/html" });
+        const blobText = new Blob([plainContent], { type: "text/plain" });
+        const item = new ClipboardItem({
+          "text/html": blobHtml,
+          "text/plain": blobText
+        });
+        await navigator.clipboard.write([item]);
+      } else {
+        // Fallback for older browsers
+        const container = document.createElement("div");
+        container.contentEditable = "true";
+        container.style.position = "fixed";
+        container.style.opacity = "0";
+        container.innerHTML = htmlContent;
+        document.body.appendChild(container);
+
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(container);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        document.addEventListener("copy", function onCopy(e) {
+          e.clipboardData.setData("text/html", htmlContent);
+          e.clipboardData.setData("text/plain", plainContent);
+          e.preventDefault();
+          document.removeEventListener("copy", onCopy);
+        });
+
+        const success = document.execCommand("copy");
+        selection.removeAllRanges();
+        document.body.removeChild(container);
+        
+        if (!success) throw new Error("Copy command failed");
+      }
+      
+      toast.success(successMessage, { duration: 4000 });
+      return true;
+    } catch (error) {
+      toast.error("Failed to copy content. Please try again.");
+      return false;
+    }
+  };
+
+  // Convert markdown to HTML for Gmail
+  const convertMarkdownToHtml = (markdownText: string): string => {
+    return markdownText
+      // Headers
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      // Bold text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      // Italic text  
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Horizontal rules
+      .replace(/^---$/gm, '<hr>')
+      // Bullet points
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      // Wrap multiple li elements in ul
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+      .replace(/<\/li>\s*<ul>/g, '</li>')
+      .replace(/<\/ul>\s*<li>/g, '<li>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      // Wrap in paragraphs
+      .replace(/^(.+)$/gm, (match) => {
+        if (match.startsWith('<h') || match.startsWith('<hr') || match.startsWith('<ul') || match.startsWith('<li')) {
+          return match;
+        }
+        return `<p>${match}</p>`;
+      })
+      // Clean up extra paragraph tags
+      .replace(/<p><\/p>/g, '')
+      .replace(/<p>(<h[1-6]>)/g, '$1')
+      .replace(/(<\/h[1-6]>)<\/p>/g, '$1')
+      .replace(/<p>(<hr>)<\/p>/g, '$1')
+      .replace(/<p>(<ul>)/g, '$1')
+      .replace(/(<\/ul>)<\/p>/g, '$1');
+  };
+
   // Email copy functions
-  const handleCopyPrompt = async () => {
+  const handleCopyEmail = async () => {
     if (!isEmailFormValid) {
       handleValidationError();
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(generatePrompt());
-      setPromptCopied(true);
-      toast.success("Full prompt copied to clipboard!", {
-        duration: 4000,
-      });
-      setTimeout(() => setPromptCopied(false), 2000);
+      const markdownEmail = generateFormattedEmail();
+      const htmlEmail = `<div>${convertMarkdownToHtml(markdownEmail)}</div>`;
+      
+      const success = await copyRichContent(
+        htmlEmail,
+        markdownEmail,
+        "Meeting email copied with formatting! Paste in Gmail to see rich formatting."
+      );
+      
+      if (success) {
+        setEmailCopied(true);
+        setTimeout(() => setEmailCopied(false), 2000);
+      }
     } catch (error) {
-      toast.error("Failed to copy prompt. Please try again.");
+      toast.error("Failed to copy email. Please try again.");
     }
   };
 
@@ -563,36 +559,32 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                 <div className={`space-y-8 mt-8 transition-opacity duration-300 ${!isEmailFormValid ? 'opacity-50 pointer-events-none' : ''}`}>
                   <div className="mb-8">
                     <h2 className="text-xl font-semibold text-foreground mb-2">
-                      Generate AI Email Communication
+                      Meeting Email Communication
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      Create structured meeting notes using the transcript and notes above. Use the workflow below to generate and distribute professional communications.
+                      Generate professional meeting summary emails using today's and yesterday's meeting notes and action items from your pillar data. Ready to copy and paste into your email client.
                     </p>
                   </div>
 
                   {/* Instructions */}
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-3 text-center">Complete Workflow</h3>
+                    <h3 className="font-semibold text-blue-900 mb-3 text-center">Email Workflow</h3>
                     <div className="text-blue-800 text-sm space-y-2">
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-blue-600 min-w-[20px]">1.</span>
-                        <span>Click <strong>"Copy Full Prompt"</strong> and paste into <strong>ChatGPT o3</strong> for optimal results</span>
+                        <span>Click <strong>"Copy Meeting Email"</strong> to copy the formatted email content</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-blue-600 min-w-[20px]">2.</span>
-                        <span>Let AI generate your structured meeting notes</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-blue-600 min-w-[20px]">3.</span>
                         <span>Click <strong>"Copy Emails"</strong> to get recipient list for your email client</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="font-semibold text-blue-600 min-w-[20px]">4.</span>
+                        <span className="font-semibold text-blue-600 min-w-[20px]">3.</span>
                         <span>Click <strong>"Copy Subject"</strong> to get the standardized email subject line</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="font-semibold text-blue-600 min-w-[20px]">5.</span>
-                        <span>Email the AI-generated meeting notes to your team!</span>
+                        <span className="font-semibold text-blue-600 min-w-[20px]">4.</span>
+                        <span>Paste everything into your email client and send to your team!</span>
                       </div>
                     </div>
                   </div>
@@ -600,19 +592,20 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                   {/* Copy Buttons */}
                   <div className="flex justify-center gap-4 pt-4 flex-wrap">
                     <Button
-                      onClick={handleCopyPrompt}
+                      onClick={handleCopyEmail}
                       size="lg"
-                      className={`min-w-[150px] transition-all ${promptCopied 
+                      className={`min-w-[180px] transition-all ${emailCopied 
                         ? 'bg-green-600 hover:bg-green-600 text-white' 
                         : 'bg-blue-600 hover:bg-blue-700 text-white'
                       }`}
+                      disabled={isEmailDataLoading}
                     >
-                      {promptCopied ? (
+                      {emailCopied ? (
                         <Check className="w-4 h-4 mr-2" />
                       ) : (
                         <Copy className="w-4 h-4 mr-2" />
                       )}
-                      {promptCopied ? 'Copied!' : 'Copy Full Prompt'}
+                      {isEmailDataLoading ? 'Loading...' : emailCopied ? 'Copied!' : 'Copy Meeting Email'}
                     </Button>
                     <Button
                       onClick={handleCopyEmails}
@@ -650,18 +643,19 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                   <div className="flex justify-center gap-4 pt-4 flex-wrap">
                     <Button
                       variant="outline"
-                      onClick={handleTogglePromptPreview}
+                      onClick={handleToggleEmailPreview}
                       className="flex items-center gap-2"
+                      disabled={isEmailDataLoading}
                     >
-                      {showPromptPreview ? (
+                      {showEmailPreview ? (
                         <>
                           <ChevronDown className="w-4 h-4" />
-                          Hide Prompt Preview
+                          Hide Email Preview
                         </>
                       ) : (
                         <>
                           <ChevronRight className="w-4 h-4" />
-                          Show Prompt Preview
+                          Show Email Preview
                         </>
                       )}
                     </Button>
@@ -702,11 +696,11 @@ Proposed DC redistribution freeze for **14-inch, 26-inch, and Adult Small models
                   </div>
 
                   {/* Preview Content */}
-                  {showPromptPreview && (
+                  {showEmailPreview && (
                     <div className="space-y-2 border rounded-lg p-4 bg-gray-50">
-                      <h4 className="font-medium text-sm">Generated Prompt Preview:</h4>
-                      <div className="text-xs bg-white p-3 rounded border max-h-40 overflow-y-auto">
-                        <div dangerouslySetInnerHTML={{ __html: generatePrompt().replace(/\n/g, '<br>') }} />
+                      <h4 className="font-medium text-sm">Meeting Email Preview:</h4>
+                      <div className="text-xs bg-white p-3 rounded border max-h-96 overflow-y-auto">
+                        <pre className="whitespace-pre-wrap font-mono text-xs">{generateFormattedEmail()}</pre>
                       </div>
                     </div>
                   )}
