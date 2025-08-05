@@ -21,10 +21,10 @@ const formatActionItems = (actionItems: ActionItem[], label: string): string => 
     const statusText = item.status && item.status !== 'Open' ? `, ${item.status}` : ''
     const priorityText = item.priority && item.priority !== 'Medium' ? `, ${item.priority}` : ''
     
-    return `- **${item.description}**${assigneeText}${dueDateText}${statusText}${priorityText})*`
+    return `- ${item.description}${assigneeText}${dueDateText}${statusText}${priorityText})*`
   }).join('\n')
 
-  return `\n\n### ${label}\n${formattedItems}`
+  return `\n### ${label}\n${formattedItems}`
 }
 
 // Format meeting notes for email display
@@ -33,7 +33,7 @@ const formatMeetingNotes = (note: MeetingNote | null, label: string): string => 
   
   const formattedNotes = note.keyPoints.map((point: string) => `- ${point}`).join('\n')
   
-  return `\n\n### ${label}\n${formattedNotes}`
+  return `\n### ${label}\n${formattedNotes}`
 }
 
 // Format a single pillar section
@@ -49,7 +49,7 @@ const formatPillarSection = (pillarData: PillarData): string => {
     return '' // Skip pillars with no content
   }
   
-  let section = `\n## ${title}\n`
+  let section = `\n## ${title}`
   
   // Add today's content
   if (todayNote?.keyPoints?.length > 0) {
@@ -78,8 +78,7 @@ export const generateEmail = (emailData: PillarData[], selectedDate: string): st
   const formattedDate = format(parseISO(selectedDate), 'MMMM d, yyyy')
   
   // Email header
-  let email = `# Manufacturing Daily Huddle Meeting Notes\n`
-  email += `**Date:** ${formattedDate}\n\n---\n`
+  let email = `# Manufacturing Daily Huddle Meeting Notes\n**Date:** ${formattedDate}\n---`
   
   // Process each pillar and add sections with content
   const pillarSections = emailData
@@ -87,12 +86,15 @@ export const generateEmail = (emailData: PillarData[], selectedDate: string): st
     .filter(section => section.trim() !== '') // Only include pillars with content
   
   if (pillarSections.length === 0) {
-    email += '\n*No meeting notes or action items found for the selected dates.*\n'
+    email += '\n\n*No meeting notes or action items found for the selected dates.*'
   } else {
-    email += pillarSections.join('\n')
+    email += pillarSections.join('')
     // Remove the last separator
-    email = email.replace(/\n---$/, '')
+    email = email.replace(/\n\n---$/, '')
   }
+  
+  // Remove all empty lines (lines with only whitespace)
+  email = email.replace(/^\s*\n/gm, '')
   
   return email
 }

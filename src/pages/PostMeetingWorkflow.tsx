@@ -247,39 +247,28 @@ Brian Riley <brian@guardianbikes.com>`;
   // Convert markdown to HTML for Gmail
   const convertMarkdownToHtml = (markdownText: string): string => {
     return markdownText
+      // Remove all empty lines first
+      .replace(/^\s*\n/gm, '')
       // Headers
       .replace(/^# (.+)$/gm, '<h1>$1</h1>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      // Bold text
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      // Italic text  
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Bold text (must come before italic to avoid conflicts)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      // Italic text
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
       // Horizontal rules
       .replace(/^---$/gm, '<hr>')
-      // Bullet points
+      // Bullet points - handle the content inside bullets properly
       .replace(/^- (.+)$/gm, '<li>$1</li>')
-      // Wrap multiple li elements in ul
-      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-      .replace(/<\/li>\s*<ul>/g, '</li>')
-      .replace(/<\/ul>\s*<li>/g, '<li>')
-      // Line breaks
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>')
-      // Wrap in paragraphs
-      .replace(/^(.+)$/gm, (match) => {
-        if (match.startsWith('<h') || match.startsWith('<hr') || match.startsWith('<ul') || match.startsWith('<li')) {
-          return match;
-        }
-        return `<p>${match}</p>`;
-      })
-      // Clean up extra paragraph tags
-      .replace(/<p><\/p>/g, '')
-      .replace(/<p>(<h[1-6]>)/g, '$1')
-      .replace(/(<\/h[1-6]>)<\/p>/g, '$1')
-      .replace(/<p>(<hr>)<\/p>/g, '$1')
-      .replace(/<p>(<ul>)/g, '$1')
-      .replace(/(<\/ul>)<\/p>/g, '$1');
+      // Group consecutive <li> elements into <ul>
+      .replace(/(<li>.*?<\/li>)(\n)?(?=<li>)/gs, '$1')
+      .replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>')
+      // Convert remaining single newlines to nothing (since we removed empty lines)
+      .replace(/\n/g, '')
+      // Clean up any remaining issues
+      .replace(/<\/li><li>/g, '</li><li>')
+      .replace(/<\/ul><ul>/g, '');
   };
 
   // Email copy functions
